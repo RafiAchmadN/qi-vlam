@@ -47,8 +47,16 @@ jobs:
         with:
           name: qi-vla-robot-apk
           path: app/qi-vla-robot-debug.apk
+      - name: Release notes from CHANGELOG.md (tags only)
+        if: startsWith(github.ref, 'refs/tags/v')
+        working-directory: .
+        run: |
+          awk -v tag="## ${GITHUB_REF_NAME} " 'index($0, tag) == 1 {on=1; next} /^## v/ {on=0} on' CHANGELOG.md > release_notes.md
+          test -s release_notes.md || echo "Release ${GITHUB_REF_NAME}" > release_notes.md
+          head -5 release_notes.md
       - name: Attach APK to GitHub release (tags only)
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v3
         with:
+          body_path: release_notes.md
           files: app/qi-vla-robot-debug.apk

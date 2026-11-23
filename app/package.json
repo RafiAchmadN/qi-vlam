@@ -1,6 +1,6 @@
 {
   "name": "qi-vla-robot",
-  "version": "0.1.0",
+  "version": "1.1.0",
   "description": "QI-VLA Robot: open-source simulation + live robot control app for compressed vision-language-action policies",
   "license": "MIT",
   "private": true,
