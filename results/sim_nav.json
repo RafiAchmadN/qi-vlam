@@ -1,0 +1,1071 @@
+{
+  "task": "language-goal navigation (A* global path + learned local controller), MuJoCo diff-drive",
+  "dataset": {
+    "dr": "data/qivla_nav",
+    "nodr": "data/qivla_nav_nodr",
+    "frames": 248592,
+    "episodes": 589
+  },
+  "config": {
+    "seeds": 3,
+    "steps": 8000,
+    "heal_steps": 2000,
+    "chi": 16,
+    "hidden": 128,
+    "compressed_layer_ratio": 3.6857142857142855
+  },
+  "expert_reference": {
+    "train_maps": {
+      "success_pct": 100.0,
+      "n": 60,
+      "collision_pct": 0.0,
+      "spl": 0.9942758653477465,
+      "shield_pct": 0.0,
+      "time_s_median": 14.925
+    },
+    "heldout_map": {
+      "success_pct": 100.0,
+      "n": 30,
+      "collision_pct": 0.0,
+      "spl": 1.0,
+      "shield_pct": 0.0,
+      "time_s_median": 22.125
+    },
+    "hard_dynamics": {
+      "success_pct": 100.0,
+      "n": 30,
+      "collision_pct": 0.0,
+      "spl": 1.0,
+      "shield_pct": 0.0,
+      "time_s_median": 18.200000000000003
+    },
+    "unknown_obstacles": {
+      "success_pct": 100.0,
+      "n": 30,
+      "collision_pct": 0.0,
+      "spl": 0.8589395629529597,
+      "shield_pct": 0.0,
+      "time_s_median": 20.775
+    }
+  },
+  "summary": {
+    "dense_dr": {
+      "params": 36610,
+      "val_loss_mean": 0.0009205724927596748,
+      "train_maps": {
+        "success_mean": 100.0,
+        "success_std": 0.0,
+        "collision_mean": 0.0,
+        "spl_mean": 0.99426133643054,
+        "shield_mean": 0.0,
+        "per_seed": [
+          100.0,
+          100.0,
+          100.0
+        ],
+        "n_per_seed": 60
+      },
+      "heldout_map": {
+        "success_mean": 100.0,
+        "success_std": 0.0,
+        "collision_mean": 0.0,
+        "spl_mean": 1.0,
+        "shield_mean": 0.0062578418580784044,
+        "per_seed": [
+          100.0,
+          100.0,
+          100.0
+        ],
+        "n_per_seed": 30
+      },
+      "hard_dynamics": {
+        "success_mean": 100.0,
+        "success_std": 0.0,
+        "collision_mean": 0.0,
+        "spl_mean": 1.0,
+        "shield_mean": 0.0,
+        "per_seed": [
+          100.0,
+          100.0,
+          100.0
+        ],
+        "n_per_seed": 30
+      },
+      "unknown_obstacles": {
+        "success_mean": 100.0,
+        "success_std": 0.0,
+        "collision_mean": 0.0,
+        "spl_mean": 0.8562069030950253,
+        "shield_mean": 0.43350598720839456,
+        "per_seed": [
+          100.0,
+          100.0,
+          100.0
+        ],
+        "n_per_seed": 30
+      }
+    },
+    "dense_dr_noshield": {
+      "params": 36610,
+      "val_loss_mean": 0.0009205724927596748,
+      "train_maps": {
+        "success_mean": 100.0,
+        "success_std": 0.0,
+        "collision_mean": 0.0,
+        "spl_mean": 0.99426133643054,
+        "shield_mean": 0.0,
+        "per_seed": [
+          100.0,
+          100.0,
+          100.0
+        ],
+        "n_per_seed": 60
+      },
+      "heldout_map": {
+        "success_mean": 100.0,
+        "success_std": 0.0,
+        "collision_mean": 0.0,
+        "spl_mean": 1.0,
+        "shield_mean": 0.0,
+        "per_seed": [
+          100.0,
+          100.0,
+          100.0
+        ],
+        "n_per_seed": 30
+      },
+      "hard_dynamics": {
+        "success_mean": 100.0,
+        "success_std": 0.0,
+        "collision_mean": 0.0,
+        "spl_mean": 1.0,
+        "shield_mean": 0.0,
+        "per_seed": [
+          100.0,
+          100.0,
+          100.0
+        ],
+        "n_per_seed": 30
+      },
+      "unknown_obstacles": {
+        "success_mean": 100.0,
+        "success_std": 0.0,
+        "collision_mean": 0.0,
+        "spl_mean": 0.8562355483358113,
+        "shield_mean": 0.0,
+        "per_seed": [
+          100.0,
+          100.0,
+          100.0
+        ],
+        "n_per_seed": 30
+      }
+    },
+    "dense_nodr": {
+      "params": 36610,
+      "val_loss_mean": 0.0008543136646039784,
+      "train_maps": {
+        "success_mean": 100.0,
+        "success_std": 0.0,
+        "collision_mean": 0.0,
+        "spl_mean": 0.9942728681721503,
+        "shield_mean": 0.0,
+        "per_seed": [
+          100.0,
+          100.0,
+          100.0
+        ],
+        "n_per_seed": 60
+      },
+      "heldout_map": {
+        "success_mean": 100.0,
+        "success_std": 0.0,
+        "collision_mean": 0.0,
+        "spl_mean": 1.0,
+        "shield_mean": 0.016927775371819196,
+        "per_seed": [
+          100.0,
+          100.0,
+          100.0
+        ],
+        "n_per_seed": 30
+      },
+      "hard_dynamics": {
+        "success_mean": 100.0,
+        "success_std": 0.0,
+        "collision_mean": 0.0,
+        "spl_mean": 1.0,
+        "shield_mean": 0.0,
+        "per_seed": [
+          100.0,
+          100.0,
+          100.0
+        ],
+        "n_per_seed": 30
+      },
+      "unknown_obstacles": {
+        "success_mean": 100.0,
+        "success_std": 0.0,
+        "collision_mean": 0.0,
+        "spl_mean": 0.8567085374303005,
+        "shield_mean": 0.5046728837128239,
+        "per_seed": [
+          100.0,
+          100.0,
+          100.0
+        ],
+        "n_per_seed": 30
+      }
+    },
+    "healing_ctrl": {
+      "params": 36610,
+      "val_loss_mean": 0.0008802065664591888,
+      "train_maps": {
+        "success_mean": 100.0,
+        "success_std": 0.0,
+        "collision_mean": 0.0,
+        "spl_mean": 0.9943090810688147,
+        "shield_mean": 0.0,
+        "per_seed": [
+          100.0,
+          100.0,
+          100.0
+        ],
+        "n_per_seed": 60
+      },
+      "heldout_map": {
+        "success_mean": 100.0,
+        "success_std": 0.0,
+        "collision_mean": 0.0,
+        "spl_mean": 1.0,
+        "shield_mean": 0.010415373528555222,
+        "per_seed": [
+          100.0,
+          100.0,
+          100.0
+        ],
+        "n_per_seed": 30
+      },
+      "hard_dynamics": {
+        "success_mean": 100.0,
+        "success_std": 0.0,
+        "collision_mean": 0.0,
+        "spl_mean": 1.0,
+        "shield_mean": 0.0,
+        "per_seed": [
+          100.0,
+          100.0,
+          100.0
+        ],
+        "n_per_seed": 30
+      },
+      "unknown_obstacles": {
+        "success_mean": 100.0,
+        "success_std": 0.0,
+        "collision_mean": 0.0,
+        "spl_mean": 0.8549925989533742,
+        "shield_mean": 0.5116903453300221,
+        "per_seed": [
+          100.0,
+          100.0,
+          100.0
+        ],
+        "n_per_seed": 30
+      }
+    },
+    "ttns_noheal": {
+      "params": 12546,
+      "val_loss_mean": 0.0025840794357160726,
+      "train_maps": {
+        "success_mean": 100.0,
+        "success_std": 0.0,
+        "collision_mean": 0.0,
+        "spl_mean": 1.0,
+        "shield_mean": 0.05837850045167118,
+        "per_seed": [
+          100.0,
+          100.0,
+          100.0
+        ],
+        "n_per_seed": 60
+      },
+      "heldout_map": {
+        "success_mean": 100.0,
+        "success_std": 0.0,
+        "collision_mean": 0.0,
+        "spl_mean": 1.0,
+        "shield_mean": 0.050701971576137844,
+        "per_seed": [
+          100.0,
+          100.0,
+          100.0
+        ],
+        "n_per_seed": 30
+      },
+      "hard_dynamics": {
+        "success_mean": 100.0,
+        "success_std": 0.0,
+        "collision_mean": 0.0,
+        "spl_mean": 1.0,
+        "shield_mean": 0.16757654051822157,
+        "per_seed": [
+          100.0,
+          100.0,
+          100.0
+        ],
+        "n_per_seed": 30
+      },
+      "unknown_obstacles": {
+        "success_mean": 98.8888888888889,
+        "success_std": 1.57134840263677,
+        "collision_mean": 0.0,
+        "spl_mean": 0.8444855844973479,
+        "shield_mean": 0.24239049568362606,
+        "per_seed": [
+          96.66666666666667,
+          100.0,
+          100.0
+        ],
+        "n_per_seed": 30
+      }
+    },
+    "ttns_dr": {
+      "params": 12546,
+      "val_loss_mean": 0.0008667384778770307,
+      "train_maps": {
+        "success_mean": 100.0,
+        "success_std": 0.0,
+        "collision_mean": 0.0,
+        "spl_mean": 0.9942174281757413,
+        "shield_mean": 0.0,
+        "per_seed": [
+          100.0,
+          100.0,
+          100.0
+        ],
+        "n_per_seed": 60
+      },
+      "heldout_map": {
+        "success_mean": 100.0,
+        "success_std": 0.0,
+        "collision_mean": 0.0,
+        "spl_mean": 1.0,
+        "shield_mean": 0.008375575357737718,
+        "per_seed": [
+          100.0,
+          100.0,
+          100.0
+        ],
+        "n_per_seed": 30
+      },
+      "hard_dynamics": {
+        "success_mean": 100.0,
+        "success_std": 0.0,
+        "collision_mean": 0.0,
+        "spl_mean": 1.0,
+        "shield_mean": 0.004462293618920125,
+        "per_seed": [
+          100.0,
+          100.0,
+          100.0
+        ],
+        "n_per_seed": 30
+      },
+      "unknown_obstacles": {
+        "success_mean": 100.0,
+        "success_std": 0.0,
+        "collision_mean": 0.0,
+        "spl_mean": 0.8566980114085406,
+        "shield_mean": 0.4467464268868773,
+        "per_seed": [
+          100.0,
+          100.0,
+          100.0
+        ],
+        "n_per_seed": 30
+      }
+    }
+  },
+  "runs": {
+    "dense_dr": [
+      {
+        "seed": 0,
+        "params": 36610,
+        "val_loss": 0.0009002259466797113,
+        "train_maps": {
+          "success_pct": 100.0,
+          "n": 60,
+          "collision_pct": 0.0,
+          "spl": 0.9943041677104622,
+          "shield_pct": 0.0,
+          "time_s_median": 14.875
+        },
+        "heldout_map": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 1.0,
+          "shield_pct": 0.006242197253433209,
+          "time_s_median": 21.95
+        },
+        "hard_dynamics": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 1.0,
+          "shield_pct": 0.0,
+          "time_s_median": 18.175
+        },
+        "unknown_obstacles": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 0.855340181886299,
+          "shield_pct": 0.5431159288931099,
+          "time_s_median": 20.35
+        }
+      },
+      {
+        "seed": 1,
+        "params": 36610,
+        "val_loss": 0.0009807017631828785,
+        "train_maps": {
+          "success_pct": 100.0,
+          "n": 60,
+          "collision_pct": 0.0,
+          "spl": 0.9943157403205646,
+          "shield_pct": 0.0,
+          "time_s_median": 14.925
+        },
+        "heldout_map": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 1.0,
+          "shield_pct": 0.0,
+          "time_s_median": 22.125
+        },
+        "hard_dynamics": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 1.0,
+          "shield_pct": 0.0,
+          "time_s_median": 18.2
+        },
+        "unknown_obstacles": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 0.8567802144376097,
+          "shield_pct": 0.35903353530359805,
+          "time_s_median": 20.325
+        }
+      },
+      {
+        "seed": 2,
+        "params": 36610,
+        "val_loss": 0.0008807897684164345,
+        "train_maps": {
+          "success_pct": 100.0,
+          "n": 60,
+          "collision_pct": 0.0,
+          "spl": 0.9941641012605934,
+          "shield_pct": 0.0,
+          "time_s_median": 14.875
+        },
+        "heldout_map": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 1.0,
+          "shield_pct": 0.012531328320802004,
+          "time_s_median": 22.025
+        },
+        "hard_dynamics": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 1.0,
+          "shield_pct": 0.0,
+          "time_s_median": 18.200000000000003
+        },
+        "unknown_obstacles": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 0.8565003129611676,
+          "shield_pct": 0.39836849742847563,
+          "time_s_median": 20.225
+        }
+      }
+    ],
+    "dense_dr_noshield": [
+      {
+        "seed": 0,
+        "params": 36610,
+        "val_loss": 0.0009002259466797113,
+        "train_maps": {
+          "success_pct": 100.0,
+          "n": 60,
+          "collision_pct": 0.0,
+          "spl": 0.9943041677104622,
+          "shield_pct": 0.0,
+          "time_s_median": 14.875
+        },
+        "heldout_map": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 1.0,
+          "shield_pct": 0.0,
+          "time_s_median": 21.95
+        },
+        "hard_dynamics": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 1.0,
+          "shield_pct": 0.0,
+          "time_s_median": 18.175
+        },
+        "unknown_obstacles": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 0.8551610423253138,
+          "shield_pct": 0.0,
+          "time_s_median": 20.35
+        }
+      },
+      {
+        "seed": 1,
+        "params": 36610,
+        "val_loss": 0.0009807017631828785,
+        "train_maps": {
+          "success_pct": 100.0,
+          "n": 60,
+          "collision_pct": 0.0,
+          "spl": 0.9943157403205646,
+          "shield_pct": 0.0,
+          "time_s_median": 14.925
+        },
+        "heldout_map": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 1.0,
+          "shield_pct": 0.0,
+          "time_s_median": 22.125
+        },
+        "hard_dynamics": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 1.0,
+          "shield_pct": 0.0,
+          "time_s_median": 18.2
+        },
+        "unknown_obstacles": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 0.8567795301495671,
+          "shield_pct": 0.0,
+          "time_s_median": 20.325
+        }
+      },
+      {
+        "seed": 2,
+        "params": 36610,
+        "val_loss": 0.0008807897684164345,
+        "train_maps": {
+          "success_pct": 100.0,
+          "n": 60,
+          "collision_pct": 0.0,
+          "spl": 0.9941641012605934,
+          "shield_pct": 0.0,
+          "time_s_median": 14.875
+        },
+        "heldout_map": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 1.0,
+          "shield_pct": 0.0,
+          "time_s_median": 22.025
+        },
+        "hard_dynamics": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 1.0,
+          "shield_pct": 0.0,
+          "time_s_median": 18.200000000000003
+        },
+        "unknown_obstacles": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 0.856766072532553,
+          "shield_pct": 0.0,
+          "time_s_median": 20.225
+        }
+      }
+    ],
+    "dense_nodr": [
+      {
+        "seed": 0,
+        "params": 36610,
+        "val_loss": 0.0009550407994538546,
+        "train_maps": {
+          "success_pct": 100.0,
+          "n": 60,
+          "collision_pct": 0.0,
+          "spl": 0.994238355239908,
+          "shield_pct": 0.0,
+          "time_s_median": 14.9
+        },
+        "heldout_map": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 1.0,
+          "shield_pct": 0.01890359168241966,
+          "time_s_median": 22.075000000000003
+        },
+        "hard_dynamics": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 1.0,
+          "shield_pct": 0.0,
+          "time_s_median": 18.225
+        },
+        "unknown_obstacles": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 0.8578006729863568,
+          "shield_pct": 0.59452523646468,
+          "time_s_median": 20.275
+        }
+      },
+      {
+        "seed": 1,
+        "params": 36610,
+        "val_loss": 0.0007664436707273126,
+        "train_maps": {
+          "success_pct": 100.0,
+          "n": 60,
+          "collision_pct": 0.0,
+          "spl": 0.9942529119053058,
+          "shield_pct": 0.0,
+          "time_s_median": 14.925
+        },
+        "heldout_map": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 1.0,
+          "shield_pct": 0.012722646310432571,
+          "time_s_median": 22.075
+        },
+        "hard_dynamics": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 1.0,
+          "shield_pct": 0.0,
+          "time_s_median": 18.15
+        },
+        "unknown_obstacles": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 0.8556597483538169,
+          "shield_pct": 0.4119673242958695,
+          "time_s_median": 20.275
+        }
+      },
+      {
+        "seed": 2,
+        "params": 36610,
+        "val_loss": 0.0008414565236307681,
+        "train_maps": {
+          "success_pct": 100.0,
+          "n": 60,
+          "collision_pct": 0.0,
+          "spl": 0.9943273373712375,
+          "shield_pct": 0.0,
+          "time_s_median": 14.9
+        },
+        "heldout_map": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 1.0,
+          "shield_pct": 0.019157088122605363,
+          "time_s_median": 21.9
+        },
+        "hard_dynamics": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 1.0,
+          "shield_pct": 0.0,
+          "time_s_median": 18.200000000000003
+        },
+        "unknown_obstacles": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 0.8566651909507278,
+          "shield_pct": 0.5075260903779223,
+          "time_s_median": 20.35
+        }
+      }
+    ],
+    "healing_ctrl": [
+      {
+        "seed": 0,
+        "params": 36610,
+        "val_loss": 0.0008846385171636939,
+        "train_maps": {
+          "success_pct": 100.0,
+          "n": 60,
+          "collision_pct": 0.0,
+          "spl": 0.994301015775667,
+          "shield_pct": 0.0,
+          "time_s_median": 14.899999999999999
+        },
+        "heldout_map": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 1.0,
+          "shield_pct": 0.006242197253433209,
+          "time_s_median": 22.049999999999997
+        },
+        "hard_dynamics": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 1.0,
+          "shield_pct": 0.0,
+          "time_s_median": 18.15
+        },
+        "unknown_obstacles": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 0.8562806832775133,
+          "shield_pct": 0.7304068752267427,
+          "time_s_median": 20.475
+        }
+      },
+      {
+        "seed": 1,
+        "params": 36610,
+        "val_loss": 0.000934499897994101,
+        "train_maps": {
+          "success_pct": 100.0,
+          "n": 60,
+          "collision_pct": 0.0,
+          "spl": 0.9943210086727603,
+          "shield_pct": 0.0,
+          "time_s_median": 14.925
+        },
+        "heldout_map": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 1.0,
+          "shield_pct": 0.018761726078799248,
+          "time_s_median": 22.125
+        },
+        "hard_dynamics": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 1.0,
+          "shield_pct": 0.0,
+          "time_s_median": 18.200000000000003
+        },
+        "unknown_obstacles": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 0.8554721415110376,
+          "shield_pct": 0.3071252976577936,
+          "time_s_median": 20.25
+        }
+      },
+      {
+        "seed": 2,
+        "params": 36610,
+        "val_loss": 0.0008214812842197716,
+        "train_maps": {
+          "success_pct": 100.0,
+          "n": 60,
+          "collision_pct": 0.0,
+          "spl": 0.9943052187580169,
+          "shield_pct": 0.0,
+          "time_s_median": 14.975000000000001
+        },
+        "heldout_map": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 1.0,
+          "shield_pct": 0.006242197253433209,
+          "time_s_median": 22.05
+        },
+        "hard_dynamics": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 1.0,
+          "shield_pct": 0.0,
+          "time_s_median": 18.175
+        },
+        "unknown_obstacles": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 0.8532249720715716,
+          "shield_pct": 0.4975388631055301,
+          "time_s_median": 20.275
+        }
+      }
+    ],
+    "ttns_noheal": [
+      {
+        "seed": 0,
+        "params": 12546,
+        "val_loss": 0.003103023860603571,
+        "train_maps": {
+          "success_pct": 100.0,
+          "n": 60,
+          "collision_pct": 0.0,
+          "spl": 1.0,
+          "shield_pct": 0.0,
+          "time_s_median": 15.35
+        },
+        "heldout_map": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 1.0,
+          "shield_pct": 0.03463203463203463,
+          "time_s_median": 23.049999999999997
+        },
+        "hard_dynamics": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 1.0,
+          "shield_pct": 0.0579077149077936,
+          "time_s_median": 19.2
+        },
+        "unknown_obstacles": {
+          "success_pct": 96.66666666666667,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 0.8389618189660905,
+          "shield_pct": 0.1762990335281614,
+          "time_s_median": 22.05
+        }
+      },
+      {
+        "seed": 1,
+        "params": 12546,
+        "val_loss": 0.002437867457047105,
+        "train_maps": {
+          "success_pct": 100.0,
+          "n": 60,
+          "collision_pct": 0.0,
+          "spl": 1.0,
+          "shield_pct": 0.17513550135501355,
+          "time_s_median": 15.0
+        },
+        "heldout_map": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 1.0,
+          "shield_pct": 0.10579845686228666,
+          "time_s_median": 21.825
+        },
+        "hard_dynamics": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 1.0,
+          "shield_pct": 0.4399557265982093,
+          "time_s_median": 18.1
+        },
+        "unknown_obstacles": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 0.853126897556401,
+          "shield_pct": 0.5383678863309478,
+          "time_s_median": 20.675
+        }
+      },
+      {
+        "seed": 2,
+        "params": 12546,
+        "val_loss": 0.0022113469894975424,
+        "train_maps": {
+          "success_pct": 100.0,
+          "n": 60,
+          "collision_pct": 0.0,
+          "spl": 1.0,
+          "shield_pct": 0.0,
+          "time_s_median": 15.0
+        },
+        "heldout_map": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 1.0,
+          "shield_pct": 0.011675423234092236,
+          "time_s_median": 22.425
+        },
+        "hard_dynamics": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 1.0,
+          "shield_pct": 0.0048661800486618,
+          "time_s_median": 18.875
+        },
+        "unknown_obstacles": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 0.8413680369695519,
+          "shield_pct": 0.01250456719176912,
+          "time_s_median": 23.125
+        }
+      }
+    ],
+    "ttns_dr": [
+      {
+        "seed": 0,
+        "params": 12546,
+        "val_loss": 0.0008698770543560386,
+        "train_maps": {
+          "success_pct": 100.0,
+          "n": 60,
+          "collision_pct": 0.0,
+          "spl": 0.9941661502140415,
+          "shield_pct": 0.0,
+          "time_s_median": 14.925
+        },
+        "heldout_map": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 1.0,
+          "shield_pct": 0.0064350064350064354,
+          "time_s_median": 22.049999999999997
+        },
+        "hard_dynamics": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 1.0,
+          "shield_pct": 0.0,
+          "time_s_median": 18.15
+        },
+        "unknown_obstacles": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 0.8570594701730466,
+          "shield_pct": 0.5077891948012933,
+          "time_s_median": 20.4
+        }
+      },
+      {
+        "seed": 1,
+        "params": 12546,
+        "val_loss": 0.000908546382561326,
+        "train_maps": {
+          "success_pct": 100.0,
+          "n": 60,
+          "collision_pct": 0.0,
+          "spl": 0.9943210086727603,
+          "shield_pct": 0.0,
+          "time_s_median": 14.95
+        },
+        "heldout_map": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 1.0,
+          "shield_pct": 0.012437810945273632,
+          "time_s_median": 22.075
+        },
+        "hard_dynamics": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 1.0,
+          "shield_pct": 0.0,
+          "time_s_median": 18.200000000000003
+        },
+        "unknown_obstacles": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 0.8565052849071383,
+          "shield_pct": 0.33222566794408404,
+          "time_s_median": 20.25
+        }
+      },
+      {
+        "seed": 2,
+        "params": 12546,
+        "val_loss": 0.0008217919967137277,
+        "train_maps": {
+          "success_pct": 100.0,
+          "n": 60,
+          "collision_pct": 0.0,
+          "spl": 0.9941651256404218,
+          "shield_pct": 0.0,
+          "time_s_median": 14.925
+        },
+        "heldout_map": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 1.0,
+          "shield_pct": 0.006253908692933083,
+          "time_s_median": 22.025
+        },
+        "hard_dynamics": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 1.0,
+          "shield_pct": 0.013386880856760375,
+          "time_s_median": 18.175
+        },
+        "unknown_obstacles": {
+          "success_pct": 100.0,
+          "n": 30,
+          "collision_pct": 0.0,
+          "spl": 0.856529279145437,
+          "shield_pct": 0.5002244179152548,
+          "time_s_median": 20.3
+        }
+      }
+    ]
+  },
+  "scope": "Simulation only (MuJoCo physics: friction, slip, motor lag, latency, lidar/pose noise). Localization is ground truth + noise (no SLAM). heldout_map and hard_dynamics are sim-to-sim transfer tests; no physical robot was used.",
+  "wall_s": 1703.6
+}

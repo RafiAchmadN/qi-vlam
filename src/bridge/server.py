@@ -2,6 +2,8 @@
 
     python -m src.bridge.server --driver mock                 # no hardware
     python -m src.bridge.server --driver serial --port COM3 --cal calib.json
+    python -m src.bridge.server --driver mujoco --env kitchen_counter   # physics digital twin
+    python -m src.bridge.server --driver rover --map warehouse --unknown 2   # mobile robot (MuJoCo)
 
 Endpoints
   WS   /ws       protocol "qi-vla-bridge/1" (same as the ESP32 firmware)
@@ -12,7 +14,11 @@ Endpoints
 Protocol (JSON text frames)
   app -> bridge: {"type":"hello"} | {"type":"joint_command","q":[6 floats],"seq":n}
                  {"type":"estop"} | {"type":"estop_release"}
+                 {"type":"scene_reset","env":id,"seed":n}      (simulated drivers only)
+                 {"type":"twist_command","v":m/s,"w":rad/s}   (mobile robots)
   bridge -> app: {"type":"info",...} | {"type":"state","q":[...],"t":ms,"estop":bool}
+                 {"type":"scene","objects":{color:[x,y,z,yaw]},"pads":{color:[x,y]},"env":id,...}
+                 {"type":"rover_state","pose":[x,y,yaw],"vw":[v,w],"scan":[36],"map":id}  (mobile)
                  {"type":"error","message":...}
 
 Bridge-side safety (defense in depth — the app's shield is NOT trusted alone):
@@ -33,7 +39,7 @@ from pathlib import Path
 from typing import List, Optional
 
 import numpy as np
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi import Body, FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
@@ -102,7 +108,9 @@ class ActRequest(BaseModel):
 
 
 def build_app(driver: Driver, policy_path: Optional[str] = None,
-              static_dir: Optional[str] = None, watchdog_s: float = 0.5) -> FastAPI:
+              static_dir: Optional[str] = None, watchdog_s: float = 0.5,
+              demo_dir: str = "data/app_demos") -> FastAPI:
+    is_rover = getattr(driver, "kind", "arm") == "rover"
     core = BridgeCore(driver, watchdog_s=watchdog_s)
     policy = PolicyRuntime.load(policy_path) if policy_path and Path(policy_path).exists() else None
     state = {"controller": None, "clients": set()}
@@ -114,13 +122,31 @@ def build_app(driver: Driver, policy_path: Optional[str] = None,
         async def loop() -> None:
             k = 0
             while True:
+                if is_rover:
+                    if k % 3 == 0 and state["clients"]:
+                        msgs = [json.dumps(dict(driver.read_state(), type="rover_state", estop=core.estop))]
+                        if k % 25 == 0:
+                            msgs.append(json.dumps(dict(driver.scene(), type="scene")))
+                        for ws in list(state["clients"]):
+                            try:
+                                for m_ in msgs:
+                                    await ws.send_text(m_)
+                            except Exception:
+                                state["clients"].discard(ws)
+                    k += 1
+                    await asyncio.sleep(core.dt)
+                    continue
                 core.tick()
                 if k % 3 == 0 and state["clients"]:  # ~16 Hz state broadcast at 50 Hz tick
                     msg = json.dumps({"type": "state", "q": [round(v, 5) for v in driver.read()],
                                       "t": int(time.time() * 1000), "estop": core.estop})
+                    msgs = [msg]
+                    if k % 12 == 0 and hasattr(driver, "scene"):  # ~4 Hz scene mirror (simulated drivers)
+                        msgs.append(json.dumps(dict(driver.scene(), type="scene")))
                     for ws in list(state["clients"]):
                         try:
-                            await ws.send_text(msg)
+                            for m_ in msgs:
+                                await ws.send_text(m_)
                         except Exception:  # client went away mid-send
                             state["clients"].discard(ws)
                 k += 1
@@ -156,6 +182,19 @@ def build_app(driver: Driver, policy_path: Optional[str] = None,
         qd = policy.act(req.q, req.target)
         return {"qd": qd, "latency_ms": (time.perf_counter() - t0) * 1000, "policy": policy.spec["method"]}
 
+    @app.post("/episodes")
+    def save_episodes(payload: dict = Body(...)):
+        """Store demonstrations recorded in the app (format qi-vla-demos/1); convert
+        to a training dataset with `python scripts/import_app_demos.py`."""
+        if payload.get("format") != "qi-vla-demos/1" or not isinstance(payload.get("episodes"), list):
+            return JSONResponse({"error": "expected format qi-vla-demos/1"}, status_code=400)
+        d = Path(demo_dir)
+        d.mkdir(parents=True, exist_ok=True)
+        f = d / f"demos_{time.strftime('%Y%m%d_%H%M%S')}_{len(list(d.glob('*.json')))}.json"
+        f.write_text(json.dumps(payload), encoding="utf-8")
+        return {"saved": str(f), "episodes": len(payload["episodes"]),
+                "frames": sum(len(e.get("frames", [])) for e in payload["episodes"])}
+
     @app.websocket("/ws")
     async def ws_endpoint(ws: WebSocket):
         await ws.accept()
@@ -173,9 +212,24 @@ def build_app(driver: Driver, policy_path: Optional[str] = None,
                     continue
                 t = m.get("type")
                 if t == "estop":  # any client may stop the robot
-                    core.trigger_estop()
+                    core.estop = True
+                    driver.stop()
+                    if not is_rover:
+                        core.trigger_estop()
+                elif t == "twist_command" and is_rover:
+                    if state["controller"] is not ws:
+                        await ws.send_text(json.dumps({"type": "error", "message": "observer: read-only"}))
+                    elif core.estop or driver.twist(float(m.get("v", 0.0)), float(m.get("w", 0.0))) is None:
+                        await ws.send_text(json.dumps({"type": "error", "message": "rejected (e-stop latched or bad command)"}))
                 elif t == "estop_release" and state["controller"] is ws:
                     core.release_estop()
+                elif t == "scene_reset" and state["controller"] is ws and hasattr(driver, "reset_scene"):
+                    try:
+                        driver.reset_scene(m.get("map") or m.get("env"), m.get("seed"))
+                        core.last_sent = None
+                        await ws.send_text(json.dumps(dict(driver.scene(), type="scene")))
+                    except (FileNotFoundError, ValueError) as e:
+                        await ws.send_text(json.dumps({"type": "error", "message": f"scene_reset: {e}"}))
                 elif t == "joint_command":
                     if state["controller"] is not ws:
                         await ws.send_text(json.dumps({"type": "error", "message": "observer: read-only"}))
@@ -200,7 +254,11 @@ def main() -> None:
     import uvicorn
 
     p = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    p.add_argument("--driver", default="mock", choices=["mock", "serial"])
+    p.add_argument("--driver", default="mock", choices=["mock", "serial", "mujoco", "rover", "rover-kinematic"])
+    p.add_argument("--map", default="home", help="map for --driver rover (app/public/maps)")
+    p.add_argument("--unknown", type=int, default=0, help="obstacles not in the map (rover)")
+    p.add_argument("--env", default="lab_table", help="environment preset for --driver mujoco")
+    p.add_argument("--randomize", action="store_true", help="domain-randomized dynamics (mujoco)")
     p.add_argument("--port", default=None, help="serial port, e.g. COM3 or /dev/ttyUSB0")
     p.add_argument("--cal", default=None, help="calibration JSON for the serial driver")
     p.add_argument("--policy", default="app/public/models/policy_ttns.json")
@@ -208,7 +266,9 @@ def main() -> None:
     p.add_argument("--host", default="0.0.0.0")
     p.add_argument("--http-port", type=int, default=8765)
     a = p.parse_args()
-    app = build_app(make_driver(a.driver, a.port, a.cal), a.policy, a.static)
+    app = build_app(make_driver(a.driver, a.port, a.cal, env_id=a.env, randomize=a.randomize,
+                                map_id=a.map, unknown=a.unknown),
+                    a.policy, a.static)
     uvicorn.run(app, host=a.host, port=a.http_port)
 
 

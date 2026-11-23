@@ -29,3 +29,49 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run build
+  ros2:
+    runs-on: ubuntu-latest
+    container: ros:humble-ros-base
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install ROS packages + Python deps
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends python3-pip python3-colcon-common-extensions \
+            ros-humble-rosbridge-server ros-humble-robot-state-publisher ros-humble-tf2-ros ros-humble-nav-msgs \
+            liburdfdom-tools libgl1 libegl1
+          pip3 install mujoco websocket-client pytest
+      - name: URDF check
+        run: check_urdf ros2/qi_vla_ros/urdf/qi_vla_arm.urdf
+      - name: colcon build
+        run: |
+          source /opt/ros/humble/setup.bash
+          cd ros2 && colcon build --packages-select qi_vla_ros
+      - name: Unit tests (ROS-free core)
+        run: |
+          export QI_VLA_ROOT=$GITHUB_WORKSPACE
+          PYTHONPATH=ros2/qi_vla_ros:. python3 -m pytest -q ros2/qi_vla_ros/test/test_core.py
+      - name: Launch sim (MuJoCo) + rosbridge + policy, run end-to-end smoke test
+        run: |
+          source /opt/ros/humble/setup.bash
+          source ros2/install/setup.bash
+          export QI_VLA_ROOT=$GITHUB_WORKSPACE
+          ros2 launch qi_vla_ros sim.launch.py backend:=mujoco policy:=true > launch.log 2>&1 &
+          LPID=$!
+          sleep 15
+          python3 ros2/qi_vla_ros/test/ros2_smoke.py || (cat launch.log; exit 1)
+          kill $LPID || true
+      - name: Rover — launch sim (MuJoCo) + rosbridge, run end-to-end smoke test
+        run: |
+          source /opt/ros/humble/setup.bash
+          source ros2/install/setup.bash
+          export QI_VLA_ROOT=$GITHUB_WORKSPACE
+          check_urdf ros2/qi_vla_ros/urdf/qi_vla_rover.urdf
+          ros2 launch qi_vla_ros rover.launch.py backend:=mujoco map:=warehouse unknown:=1 > rover_launch.log 2>&1 &
+          LPID=$!
+          sleep 15
+          python3 ros2/qi_vla_ros/test/ros2_rover_smoke.py || (cat rover_launch.log; exit 1)
+          kill $LPID || true

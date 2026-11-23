@@ -9,7 +9,15 @@
 // closed-loop error model (formal for that linear model only). Online, a
 // sustained rise of V means the learned policy is not behaving like the
 // certified model, so control is handed to the fallback until V decreases.
-import { QD_MAX, Q_MIN, Q_MAX, WORKSPACE_MIN, WORKSPACE_MAX, fk, ikStep } from "../robot/kinematics.js";
+import { QD_MAX, Q_MIN, Q_MAX, WORKSPACE_MIN, WORKSPACE_MAX, fk, ikStep, jointPositions } from "../robot/kinematics.js";
+
+/** true if point p (world) is inside an obstacle box inflated by `margin`. */
+export function inObstacle(p, obstacles, margin = 0.02) {
+  return obstacles.some((o) => !o.visual_only &&
+    Math.abs(p[0] - o.pos[0]) < o.size[0] / 2 + margin &&
+    Math.abs(p[1] - o.pos[1]) < o.size[1] / 2 + margin &&
+    Math.abs(p[2] - o.pos[2]) < o.size[2] / 2 + margin);
+}
 
 export class SafetyShield {
   constructor({ P, dt = 0.05, riseTolerance = 0.005, patience = 4, recover = 10,
@@ -24,6 +32,7 @@ export class SafetyShield {
     this.reset();
     this.estop = false;
     this.events = [];
+    this.obstacles = []; // environment boxes (app/public/envs/*.json), checked for elbow/wrist/tip
   }
   reset() {
     this.prevV = null; this.rises = 0; this.fallback = false; this.calm = 0; this.lastV = 0; this.minV = Infinity;
@@ -64,7 +73,17 @@ export class SafetyShield {
       }
     }
     this.prevV = V; this.lastV = V;
-    let qd = this.fallback || !qdLearned ? ikStep(q, target) : qdLearned.slice(0, 4);
+    const qd0 = this.fallback || !qdLearned ? ikStep(q, target) : qdLearned.slice(0, 4);
+    const lim = this.limit(q, qd0);
+    return { qd: lim.qd, source: this.fallback || !qdLearned ? "fallback-ik" : "policy", V, clipped: lim.clipped };
+  }
+
+  /** Hard limits only (no Lyapunov monitor): e-stop, velocity, joint limits,
+   *  table/workspace and environment obstacles. Used for the end-to-end policy
+   *  and manual jogging, which have no single sub-goal to monitor. */
+  limit(q, qdIn) {
+    if (this.estop) return { qd: [0, 0, 0, 0], clipped: true };
+    let qd = qdIn.slice(0, 4);
     let clipped = false;
     // velocity limits
     qd = qd.map((v, i) => {
@@ -72,18 +91,22 @@ export class SafetyShield {
       if (c !== v || !Number.isFinite(v)) clipped = true;
       return Number.isFinite(c) ? c : 0;
     });
-    // joint limits + workspace (table) — scale the step down until it is valid
+    // joint limits + workspace (table) + obstacles — scale the step down until it is valid
+    // (if the arm already starts inside an inflated obstacle box, allow it to move out)
+    const startsIn = this.obstacles.length && jointPositions(q).slice(2).some((pt) => inObstacle(pt, this.obstacles));
     for (let k = 0; k < 6; k++) {
       const qn = q.slice();
       for (let i = 0; i < 4; i++) qn[i] = Math.max(Q_MIN[i], Math.min(Q_MAX[i], q[i] + qd[i] * this.dt));
       const p = fk(qn);
       const below = p[2] < WORKSPACE_MIN[2];
       const outside = p.some((v, i) => v < WORKSPACE_MIN[i] - 0.03 || v > WORKSPACE_MAX[i] + 0.03);
-      if (!below && !outside) break;
+      const pts = this.obstacles.length ? jointPositions(qn).slice(2) : [];
+      const hit = !startsIn && pts.some((pt) => inObstacle(pt, this.obstacles));
+      if (!below && !outside && !hit) break;
       clipped = true;
       qd = qd.map((v) => v * 0.5);
-      if (k === 5) { qd = [0, 0, 0, 0]; this.log("block", "langkah ditolak: keluar workspace / tabrak meja"); }
+      if (k === 5) { qd = [0, 0, 0, 0]; this.log("block", hit ? "langkah ditolak: lengan akan menabrak rintangan" : "langkah ditolak: keluar workspace / tabrak meja"); }
     }
-    return { qd, source: this.fallback || !qdLearned ? "fallback-ik" : "policy", V, clipped };
+    return { qd, clipped };
   }
 }

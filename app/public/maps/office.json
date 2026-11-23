@@ -1,0 +1,275 @@
+{
+ "id": "office",
+ "name": "Kantor",
+ "name_en": "Office",
+ "description": "Kantor 7x5 m: deretan meja kerja, ruang rapat berpintu, pantry, printer.",
+ "size": [
+  7.0,
+  5.0
+ ],
+ "floor_color": "#56524d",
+ "wall_color": "#9a958e",
+ "background": "#13151a",
+ "walls": [
+  {
+   "pos": [
+    3.5,
+    0.05
+   ],
+   "size": [
+    7,
+    0.1
+   ]
+  },
+  {
+   "pos": [
+    3.5,
+    4.95
+   ],
+   "size": [
+    7,
+    0.1
+   ]
+  },
+  {
+   "pos": [
+    0.05,
+    2.5
+   ],
+   "size": [
+    0.1,
+    5
+   ]
+  },
+  {
+   "pos": [
+    6.95,
+    2.5
+   ],
+   "size": [
+    0.1,
+    5
+   ]
+  },
+  {
+   "pos": [
+    4.5,
+    4.4
+   ],
+   "size": [
+    0.1,
+    1.2
+   ]
+  },
+  {
+   "pos": [
+    4.85,
+    3.0
+   ],
+   "size": [
+    0.7,
+    0.1
+   ]
+  },
+  {
+   "pos": [
+    6.5,
+    3.0
+   ],
+   "size": [
+    1.0,
+    0.1
+   ]
+  }
+ ],
+ "obstacles": [
+  {
+   "name": "meja 1",
+   "pos": [
+    1.2,
+    1.2
+   ],
+   "size": [
+    1.2,
+    0.6
+   ],
+   "height": 0.75,
+   "color": "#6d6a66"
+  },
+  {
+   "name": "meja 2",
+   "pos": [
+    1.2,
+    2.6
+   ],
+   "size": [
+    1.2,
+    0.6
+   ],
+   "height": 0.75,
+   "color": "#6d6a66"
+  },
+  {
+   "name": "meja 3",
+   "pos": [
+    3.0,
+    1.2
+   ],
+   "size": [
+    1.2,
+    0.6
+   ],
+   "height": 0.75,
+   "color": "#6d6a66"
+  },
+  {
+   "name": "meja 4",
+   "pos": [
+    3.0,
+    2.6
+   ],
+   "size": [
+    1.2,
+    0.6
+   ],
+   "height": 0.75,
+   "color": "#6d6a66"
+  },
+  {
+   "name": "meja rapat",
+   "pos": [
+    5.75,
+    4.1
+   ],
+   "size": [
+    1.4,
+    0.7
+   ],
+   "height": 0.75,
+   "color": "#6d6a66"
+  },
+  {
+   "name": "pantry",
+   "pos": [
+    6.3,
+    0.6
+   ],
+   "size": [
+    1.0,
+    0.5
+   ],
+   "height": 0.9,
+   "color": "#6d6a66"
+  },
+  {
+   "name": "printer",
+   "pos": [
+    0.4,
+    4.4
+   ],
+   "size": [
+    0.5,
+    0.5
+   ],
+   "height": 1.0,
+   "color": "#6d6a66"
+  }
+ ],
+ "places": [
+  {
+   "id": "desk_1",
+   "pos": [
+    1.2,
+    1.9
+   ],
+   "names_id": [
+    "meja 1",
+    "meja kerja 1"
+   ],
+   "names_en": [
+    "desk 1",
+    "desk one"
+   ]
+  },
+  {
+   "id": "desk_2",
+   "pos": [
+    3.0,
+    1.9
+   ],
+   "names_id": [
+    "meja 2",
+    "meja kerja 2"
+   ],
+   "names_en": [
+    "desk 2",
+    "desk two"
+   ]
+  },
+  {
+   "id": "meeting_room",
+   "pos": [
+    5.6,
+    3.4
+   ],
+   "names_id": [
+    "ruang rapat"
+   ],
+   "names_en": [
+    "meeting room"
+   ]
+  },
+  {
+   "id": "pantry",
+   "pos": [
+    5.3,
+    0.7
+   ],
+   "names_id": [
+    "pantry",
+    "dapur kantor"
+   ],
+   "names_en": [
+    "pantry"
+   ]
+  },
+  {
+   "id": "printer",
+   "pos": [
+    1.0,
+    4.2
+   ],
+   "names_id": [
+    "printer"
+   ],
+   "names_en": [
+    "printer"
+   ]
+  },
+  {
+   "id": "dock",
+   "pos": [
+    3.6,
+    4.5
+   ],
+   "names_id": [
+    "stasiun pengisian",
+    "dok",
+    "charger"
+   ],
+   "names_en": [
+    "charging station",
+    "dock",
+    "charger"
+   ]
+  }
+ ],
+ "dynamics": {
+  "motor_tau": 0.09,
+  "latency_steps": 0,
+  "floor_friction": 0.85,
+  "lidar_noise": 0.01,
+  "pose_noise": 0.01,
+  "wheel_radius_scale": 1.0
+ }
+}

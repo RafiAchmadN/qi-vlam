@@ -1,0 +1,37 @@
+{
+ "model": "models/real_cnn_mlp.json",
+ "episodes": [
+  {
+   "file": "svla_so101_pickplace_1.json",
+   "dataset": "svla_so101_pickplace",
+   "robot": "so101",
+   "task": "pink lego brick into the transparent box",
+   "episode": 1,
+   "frames": 60
+  },
+  {
+   "file": "svla_so100_pickplace_1.json",
+   "dataset": "svla_so100_pickplace",
+   "robot": "so100",
+   "task": "Pick up the cube and place it in the box.",
+   "episode": 1,
+   "frames": 60
+  },
+  {
+   "file": "svla_so100_stacking_2.json",
+   "dataset": "svla_so100_stacking",
+   "robot": "so100",
+   "task": "Put the red cube on top of the blue cube.",
+   "episode": 2,
+   "frames": 60
+  },
+  {
+   "file": "svla_so100_sorting_4.json",
+   "dataset": "svla_so100_sorting",
+   "robot": "so100",
+   "task": "Put the red cube in the right box and the blue cube in the left box.",
+   "episode": 4,
+   "frames": 60
+  }
+ ]
+}

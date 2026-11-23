@@ -1,0 +1,30 @@
+{
+ "partial": true,
+ "runs": {
+  "state_mlp": [
+   {
+    "seed": 0,
+    "train_s": 50.0,
+    "params": 149052,
+    "storage_kb": 582.234375,
+    "latency_ms": 0.21221600007265806,
+    "n_frames": 1996,
+    "per_dataset": {
+     "koch_pick_place_5_lego": {
+      "nmse_first": 0.012367261573672295,
+      "nmse_chunk": 0.08506157994270325,
+      "motion_nmse": 0.14965316714436686,
+      "joint_mae": 1.9472516927616335,
+      "grip_acc": 0.9824649298597194,
+      "frames": 1996
+     }
+    },
+    "nmse_first": 0.012367261573672295,
+    "nmse_chunk": 0.08506157994270325,
+    "motion_nmse": 0.14965316714436686,
+    "joint_mae": 1.9472516927616335,
+    "grip_acc": 0.9824649298597194
+   }
+  ]
+ }
+}

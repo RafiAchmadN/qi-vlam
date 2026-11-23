@@ -4,14 +4,24 @@ Open research + open-source app: **quantum-inspired tensor-network compression**
 **quantum (PQC) policy heads** and **Lyapunov/SDP runtime assurance** for
 Vision-Language-Action (VLA) robot policies — evaluated on the open **LIBERO**
 dataset and shipped as a phone app that drives a robot in **simulation** or
-**live** (ESP32 Wi-Fi, USB-serial, or ROS via rosbridge).
+**live** (ESP32 Wi-Fi, USB-serial, ROS 2 via rosbridge, or a MuJoCo physics
+twin). Two robot types: a **6-DOF arm** (five place-based environments — lab,
+kitchen, warehouse, classroom, factory — with 3–5 cubes/cylinders per scene)
+and a **mobile robot** (TurtleBot3-sized diff-drive rover with 360° lidar on
+four maps — home, warehouse, office, hospital — with obstacles that are not on
+the map). Both are shared by the app, MuJoCo physics with realistic actuator
+imperfections, Gymnasium envs, a ROS 2 package and dataset generators that
+train new policies — see [`docs/SIMULATION.md`](docs/SIMULATION.md).
 
-📊 Auto-generated technical report: [`docs/technical_report.md`](docs/technical_report.md)
+📊 Auto-generated technical report: [`docs/technical_report.md`](docs/technical_report.md) ·
+🧪 Simulation, environments & ROS: [`docs/SIMULATION.md`](docs/SIMULATION.md) ·
+🦾 Real robot data → model → physical arm: [`docs/REAL_ROBOT.md`](docs/REAL_ROBOT.md)
 
 ## Key results (all reproducible, numbers from `results/`)
 
 | Question | Result | Evidence |
 |---|---|---|
+| Policies trained on **REAL robot data** (SO-100/SO-101: 208 teleop episodes, 4 tasks, camera + joints; Koch v1.1) | camera policy motion error **0.255** vs 0.351 without camera; **INT8 807 KB (−46%)** and **TTNS 175k params (2.2×)** keep quality (0.255 / 0.268); MPS 0.374; TTNS without healing 0.771; quantum PQC head 1.245 (no advantage, 5× slower). Runs on-device in the app and in a 23 ms replay control loop | 3 seeds, held-out real episodes, `results/real_benchmark*.json` |
 | Tensor-network compression on real VLA data (LIBERO, held-out episodes) | TTNS χ=64: **2.95× fewer params, nMSE 0.0845 vs 0.0831 dense**, faster on CPU | 3 seeds, `results/libero_benchmark.json` |
 | MPS vs TTNS at equal compression | TTNS wins: 0.0845 vs 0.0985 (≈3×); 0.106 vs 0.143 (≈11×) | same |
 | Is healing needed? | Yes — MPS without healing nMSE 0.87 → 0.099 with it | same |
@@ -19,6 +29,10 @@ dataset and shipped as a phone app that drives a robot in **simulation** or
 | On-device compressed reach policy | 3.19× smaller, 100% reach (TTNS no-heal: 74%) | `results/app_policy.json` |
 | Lyapunov SDP monitor + IK fallback (Simplex) under action noise | reach **8% → 78%**, table collisions **14% → 0%** | 300 paired episodes, `results/app_shield_eval.json` |
 | End-to-end app (vision → language → policy → shield) | 30/30 instructions (ID/EN, pick-place, stacking) | browser e2e |
+| New pick-place policy trained only on simulated data (MuJoCo, friction grasp, DR) | PICKPLACE_ROW | 3 seeds, `results/sim_pickplace.json` |
+| App ↔ MuJoCo physics twin (live mode through the bridge) | pick-place 1.5 mm, stacking 6 mm placement error; app demos → dataset → training | browser e2e |
+| Mobile robot: language goal → A* + lidar costmap → learned local controller (dense/TTNS) + lidar barrier shield | dense 36,610 vs TTNS 12,546 params (2.9×): **100% success, 0% collisions** on training maps, held-out hospital, out-of-range dynamics and 3 unknown obstacles (3 seeds) — this navigation benchmark is **saturated**: it shows compression is free here, not which controller is better | 3 seeds, `results/sim_nav.json` |
+| App ↔ MuJoCo rover through the bridge (live) | reached the loading dock in 39 s around 2 unknown obstacles, shield active 1% of steps | browser e2e |
 
 Honest scope: LIBERO numbers are offline action prediction **without images**,
 not closed-loop simulator success. Literature success rates (OpenVLA 76.5%,
@@ -39,7 +53,7 @@ robot, not yet on physical hardware.
 cd app
 npm ci
 npm run dev          # http://localhost:5173 (works in any phone browser on the same Wi-Fi)
-npm test             # 11 unit tests: kinematics/policy parity with Python, grounding, shield, vision
+npm test             # unit tests: kinematics/policy parity with Python, grounding, shield, vision, envs, recorder
 node test/shield_eval.mjs   # regenerates results/app_shield_eval.json
 ```
 
@@ -62,6 +76,13 @@ on your LAN — run the bridge/robot only on a trusted network.
 ```bash
 # PC bridge (mock robot — no hardware)
 python -m src.bridge.server --driver mock
+# MuJoCo physics twin of an environment (objects mirrored into the app)
+python -m src.bridge.server --driver mujoco --env kitchen_counter --randomize
+# MuJoCo mobile robot (app: header -> Mobile robot)
+python -m src.bridge.server --driver rover --map warehouse --unknown 2
+# ROS 2 (simulated arm / rover + rosbridge for the app; see ros2/qi_vla_ros/README.md)
+ros2 launch qi_vla_ros sim.launch.py backend:=mujoco env:=warehouse_shelf
+ros2 launch qi_vla_ros rover.launch.py backend:=mujoco map:=office      # /cmd_vel /odom /scan like a TurtleBot3
 # USB-serial servo arm (Arduino/ESP32 with firmware/arduino_serial_arm)
 python -m src.bridge.server --driver serial --port COM3 --cal calib.json
 ```
@@ -82,6 +103,12 @@ bash scripts/run_tests.sh                          # Python tests + coverage gat
 python scripts/download_libero.py                  # 21 MB parquet (videos optional: --videos)
 python -m src.evaluation.libero_benchmark --seeds 3   # dense/INT8/MPS/TTNS/PQC on LIBERO (~20 min CPU)
 python -m src.robot.train_policy                   # train + compress + certify + export app policy
+python -m src.sim.collect --out data/qivla_sim --episodes 1600   # MuJoCo dataset (LeRobot-style)
+python -m src.sim.train_pickplace --seeds 3        # new pick-place policy: dense/TTNS, DR ablation, held-out tests
+python -m src.sim.mobile.train_nav collect && python -m src.sim.mobile.train_nav train --seeds 3   # mobile robot
+python -m src.real.download && python -m src.real.train_real --seeds 3   # REAL SO-100/101 data: 11 models, compression
+python -m src.real.export_web --model models/real/cnn_ttns.pt          # -> app "Data robot nyata" mode
+python -m src.real.deploy robot --robot so101 --port COM5 --dry-run    # physical arm via lerobot (see docs/REAL_ROBOT.md)
 python scripts/generate_report.py                  # rebuild docs/technical_report.md
 ```
 
@@ -99,12 +126,27 @@ app/                         Web + Android app (Vite, Three.js, Capacitor)
   src/vla/                   vision (HSV), language grounding, policy runtime, skill agent
   src/safety/shield.js       limits + Lyapunov monitor + IK fallback (Simplex)
   src/connect/transports.js  qi-vla-bridge/1 WebSocket + rosbridge
+  src/vla/pickplace.js       end-to-end pick-place policy trained in MuJoCo
+  src/data/recorder.js       demonstration recorder (qi-vla-demos/1)
+  src/rover/                 mobile robot: planner, costmap, policy, shield, 3D map view
+  src/real/                  real-data vision policy runtime (JS CNN) + replay of real episodes
+  src/ui/research.js         "Riset" tab: charts of all results
   public/models/             exported dense / TTNS policies (+ test vectors)
 firmware/                    ESP32 Wi-Fi and Arduino USB-serial servo firmware
 src/compression/             MPS / TTNS layers, compress_model(), INT8 baseline
 src/training/                trainer, Lyapunov validator, SDP, sysid, GRPO + PQC heads
 src/vla_data/                LIBERO loader, hashed instruction encoder
 src/robot/                   arm model, policy training/export, NumPy policy runtime
+src/sim/                     environments, MuJoCo physics, expert, dataset generator, Gymnasium env,
+                             pick-place training, MJCF/URDF export
+src/real/                    REAL robot data: download, AV1 decode/alignment, vision policies, training,
+                             NumPy runtime, web export, physical deployment (lerobot)
+src/sim/mobile/              rover: maps, ray casting, A*, costmap, MuJoCo diff-drive, nav expert,
+                             lidar shield, Gymnasium env, dataset + nav policy training
+ros2/qi_vla_ros/             ROS 2 package: arm + rover URDF, sim nodes (kinematic/MuJoCo), policy node, launch
+sim/mjcf/                    MJCF scenes of the five environments (MuJoCo viewer)
+app/public/envs/             environment presets + domain-randomization ranges (shared app/Python)
+app/public/maps/             mobile-robot maps, robot spec, DR ranges (shared app/Python)
 src/bridge/                  robot bridge server + drivers (mock, serial)
 src/evaluation/              benchmarks (LIBERO, proxy, ablation, safety, RL, noise)
 src/inference/               FastAPI inference server

@@ -9,7 +9,7 @@ __pycache__/
 build/
 dist/
 .DS_Store
-data/
+/data/
 *.ckpt
 *.pt
 *.pth
@@ -21,3 +21,9 @@ results/*.tmp
 # local-only drafts (not published)
 docs/paper/
 docs/learning/
+
+# ROS 2 colcon outputs
+ros2/build/
+ros2/install/
+ros2/log/
+results/*.log

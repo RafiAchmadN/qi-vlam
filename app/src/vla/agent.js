@@ -23,8 +23,8 @@ export class Agent {
     for (const s of plan) {
       if (s.skill === "pick") {
         steps.push({ kind: "gripper", open: true, label: "buka gripper" });
-        steps.push({ kind: "move", ref: s.object, dz: ABOVE, label: `di atas ${s.object}` });
-        steps.push({ kind: "move", ref: s.object, dz: 0, grasp: true, useMemory: true, label: `turun ke ${s.object}` });
+        steps.push({ kind: "move", ref: s.object, dz: ABOVE, align: s.object, label: `di atas ${s.object}` });
+        steps.push({ kind: "move", ref: s.object, dz: 0, grasp: true, useMemory: true, align: s.object, label: `turun ke ${s.object}` });
         steps.push({ kind: "gripper", open: false, attach: s.object, label: "genggam" });
         steps.push({ kind: "move", ref: null, lift: LIFT, label: "angkat" });
       } else if (s.skill === "place") {
@@ -85,9 +85,9 @@ export class Agent {
       }
       return { goal: null, gripper: g };
     }
-    if (dist(fk(q), s.goal) < TOL) { this.current = null; return { goal: s.goal, gripper: null }; }
+    if (dist(fk(q), s.goal) < TOL) { this.current = null; return { goal: s.goal, gripper: null, align: s.align }; }
     if (s.t > SUBGOAL_TIMEOUT) { this.fail(`timeout saat '${s.label}'`); return null; }
-    return { goal: s.goal, gripper: null };
+    return { goal: s.goal, gripper: null, align: s.align };
   }
 
   fail(msg) { this.log("error", `✖ ${msg}`); this.stop(); this.status = "failed"; }

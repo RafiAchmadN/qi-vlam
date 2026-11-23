@@ -1,0 +1,70 @@
+<mujoco model="qi_vla_classroom_desk">
+  <compiler angle="radian" autolimits="true"/>
+  <option timestep="0.002" gravity="0 0 -9.81" integrator="implicitfast" cone="elliptic" impratio="10"/>
+  <visual><global offwidth="640" offheight="480"/><quality shadowsize="2048"/><headlight ambient="0.18 0.18 0.18" diffuse="0.2 0.2 0.2" specular="0 0 0"/></visual>
+  <default>
+    <joint damping="0.6" armature="0.005"/>
+    <geom friction="0.7200000000000001 0.005 0.0001" solref="0.004 1" solimp="0.95 0.99 0.001"/>
+    <default class="arm"><geom contype="2" conaffinity="1" condim="3"/></default>
+    <default class="finger"><geom type="box" contype="2" conaffinity="1" condim="4" friction="1.2 0.01 0.0005" rgba="0.22 0.28 0.31 1" mass="0.01"/></default>
+    <position ctrllimited="true"/>
+  </default>
+  <worldbody>
+    <light name="sun" pos="-0.2 0.3 1.1" dir="0.2 -0.3 -1.1" diffuse="0.44799999999999995 0.44799999999999995 0.44799999999999995" castshadow="true"/>
+    <light name="fill" pos="0.2 0 1.5" dir="0 0 -1" diffuse="0.180 0.180 0.180" castshadow="false"/>
+    <camera name="top" pos="0.18 0 1.0" xyaxes="0 -1 0 1 0 0" fovy="30"/>
+    <camera name="side" pos="0.17 -0.62 0.42" xyaxes="1 0 0 0 0.6 0.8" fovy="50"/>
+    <geom name="table" type="box" pos="0.15 0.0 -0.01" size="0.375 0.425 0.01" rgba="0.420 0.373 0.322 1.0"/>
+    <geom name="obs_books" type="box" pos="0.36 -0.3 0.03" size="0.08 0.06 0.03" rgba="0.549 0.541 0.525 1.0"/>
+    <geom name="obs_pencil_cup" type="box" pos="0.04 -0.33 0.05" size="0.03 0.03 0.05" rgba="0.369 0.380 0.400 1.0"/>
+    <geom name="pad_yellow" type="cylinder" pos="0.25 -0.1 0.001" size="0.03 0.0005" rgba="0.99 0.85 0.21 1" contype="0" conaffinity="0"/>
+    <geom name="pad_purple" type="cylinder" pos="0.25 0.1 0.001" size="0.03 0.0005" rgba="0.56 0.14 0.67 1" contype="0" conaffinity="0"/>
+
+    <body name="base" pos="0 0 0">
+      <geom name="base_geom" class="arm" type="cylinder" size="0.05 0.015" pos="0 0 0.015" rgba="0.22 0.28 0.31 1" mass="0.3000"/>
+      <body name="pan_link" pos="0 0 0">
+        <joint name="shoulder_pan" axis="0 0 1" range="-2.0 2.0"/>
+        <geom class="arm" type="cylinder" fromto="0 0 0.03 0 0 0.08" size="0.022" rgba="0.22 0.28 0.31 1" mass="0.1200"/>
+        <body name="upper_arm" pos="0 0 0.1">
+          <joint name="shoulder_lift" axis="0 1 0" range="-1.6 1.6"/>
+          <geom class="arm" type="capsule" fromto="0 0 0 0 0 0.116" size="0.018" rgba="0.69 0.75 0.77 1" mass="0.1000"/>
+          <body name="forearm" pos="0 0 0.116">
+            <joint name="elbow_flex" axis="0 1 0" range="-0.2 2.6"/>
+            <geom class="arm" type="capsule" fromto="0 0 0 0 0 0.135" size="0.015" rgba="0.69 0.75 0.77 1" mass="0.0800"/>
+            <body name="wrist" pos="0 0 0.135">
+              <joint name="wrist_flex" axis="0 1 0" range="-1.9 1.9"/>
+              <geom class="arm" type="capsule" fromto="0 0 0 0 0 0.05" size="0.012" rgba="0.69 0.75 0.77 1" mass="0.0300"/>
+              <body name="hand" pos="0 0 0">
+                <joint name="wrist_roll" axis="0 0 1" range="-2.8 2.8"/>
+                <geom name="palm" class="arm" type="box" pos="0 0 0.058" size="0.012 0.03 0.006" rgba="0.22 0.28 0.31 1" mass="0.0300"/>
+                <site name="tip" pos="0 0 0.1" size="0.004" rgba="1 1 1 0.6"/>
+                <body name="finger_l" pos="0 0 0.084">
+                  <joint name="finger_l" type="slide" axis="0 1 0" range="0 0.024"/>
+                  <geom name="finger_l_geom" class="finger" pos="0 0.004 0" size="0.009 0.004 0.026"/>
+                </body>
+                <body name="finger_r" pos="0 0 0.084">
+                  <joint name="finger_r" type="slide" axis="0 -1 0" range="0 0.024"/>
+                  <geom name="finger_r_geom" class="finger" pos="0 -0.004 0" size="0.009 0.004 0.026"/>
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+    <body name="cube_red" pos="0.2 -0.1 0.0155" euler="0 0 0.0"><freejoint name="cube_red_free"/><geom name="cube_red_geom" type="box" size="0.015 0.015 0.015" rgba="0.90 0.22 0.21 1" mass="0.02" friction="0.9 0.01 0.0005" condim="4"/></body>
+    <body name="cube_green" pos="0.2 0.0 0.0155" euler="0 0 0.0"><freejoint name="cube_green_free"/><geom name="cube_green_geom" type="cylinder" size="0.015 0.015" rgba="0.26 0.63 0.28 1" mass="0.02" friction="0.9 0.01 0.0005" condim="4"/></body>
+    <body name="cube_blue" pos="0.2 0.1 0.0155" euler="0 0 0.0"><freejoint name="cube_blue_free"/><geom name="cube_blue_geom" type="box" size="0.015 0.015 0.015" rgba="0.12 0.53 0.90 1" mass="0.02" friction="0.9 0.01 0.0005" condim="4"/></body>
+    <body name="cube_orange" pos="0.2 0.20000000000000004 0.0155" euler="0 0 0.0"><freejoint name="cube_orange_free"/><geom name="cube_orange_geom" type="cylinder" size="0.015 0.015" rgba="0.98 0.45 0.09 1" mass="0.02" friction="0.9 0.01 0.0005" condim="4"/></body>
+    <body name="cube_cyan" pos="0.2 0.30000000000000004 0.0155" euler="0 0 0.0"><freejoint name="cube_cyan_free"/><geom name="cube_cyan_geom" type="box" size="0.015 0.015 0.015" rgba="0.00 0.75 0.65 1" mass="0.02" friction="0.9 0.01 0.0005" condim="4"/></body>
+  </worldbody>
+  <actuator>
+    <position name="a_pan" joint="shoulder_pan" kp="40.0" ctrlrange="-2.0 2.0" forcerange="-2.5 2.5"/>
+    <position name="a_lift" joint="shoulder_lift" kp="60.0" ctrlrange="-1.6 1.6" forcerange="-3.5 3.5"/>
+    <position name="a_elbow" joint="elbow_flex" kp="40.0" ctrlrange="-0.2 2.6" forcerange="-2.5 2.5"/>
+    <position name="a_wflex" joint="wrist_flex" kp="20.0" ctrlrange="-1.9 1.9" forcerange="-1.5 1.5"/>
+    <position name="a_roll" joint="wrist_roll" kp="10.0" ctrlrange="-2.8 2.8" forcerange="-1 1"/>
+    <position name="a_finger_l" joint="finger_l" kp="300" ctrlrange="0 0.024" forcerange="-4 4"/>
+    <position name="a_finger_r" joint="finger_r" kp="300" ctrlrange="0 0.024" forcerange="-4 4"/>
+  </actuator>
+</mujoco>

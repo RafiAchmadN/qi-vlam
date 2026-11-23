@@ -1,0 +1,39 @@
+{
+  "format": "qi-vla-envs/1",
+  "default": "lab_table",
+  "envs": [
+    "lab_table",
+    "kitchen_counter",
+    "warehouse_shelf",
+    "classroom_desk",
+    "factory_conveyor"
+  ],
+  "train_envs": [
+    "lab_table",
+    "kitchen_counter",
+    "warehouse_shelf",
+    "classroom_desk"
+  ],
+  "heldout_envs": [
+    "factory_conveyor"
+  ],
+  "note": "Shared by the app (Three.js) and Python (MuJoCo, src/sim). Colors of tables/obstacles must stay low-saturation (HSV s < 0.45) so the color detector never fires on them.",
+  "objects": {
+    "graspable": [
+      "blue",
+      "cyan",
+      "green",
+      "orange",
+      "red"
+    ],
+    "pads": [
+      "purple",
+      "yellow"
+    ],
+    "shapes": [
+      "cube",
+      "cylinder"
+    ],
+    "note": "env_state slot order (src/sim/envs.py::env_state_vector, app/src/data/recorder.js)"
+  }
+}

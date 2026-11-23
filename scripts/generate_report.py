@@ -362,6 +362,62 @@ robot-learning benchmark (RLBench):
             md += (f"| {k} | {v['reach_success_pct']:.1f}% | {v['monitor_intervention_pct']:.1f}% | "
                    f"{v['table_collision_pct']:.1f}% |\n")
         md += f"\n{shield['note']}\n"
+    sim = load("results/sim_pickplace.json")
+    if sim:
+        ex = sim["expert_reference"]
+        md += ("\n## 6.8 Simulation Environments, Synthetic Training Data and a New Pick-and-Place Policy\n\n"
+               "Five environment presets (`app/public/envs/`: lab bench, kitchen counter, warehouse "
+               "shelf, classroom desk, and a held-out factory conveyor with worn servos) are "
+               "rendered by the app and simulated in MuJoCo with friction grasping and a servo "
+               "model (lag, command latency, backlash, encoder and perception noise). A scripted "
+               "physics expert generated a LeRobot-style dataset "
+               f"({sim['dataset']['episodes']} episodes, {sim['dataset']['frames']:,} frames at 20 Hz, "
+               "domain-randomized dynamics); a 17→5 MLP pick-and-place policy was trained on it "
+               f"({sim['config']['seeds']} training seeds) and evaluated closed-loop in physics.\n\n"
+               "| Model | Params | Training envs (DR) | Held-out env (factory) | Out-of-range dynamics |\n"
+               "|---|---|---|---|---|\n"
+               f"| scripted expert (reference) | – | {ex['train_envs']['success_pct']:.0f}% | "
+               f"{ex['heldout_env']['success_pct']:.0f}% | {ex['hard_dynamics']['success_pct']:.0f}% |\n")
+        for k, v in sim["summary"].items():
+            f = lambda t: f"{v[t]['success_mean']:.1f} ± {v[t]['success_std']:.1f}%"  # noqa: E731
+            md += f"| {k} | {v['params']:,} | {f('train_envs')} | {f('heldout_env')} | {f('hard_dynamics')} |\n"
+        md += f"\nScope: {sim['scope']}\n"
+    nav = load("results/sim_nav.json")
+    if nav:
+        ex = nav["expert_reference"]
+        sets = ("train_maps", "heldout_map", "hard_dynamics", "unknown_obstacles")
+        md += ("\n## 6.9 Mobile Robot: Language-Goal Navigation with a Compressed Local Controller\n\n"
+               "TurtleBot3-sized differential-drive rover in MuJoCo (wheel friction/slip, motor lag, "
+               "latency, lidar and pose noise) on four maps (home, warehouse, office; hospital held out). "
+               "Global A* on a lidar-updated costmap; the local controller is either the pure-pursuit "
+               "expert or a learned MLP (dense or TTNS-compressed) trained by behaviour cloning on "
+               f"{nav['dataset']['episodes']} expert episodes ({nav['dataset']['frames']:,} frames); a lidar "
+               "control-barrier shield bounds forward speed. Success rate (collision rate):\n\n"
+               "| Model | Params | Training maps | Held-out map | Out-of-range dynamics | Unknown obstacles |\n"
+               "|---|---|---|---|---|---|\n"
+               "| pure-pursuit expert | – | " + " | ".join(
+                   f"{ex[t]['success_pct']:.0f}% ({ex[t]['collision_pct']:.0f}%)" for t in sets) + " |\n")
+        for k, v in nav["summary"].items():
+            md += f"| {k} | {v['params']:,} | " + " | ".join(
+                f"{v[t]['success_mean']:.1f}% ({v[t]['collision_mean']:.1f}%)" for t in sets) + " |\n"
+        md += f"\nScope: {nav['scope']}\n"
+    for fname, title in (("results/real_benchmark.json", "SO-100/SO-101"), ("results/real_benchmark_koch.json", "Koch v1.1")):
+        real = load(fname)
+        if not real or "summary" not in real:
+            continue
+        ds = real["datasets"]
+        md += (f"\n## 6.10 Policies Trained on REAL Robot Data ({title})\n\n"
+               "Teleoperated demonstrations recorded on physical arms (LeRobot hub): "
+               + "; ".join(f"`{n}` ({d['robot']}, {d['episodes']} episodes, {d['frames']:,} frames @10 Hz, \"{d['task']}\")" for n, d in ds.items())
+               + ". Camera 64x64 + joints -> 10-step action chunk; split per episode; "
+               f"{real['config']['seeds']} seeds. Open-loop metrics on held-out real episodes "
+               "(motion nMSE: 1.0 = predicting no motion):\n\n"
+               "| Model | Params | Storage (KB) | Motion nMSE | Next-action nMSE | Joint MAE | Gripper acc. | CPU ms |\n"
+               "|---|---|---|---|---|---|---|---|\n")
+        for k, v in real["summary"].items():
+            md += (f"| {k} | {v['params']:,} | {v['storage_kb']:.0f} | {v['motion_nmse']['mean']:.3f} ± {v['motion_nmse']['std']:.3f} | "
+                   f"{v['nmse_first']['mean']:.3f} | {v['joint_mae']['mean']:.2f} | {v['grip_acc']['mean']:.3f} | {v['latency_ms']['mean']:.2f} |\n")
+        md += f"\nScope: {real['scope']}\n"
 
     md += """
 ## 7. Resource Declaration

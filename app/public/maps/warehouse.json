@@ -1,0 +1,223 @@
+{
+ "id": "warehouse",
+ "name": "Gudang",
+ "name_en": "Warehouse",
+ "description": "Gudang 8x6 m dengan tiga baris rak, palet, dan area muat.",
+ "size": [
+  8.0,
+  6.0
+ ],
+ "floor_color": "#4a4d52",
+ "wall_color": "#7b7f86",
+ "background": "#0c0f12",
+ "walls": [
+  {
+   "pos": [
+    4.0,
+    0.05
+   ],
+   "size": [
+    8,
+    0.1
+   ]
+  },
+  {
+   "pos": [
+    4.0,
+    5.95
+   ],
+   "size": [
+    8,
+    0.1
+   ]
+  },
+  {
+   "pos": [
+    0.05,
+    3.0
+   ],
+   "size": [
+    0.1,
+    6
+   ]
+  },
+  {
+   "pos": [
+    7.95,
+    3.0
+   ],
+   "size": [
+    0.1,
+    6
+   ]
+  }
+ ],
+ "obstacles": [
+  {
+   "name": "rak 1",
+   "pos": [
+    4.25,
+    1.6
+   ],
+   "size": [
+    4.5,
+    0.5
+   ],
+   "height": 1.2,
+   "color": "#6e675e"
+  },
+  {
+   "name": "rak 2",
+   "pos": [
+    4.25,
+    3.0
+   ],
+   "size": [
+    4.5,
+    0.5
+   ],
+   "height": 1.2,
+   "color": "#6e675e"
+  },
+  {
+   "name": "rak 3",
+   "pos": [
+    4.25,
+    4.4
+   ],
+   "size": [
+    4.5,
+    0.5
+   ],
+   "height": 1.2,
+   "color": "#6e675e"
+  },
+  {
+   "name": "palet 1",
+   "pos": [
+    1.0,
+    3.0
+   ],
+   "size": [
+    0.8,
+    0.8
+   ],
+   "height": 0.3,
+   "color": "#7a6f60"
+  },
+  {
+   "name": "palet 2",
+   "pos": [
+    7.3,
+    3.6
+   ],
+   "size": [
+    0.6,
+    1.0
+   ],
+   "height": 0.3,
+   "color": "#7a6f60"
+  }
+ ],
+ "places": [
+  {
+   "id": "aisle_a",
+   "pos": [
+    4.0,
+    2.3
+   ],
+   "names_id": [
+    "rak a",
+    "lorong a"
+   ],
+   "names_en": [
+    "aisle a",
+    "shelf a"
+   ]
+  },
+  {
+   "id": "aisle_b",
+   "pos": [
+    4.0,
+    3.7
+   ],
+   "names_id": [
+    "rak b",
+    "lorong b"
+   ],
+   "names_en": [
+    "aisle b",
+    "shelf b"
+   ]
+  },
+  {
+   "id": "aisle_c",
+   "pos": [
+    4.0,
+    5.25
+   ],
+   "names_id": [
+    "rak c",
+    "lorong c"
+   ],
+   "names_en": [
+    "aisle c",
+    "shelf c"
+   ]
+  },
+  {
+   "id": "loading_dock",
+   "pos": [
+    7.2,
+    0.8
+   ],
+   "names_id": [
+    "area muat",
+    "bongkar muat"
+   ],
+   "names_en": [
+    "loading dock",
+    "loading area"
+   ]
+  },
+  {
+   "id": "office",
+   "pos": [
+    0.8,
+    5.2
+   ],
+   "names_id": [
+    "kantor gudang",
+    "kantor"
+   ],
+   "names_en": [
+    "office"
+   ]
+  },
+  {
+   "id": "dock",
+   "pos": [
+    0.6,
+    0.6
+   ],
+   "names_id": [
+    "stasiun pengisian",
+    "dok",
+    "charger"
+   ],
+   "names_en": [
+    "charging station",
+    "dock",
+    "charger"
+   ]
+  }
+ ],
+ "dynamics": {
+  "motor_tau": 0.12,
+  "latency_steps": 1,
+  "floor_friction": 0.8,
+  "lidar_noise": 0.015,
+  "pose_noise": 0.015,
+  "wheel_radius_scale": 0.98
+ }
+}

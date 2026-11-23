@@ -8,7 +8,8 @@ import { jointPositions } from "./kinematics.js";
 
 export const W2T = (p) => new THREE.Vector3(p[0], p[2], -p[1]);
 export const CUBE = 0.03;
-export const COLOR_HEX = { red: 0xe53935, green: 0x43a047, blue: 0x1e88e5, yellow: 0xfdd835, purple: 0x8e24aa };
+export const COLOR_HEX = { red: 0xe53935, green: 0x43a047, blue: 0x1e88e5, yellow: 0xfdd835, purple: 0x8e24aa,
+  orange: 0xfa7317, cyan: 0x00bfa5 };
 
 export const VISION_BOUNDS = { xMin: -0.02, xMax: 0.38, yMin: -0.25, yMax: 0.25 };
 
@@ -69,8 +70,10 @@ export class RobotScene {
     this.controls.target.set(0.16, 0.05, 0);
     this.controls.update();
 
-    this.scene.add(new THREE.HemisphereLight(0xffffff, 0x334455, 1.6));
+    this.hemi = new THREE.HemisphereLight(0xffffff, 0x334455, 1.6);
+    this.scene.add(this.hemi);
     const sun = new THREE.DirectionalLight(0xffffff, 1.6);
+    this.sun = sun;
     sun.position.set(0.3, 1.2, 0.4);
     sun.castShadow = true;
     sun.shadow.mapSize.set(1024, 1024);
@@ -82,9 +85,14 @@ export class RobotScene {
     table.position.set(0.15, -0.01, 0);
     table.receiveShadow = true;
     this.scene.add(table);
+    this.table = table;
     const grid = new THREE.GridHelper(0.8, 16, 0x6b6661, 0x5a5652);
     grid.position.set(0.15, 0.0005, 0);
     this.scene.add(grid);
+    this.grid = grid;
+    this.obstacleGroup = new THREE.Group();
+    this.scene.add(this.obstacleGroup);
+    this.env = null;
 
     this.arm = new ArmView(this.scene);
     this.ghost = new ArmView(this.scene, { color: 0x00e5ff, opacity: 0.35 });
@@ -107,6 +115,41 @@ export class RobotScene {
     this.visionTarget.texture.colorSpace = THREE.SRGBColorSpace;
   }
 
+  /** Render an environment preset (app/public/envs/*.json), optionally with
+   *  visual domain randomization {light, tableTint, camShift, camRot}. */
+  applyEnv(env, vdr = null) {
+    this.env = env;
+    const light = vdr ? vdr.light : 1;
+    this.scene.background = new THREE.Color(env.background);
+    const [w, d] = env.table.size, [cx, cy] = env.table.center;
+    this.table.scale.set(w / 0.8, 1, d / 0.8);
+    this.table.position.set(cx, -0.01, -cy);
+    const col = new THREE.Color(env.table.color);
+    if (vdr) { const hsl = {}; col.getHSL(hsl); col.setHSL(hsl.h, hsl.s, Math.min(0.9, Math.max(0.05, hsl.l + vdr.tableTint))); }
+    this.table.material.color.copy(col);
+    this.grid.scale.set(w / 0.8, 1, d / 0.8);
+    this.grid.position.set(cx, 0.0005, -cy);
+    const tint = new THREE.Color(env.lighting.tint || "#ffffff");
+    this.hemi.intensity = env.lighting.ambient * light;
+    this.hemi.color.copy(tint);
+    this.sun.intensity = env.lighting.sun * light;
+    this.sun.color.copy(tint);
+    this.sun.position.copy(W2T(env.lighting.sun_pos));
+    this.obstacleGroup.clear();
+    for (const o of env.obstacles) {
+      const m = new THREE.Mesh(new THREE.BoxGeometry(o.size[0], o.size[2], o.size[1]),
+        new THREE.MeshStandardMaterial({ color: o.color, roughness: 0.85 }));
+      m.position.copy(W2T(o.pos));
+      m.castShadow = !o.visual_only; m.receiveShadow = true;
+      this.obstacleGroup.add(m);
+    }
+    // camera mis-calibration (the detector still assumes the nominal mapping)
+    const b = VISION_BOUNDS, sh = vdr ? vdr.camShift : [0, 0], rot = vdr ? vdr.camRot : 0;
+    this.visionCam.position.set((b.xMin + b.xMax) / 2 + sh[0], 1.0, -sh[1]);
+    this.visionCam.up.set(Math.cos(rot), 0, Math.sin(rot));
+    this.visionCam.lookAt((b.xMin + b.xMax) / 2 + sh[0], 0, -sh[1]);
+  }
+
   resize(w, h) {
     this.renderer.setSize(w, h, false);
     this.camera.aspect = w / h;
@@ -117,12 +160,13 @@ export class RobotScene {
     for (const o of Object.values(this.objects)) this.scene.remove(o.mesh);
     this.objects = {};
   }
-  addCube(color, pos) {
-    const mesh = new THREE.Mesh(new THREE.BoxGeometry(CUBE, CUBE, CUBE),
+  addCube(color, pos, yaw = Math.random(), shape = "cube") {
+    const geo = shape === "cylinder" ? new THREE.CylinderGeometry(CUBE / 2, CUBE / 2, CUBE, 24) : new THREE.BoxGeometry(CUBE, CUBE, CUBE);
+    const mesh = new THREE.Mesh(geo,
       new THREE.MeshLambertMaterial({ color: COLOR_HEX[color] }));
     mesh.castShadow = true;
     this.scene.add(mesh);
-    this.objects[color] = { mesh, kind: "cube", color, pos: [pos[0], pos[1], CUBE / 2], yaw: Math.random() };
+    this.objects[color] = { mesh, kind: "cube", shape, color, pos: [pos[0], pos[1], pos.length > 2 ? pos[2] : CUBE / 2], yaw };
   }
   addPad(color, pos) {
     const mesh = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.002, 32),

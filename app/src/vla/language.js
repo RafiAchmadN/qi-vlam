@@ -7,7 +7,10 @@
 export const COLORS = {
   red: ["red", "merah"], green: ["green", "hijau"], blue: ["blue", "biru"],
   yellow: ["yellow", "kuning"], purple: ["purple", "ungu"],
+  orange: ["orange", "oranye", "jingga"], cyan: ["cyan", "tosca", "toska", "teal"],
 };
+// shape nouns are accepted but grounding is by color (one object per color)
+export const SHAPES = { cube: ["cube", "kubus", "block", "balok"], cylinder: ["cylinder", "tabung", "can", "kaleng", "silinder"] };
 const VERBS = {
   pick: ["pick", "grab", "take", "lift", "ambil", "angkat", "pegang"],
   place: ["place", "put", "drop", "move", "taruh", "letakkan", "pindahkan", "simpan", "bawa"],
@@ -52,6 +55,9 @@ export function ground(text, scene) {
   if (has(ws, VERBS.reach) && cols.length) return { ok: true, plan: [{ skill: "reach", target: cols[0].c }], parse };
   if (has(ws, VERBS.open)) return { ok: true, plan: [{ skill: "gripper", open: true }], parse };
   if (has(ws, VERBS.close)) return { ok: true, plan: [{ skill: "gripper", open: false }], parse };
-  if (cols.length && !cubeCols.length && !padCols.length) return { ok: false, error: `objek ${cols[0].c} tidak terlihat oleh kamera`, parse };
+  const missing = cols.filter((x) => !scene.cubes.includes(x.c) && !scene.pads.includes(x.c));
+  if (missing.length) {
+    return { ok: false, error: `objek ${missing.map((x) => x.c).join(", ")} tidak ada/terlihat di meja — yang terlihat: ${[...scene.cubes, ...scene.pads].join(", ") || "tidak ada"}`, parse };
+  }
   return { ok: false, error: "instruksi tidak dipahami — coba: 'ambil kubus merah taruh di pad kuning'", parse };
 }

@@ -1,0 +1,34 @@
+{
+ "format": "qi-vla-maps/1",
+ "default": "home",
+ "maps": [
+  "home",
+  "warehouse",
+  "office",
+  "hospital"
+ ],
+ "train_maps": [
+  "home",
+  "warehouse",
+  "office"
+ ],
+ "heldout_maps": [
+  "hospital"
+ ],
+ "robot": {
+  "name": "QI-VLA Rover (diff-drive, TurtleBot3-Burger-like)",
+  "wheel_radius": 0.033,
+  "half_track": 0.08,
+  "radius": 0.105,
+  "v_max": 0.26,
+  "w_max": 1.8,
+  "lidar": {
+   "beams": 36,
+   "range_min": 0.12,
+   "range_max": 3.5,
+   "height": 0.17
+  },
+  "dt": 0.05
+ },
+ "note": "Shared by the app (rover mode) and Python (src/sim/mobile). Coordinates in metres, origin = bottom-left corner, x right, y up. Walls 0.35 m high."
+}

@@ -1,0 +1,22 @@
+{
+  "format": "qi-vla-dr/1",
+  "note": "Domain-randomization ranges applied on top of each environment's nominal values (multiplicative 'scale' or additive 'add'). Used by src/sim (physics) and by the app's visual randomization toggle.",
+  "dynamics": {
+    "servo_tau": {"scale": [0.6, 1.8]},
+    "latency_steps": {"add": [0, 2]},
+    "backlash": {"add": [0.0, 0.004]},
+    "q_noise": {"scale": [0.5, 2.5]},
+    "obj_noise": {"scale": [0.5, 2.0]},
+    "kp_scale": {"scale": [0.8, 1.2]},
+    "cube_mass": {"scale": [0.7, 1.5]},
+    "friction": {"scale": [0.7, 1.2]},
+    "link_mass": {"scale": [0.8, 1.25]},
+    "cube_size": {"scale": [0.93, 1.07]}
+  },
+  "visual": {
+    "light": {"scale": [0.65, 1.35]},
+    "table_tint": {"add": [-0.06, 0.06]},
+    "camera_shift_m": {"add": [-0.004, 0.004]},
+    "camera_rot_rad": {"add": [-0.03, 0.03]}
+  }
+}

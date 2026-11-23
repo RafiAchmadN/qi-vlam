@@ -241,6 +241,57 @@ Reach policy for the 6-servo arm: dense 35,076 params vs TTNS χ=16 11,012 param
 
 Same seeds across conditions (paired). noise = uniform action noise amplitude in rad/s added to the policy output.
 
+## 6.8 Simulation Environments, Synthetic Training Data and a New Pick-and-Place Policy
+
+Five environment presets (`app/public/envs/`: lab bench, kitchen counter, warehouse shelf, classroom desk, and a held-out factory conveyor with worn servos) are rendered by the app and simulated in MuJoCo with friction grasping and a servo model (lag, command latency, backlash, encoder and perception noise). A scripted physics expert generated a LeRobot-style dataset (1559 episodes, 304,784 frames at 20 Hz, domain-randomized dynamics); a 17→5 MLP pick-and-place policy was trained on it (3 training seeds) and evaluated closed-loop in physics.
+
+| Model | Params | Training envs (DR) | Held-out env (factory) | Out-of-range dynamics |
+|---|---|---|---|---|
+| scripted expert (reference) | – | 100% | 77% | 90% |
+| dense_dr | 137,477 | 93.9 ± 2.8% | 77.8 ± 4.2% | 80.0 ± 6.1% |
+| dense_nodr | 137,477 | 87.8 ± 0.8% | 42.2 ± 9.6% | 52.5 ± 4.1% |
+| healing_ctrl | 137,477 | 94.4 ± 2.1% | 75.6 ± 3.1% | 75.0 ± 3.5% |
+| ttns_noheal | 23,301 | 0.6 ± 0.8% | 0.0 ± 0.0% | 0.8 ± 1.2% |
+| ttns_dr | 23,301 | 92.8 ± 3.1% | 68.9 ± 1.6% | 70.0 ± 7.4% |
+
+Scope: Simulation only. Positions of objects are perceived with injected noise, not from camera images. 'hard_dynamics' and 'heldout_env' are sim-to-sim transfer tests standing in for sim-to-real; no physical robot was used.
+
+## 6.9 Mobile Robot: Language-Goal Navigation with a Compressed Local Controller
+
+TurtleBot3-sized differential-drive rover in MuJoCo (wheel friction/slip, motor lag, latency, lidar and pose noise) on four maps (home, warehouse, office; hospital held out). Global A* on a lidar-updated costmap; the local controller is either the pure-pursuit expert or a learned MLP (dense or TTNS-compressed) trained by behaviour cloning on 589 expert episodes (248,592 frames); a lidar control-barrier shield bounds forward speed. Success rate (collision rate):
+
+| Model | Params | Training maps | Held-out map | Out-of-range dynamics | Unknown obstacles |
+|---|---|---|---|---|---|
+| pure-pursuit expert | – | 100% (0%) | 100% (0%) | 100% (0%) | 100% (0%) |
+| dense_dr | 36,610 | 100.0% (0.0%) | 100.0% (0.0%) | 100.0% (0.0%) | 100.0% (0.0%) |
+| dense_dr_noshield | 36,610 | 100.0% (0.0%) | 100.0% (0.0%) | 100.0% (0.0%) | 100.0% (0.0%) |
+| dense_nodr | 36,610 | 100.0% (0.0%) | 100.0% (0.0%) | 100.0% (0.0%) | 100.0% (0.0%) |
+| healing_ctrl | 36,610 | 100.0% (0.0%) | 100.0% (0.0%) | 100.0% (0.0%) | 100.0% (0.0%) |
+| ttns_noheal | 12,546 | 100.0% (0.0%) | 100.0% (0.0%) | 100.0% (0.0%) | 98.9% (0.0%) |
+| ttns_dr | 12,546 | 100.0% (0.0%) | 100.0% (0.0%) | 100.0% (0.0%) | 100.0% (0.0%) |
+
+Scope: Simulation only (MuJoCo physics: friction, slip, motor lag, latency, lidar/pose noise). Localization is ground truth + noise (no SLAM). heldout_map and hard_dynamics are sim-to-sim transfer tests; no physical robot was used.
+
+## 6.10 Policies Trained on REAL Robot Data (SO-100/SO-101)
+
+Teleoperated demonstrations recorded on physical arms (LeRobot hub): `svla_so101_pickplace` (so101, 50 episodes, 3,995 frames @10 Hz, "pink lego brick into the transparent box"); `svla_so100_pickplace` (so100, 50 episodes, 6,559 frames @10 Hz, "Pick up the cube and place it in the box."); `svla_so100_stacking` (so100, 56 episodes, 7,667 frames @10 Hz, "Put the red cube on top of the blue cube."); `svla_so100_sorting` (so100, 52 episodes, 11,918 frames @10 Hz, "Put the red cube in the right box and the blue cube in the left box."). Camera 64x64 + joints -> 10-step action chunk; split per episode; 3 seeds. Open-loop metrics on held-out real episodes (motion nMSE: 1.0 = predicting no motion):
+
+| Model | Params | Storage (KB) | Motion nMSE | Next-action nMSE | Joint MAE | Gripper acc. | CPU ms |
+|---|---|---|---|---|---|---|---|
+| state_mlp | 149,820 | 585 | 0.351 ± 0.012 | 0.015 | 1.44 | 0.966 | 0.34 |
+| cnn_mlp | 379,836 | 1484 | 0.255 ± 0.007 | 0.016 | 1.60 | 0.969 | 2.87 |
+| act_tf | 520,636 | 2034 | 0.256 ± 0.027 | 0.016 | 1.56 | 0.970 | 3.91 |
+| healing_ctrl | 379,836 | 1484 | 0.249 ± 0.008 | 0.016 | 1.56 | 0.969 | 2.69 |
+| cnn_ttns | 175,452 | 685 | 0.268 ± 0.006 | 0.018 | 1.82 | 0.968 | 2.86 |
+| cnn_mps | 209,532 | 818 | 0.374 ± 0.008 | 0.027 | 2.28 | 0.957 | 4.52 |
+| cnn_ttns_noheal | 175,452 | 685 | 0.771 ± 0.041 | 0.077 | 5.13 | 0.955 | 2.16 |
+| cnn_int8 | 379,836 | 807 | 0.255 ± 0.007 | 0.016 | 1.60 | 0.969 | 3.02 |
+| head_tanh | 381,798 | 1491 | 0.754 ± 0.037 | 0.205 | 7.61 | 0.888 | 2.73 |
+| head_surrogate | 381,828 | 1492 | 1.267 ± 0.145 | 0.334 | 9.92 | 0.854 | 3.08 |
+| head_pqc | 381,840 | 1492 | 1.245 ± 0.041 | 0.356 | 10.37 | 0.853 | 15.92 |
+
+Scope: REAL teleoperated demonstrations from physical SO-100/SO-101 arms (LeRobot hub). Offline, open-loop action prediction on held-out episodes; closed-loop task success requires the physical robot (src/real/deploy.py). PQC simulated noiselessly.
+
 ## 7. Resource Declaration
 
 CPU-only (x86_64), no GPU, for all results above except the LLaVA-1.5-7B

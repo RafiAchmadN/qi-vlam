@@ -4,8 +4,8 @@
 // pixel->world mapping (e.g. a calibrated phone/USB camera over a real table).
 
 export const HUE_RANGES = {
-  red: [[345, 360], [0, 12]], yellow: [[40, 70]], green: [[95, 150]],
-  blue: [[195, 235]], purple: [[270, 310]],
+  red: [[345, 360], [0, 12]], orange: [[16, 34]], yellow: [[40, 70]], green: [[95, 150]],
+  cyan: [[160, 186]], blue: [[195, 235]], purple: [[270, 310]],
 };
 
 export function rgb2hsv(r, g, b) {

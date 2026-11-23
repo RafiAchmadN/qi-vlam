@@ -1,0 +1,241 @@
+{
+ "id": "home",
+ "name": "Rumah",
+ "name_en": "Home",
+ "description": "Rumah 6x5 m: ruang tamu, dapur, kamar tidur, dua pintu.",
+ "size": [
+  6.0,
+  5.0
+ ],
+ "floor_color": "#5d5852",
+ "wall_color": "#a29f99",
+ "background": "#12161b",
+ "walls": [
+  {
+   "pos": [
+    3.0,
+    0.05
+   ],
+   "size": [
+    6,
+    0.1
+   ]
+  },
+  {
+   "pos": [
+    3.0,
+    4.95
+   ],
+   "size": [
+    6,
+    0.1
+   ]
+  },
+  {
+   "pos": [
+    0.05,
+    2.5
+   ],
+   "size": [
+    0.1,
+    5
+   ]
+  },
+  {
+   "pos": [
+    5.95,
+    2.5
+   ],
+   "size": [
+    0.1,
+    5
+   ]
+  },
+  {
+   "pos": [
+    3.5,
+    0.5
+   ],
+   "size": [
+    0.1,
+    1.0
+   ]
+  },
+  {
+   "pos": [
+    3.5,
+    2.55
+   ],
+   "size": [
+    0.1,
+    1.3
+   ]
+  },
+  {
+   "pos": [
+    3.5,
+    4.55
+   ],
+   "size": [
+    0.1,
+    0.9
+   ]
+  },
+  {
+   "pos": [
+    4.05,
+    2.5
+   ],
+   "size": [
+    1.1,
+    0.1
+   ]
+  },
+  {
+   "pos": [
+    5.7,
+    2.5
+   ],
+   "size": [
+    0.6,
+    0.1
+   ]
+  }
+ ],
+ "obstacles": [
+  {
+   "name": "sofa",
+   "pos": [
+    1.5,
+    4.25
+   ],
+   "size": [
+    1.6,
+    0.6
+   ],
+   "height": 0.45,
+   "color": "#6d6a66"
+  },
+  {
+   "name": "meja tamu",
+   "pos": [
+    1.6,
+    2.9
+   ],
+   "size": [
+    0.8,
+    0.5
+   ],
+   "height": 0.4,
+   "color": "#6d6a66"
+  },
+  {
+   "name": "konter dapur",
+   "pos": [
+    4.75,
+    0.4
+   ],
+   "size": [
+    1.5,
+    0.5
+   ],
+   "height": 0.9,
+   "color": "#6d6a66"
+  },
+  {
+   "name": "kasur",
+   "pos": [
+    5.2,
+    4.0
+   ],
+   "size": [
+    1.2,
+    1.4
+   ],
+   "height": 0.5,
+   "color": "#6d6a66"
+  }
+ ],
+ "places": [
+  {
+   "id": "living_room",
+   "pos": [
+    1.8,
+    1.6
+   ],
+   "names_id": [
+    "ruang tamu",
+    "ruang keluarga"
+   ],
+   "names_en": [
+    "living room"
+   ]
+  },
+  {
+   "id": "kitchen",
+   "pos": [
+    4.7,
+    1.4
+   ],
+   "names_id": [
+    "dapur"
+   ],
+   "names_en": [
+    "kitchen"
+   ]
+  },
+  {
+   "id": "bedroom",
+   "pos": [
+    4.1,
+    3.6
+   ],
+   "names_id": [
+    "kamar",
+    "kamar tidur"
+   ],
+   "names_en": [
+    "bedroom"
+   ]
+  },
+  {
+   "id": "sofa",
+   "pos": [
+    1.6,
+    3.55
+   ],
+   "names_id": [
+    "sofa"
+   ],
+   "names_en": [
+    "sofa",
+    "couch"
+   ]
+  },
+  {
+   "id": "dock",
+   "pos": [
+    0.5,
+    0.5
+   ],
+   "names_id": [
+    "stasiun pengisian",
+    "dok",
+    "charger"
+   ],
+   "names_en": [
+    "charging station",
+    "dock",
+    "charger"
+   ]
+  }
+ ],
+ "dynamics": {
+  "motor_tau": 0.08,
+  "latency_steps": 0,
+  "floor_friction": 0.9,
+  "lidar_noise": 0.01,
+  "pose_noise": 0.01,
+  "wheel_radius_scale": 1.0
+ }
+}

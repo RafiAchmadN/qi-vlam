@@ -1,0 +1,16 @@
+{
+  "id": "classroom_desk", "name": "Meja Kelas", "name_en": "Classroom desk",
+  "description": "Meja kayu dengan tumpukan buku dan tempat pensil di pinggir.",
+  "background": "#14161a",
+  "table": {"center": [0.15, 0.0], "size": [0.75, 0.85], "color": "#6b5f52", "friction": 0.8},
+  "lighting": {"ambient": 1.5, "sun": 1.4, "sun_pos": [-0.2, 0.3, 1.1], "tint": "#ffffff"},
+  "obstacles": [
+    {"name": "books", "pos": [0.36, -0.30, 0.03], "size": [0.16, 0.12, 0.06], "color": "#8c8a86"},
+    {"name": "pencil_cup", "pos": [0.04, -0.33, 0.05], "size": [0.06, 0.06, 0.10], "color": "#5e6166"}
+  ],
+  "spawn": {"r": [0.14, 0.26], "a": [-0.85, 0.85], "min_sep": 0.068},
+  "cubes": ["red", "green", "blue", "orange", "cyan"], "pads": ["yellow", "purple"],
+  "shapes": {"green": "cylinder", "orange": "cylinder"}, "n_objects": [3, 5],
+  "travel_z": 0.12,
+  "dynamics": {"servo_tau": 0.07, "latency_steps": 0, "backlash": 0.001, "q_noise": 0.001, "obj_noise": 0.002, "kp_scale": 1.0, "cube_mass": 0.02, "friction": 0.9}
+}

@@ -3,14 +3,29 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#0f141a" />
+  <meta name="theme-color" content="#0a0f15" />
   <title>QI-VLA Robot</title>
   <link rel="stylesheet" href="./src/style.css" />
 </head>
 <body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-cmd" viewBox="0 0 24 24"><path d="M4 17l6-6-6-6M12 19h8"/></symbol>
+    <symbol id="i-manual" viewBox="0 0 24 24"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></symbol>
+    <symbol id="i-env" viewBox="0 0 24 24"><path d="M3 21h18M5 21V9l7-5 7 5v12M9 21v-6h6v6"/></symbol>
+    <symbol id="i-conn" viewBox="0 0 24 24"><path d="M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0M2 9a15 15 0 0 1 20 0"/><circle cx="12" cy="19.5" r="1"/></symbol>
+    <symbol id="i-model" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6v6H9zM9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3"/></symbol>
+    <symbol id="i-research" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 6-7"/></symbol>
+    <symbol id="i-log" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h8"/></symbol>
+  </svg>
+
   <header>
-    <div class="brand">QI-VLA <span>Robot</span></div>
-    <div class="mode" role="tablist" aria-label="Mode">
+    <div class="brand"><span class="logo">QI</span>QI-VLA <span>Robot</span></div>
+    <select id="robotSel" aria-label="Jenis robot">
+      <option value="arm">Lengan 6-DOF</option>
+      <option value="rover">Mobile robot</option>
+      <option value="real">Data robot nyata (SO-100/101)</option>
+    </select>
+    <div class="seg mode" role="tablist" aria-label="Mode">
       <button id="modeSim" class="on" role="tab">Simulasi</button>
       <button id="modeLive" role="tab">Robot Nyata</button>
     </div>
@@ -21,77 +36,164 @@
     <section class="viewport">
       <canvas id="view"></canvas>
       <div class="hud">
-        <div class="cam"><canvas id="camView" width="160" height="128"></canvas><small>kamera atas · deteksi HSV</small></div>
+        <div class="cam glass"><canvas id="camView" width="160" height="128"></canvas><small id="camLabel">kamera atas · deteksi HSV</small></div>
         <div class="stats">
-          <div><b id="hudSource">policy</b><small>pengendali</small></div>
-          <div><b id="hudV">0</b><small>Lyapunov V</small></div>
-          <div><b id="hudErr">0</b><small>error (mm)</small></div>
-          <div><b id="hudLat">0</b><small>inferensi (ms)</small></div>
+          <div class="glass"><b id="hudSource">policy</b><small>pengendali</small></div>
+          <div class="glass"><b id="hudV">0</b><small id="hudVLabel">Lyapunov V</small></div>
+          <div class="glass"><b id="hudErr">0</b><small id="hudErrLabel">error (mm)</small></div>
+          <div class="glass"><b id="hudLat">0</b><small>inferensi (ms)</small></div>
         </div>
       </div>
       <button id="estop" class="estop" aria-label="Emergency stop">STOP</button>
+      <div id="realStage" class="real-stage hidden"><canvas id="realFrame" width="64" height="64"></canvas>
+        <small id="realCaption">kamera robot nyata</small></div>
     </section>
 
     <nav class="tabs">
-      <button data-tab="cmd" class="on">Perintah</button>
-      <button data-tab="manual">Manual</button>
-      <button data-tab="conn">Koneksi</button>
-      <button data-tab="model">Model</button>
-      <button data-tab="log">Log</button>
+      <button data-tab="cmd" class="on"><svg class="i"><use href="#i-cmd"/></svg><span class="lbl">Perintah</span></button>
+      <button data-tab="manual"><svg class="i"><use href="#i-manual"/></svg><span class="lbl">Manual</span></button>
+      <button data-tab="env"><svg class="i"><use href="#i-env"/></svg><span class="lbl">Lingkungan</span></button>
+      <button data-tab="conn"><svg class="i"><use href="#i-conn"/></svg><span class="lbl">Koneksi</span></button>
+      <button data-tab="model"><svg class="i"><use href="#i-model"/></svg><span class="lbl">Model</span></button>
+      <button data-tab="research"><svg class="i"><use href="#i-research"/></svg><span class="lbl">Riset</span></button>
+      <button data-tab="log"><svg class="i"><use href="#i-log"/></svg><span class="lbl">Log</span></button>
     </nav>
 
     <section class="panel" id="tab-cmd">
-      <form id="cmdForm" class="row">
+      <div class="real-only hidden">
+        <div class="card">
+          <h4>Replay data robot nyata</h4>
+          <label>Episode (held-out, tidak dipakai training)
+            <select id="realEpSel"></select>
+          </label>
+          <label>Model (dilatih di data nyata, jalan di perangkat ini)
+            <select id="realModelSel">
+              <option value="cnn_ttns">CNN + head TTNS terkompresi</option>
+              <option value="cnn_mlp">CNN + head dense</option>
+            </select>
+          </label>
+          <div class="row">
+            <button id="realPlay" class="primary">Putar</button>
+            <button id="realStep">Langkah</button>
+            <button id="realReset">Ulang</button>
+          </div>
+          <p id="realStats" class="muted"></p>
+          <div class="legend"><span><i style="background:var(--c6)"></i>operator manusia (teleop)</span><span><i style="background:var(--accent)"></i>prediksi model</span></div>
+          <div id="realChart"></div>
+          <p class="note">Gambar &amp; sendi dari robot fisik (LeRobot hub). Uji open-loop: model melihat frame nyata dan menghitung aksi; sukses tugas closed-loop butuh robot fisik (<code>python -m src.real.deploy robot</code>).</p>
+        </div>
+      </div>
+      <form id="cmdForm" class="row arm-rover">
         <input id="cmdText" autocomplete="off" placeholder="mis. ambil kubus merah taruh di pad kuning" />
         <button type="submit" class="primary">Jalankan</button>
       </form>
       <div class="chips" id="chips"></div>
-      <div class="row">
+      <div class="row arm-rover">
         <button id="btnReset">Acak scene</button>
         <button id="btnHome">Home</button>
         <label class="inline">Kecepatan <input id="speed" type="range" min="0.2" max="1" step="0.1" value="1" /></label>
       </div>
-      <p id="planView" class="muted"></p>
+      <p id="planView"></p>
     </section>
 
     <section class="panel hidden" id="tab-manual">
-      <div id="sliders"></div>
-      <p class="muted">Jog manual juga lewat safety shield (batas sendi, kecepatan, meja).</p>
+      <div class="card">
+        <h4>Jog sendi</h4>
+        <div id="sliders"></div>
+        <p class="muted">Jog manual juga lewat safety shield (batas sendi, kecepatan, meja).</p>
+      </div>
+    </section>
+
+    <section class="panel hidden" id="tab-env">
+      <div class="card rover-only hidden">
+        <h4>Peta mobile robot</h4>
+        <label>Peta
+          <select id="mapSel"></select>
+        </label>
+        <label>Rintangan tak dikenal (tidak ada di peta, terdeteksi lidar)
+          <select id="unkSel"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select>
+        </label>
+        <div class="row"><button id="btnMapReset">Acak posisi robot</button></div>
+        <p id="mapInfo" class="muted"></p>
+      </div>
+      <div class="card arm-only">
+        <h4>Tempat / lingkungan lengan</h4>
+        <label>Lingkungan
+          <select id="envSel"></select>
+        </label>
+        <div class="row">
+          <label class="inline"><input type="checkbox" id="visualDR" /> Domain randomization visual</label>
+          <button id="btnEnvReset">Acak scene</button>
+        </div>
+        <p id="envInfo" class="muted"></p>
+      </div>
+      <div class="card">
+        <h4>Data training (rekam demo)</h4>
+        <div class="row">
+          <label class="inline"><input type="checkbox" id="recOn" /> Rekam setiap instruksi pick-place</label>
+          <span id="recStats" class="muted"></span>
+        </div>
+        <div class="row">
+          <button id="recDownload">Unduh JSON</button>
+          <input id="recUrl" value="http://192.168.1.10:8765" aria-label="URL bridge" />
+          <button id="recUpload">Kirim ke bridge</button>
+          <button id="recClear">Hapus</button>
+        </div>
+        <p class="muted">Format <code>qi-vla-demos/1</code> → <code>python scripts/import_app_demos.py</code> → <code>python -m src.sim.train_pickplace --extra-data …</code>. Lingkungan yang sama dipakai simulasi fisika MuJoCo.</p>
+      </div>
     </section>
 
     <section class="panel hidden" id="tab-conn">
-      <label>Protokol
-        <select id="connType">
-          <option value="bridge">QI-VLA Bridge (Python / ESP32 Wi-Fi)</option>
-          <option value="ros">rosbridge (ROS 1 / ROS 2)</option>
-        </select>
-      </label>
-      <label>URL <input id="connUrl" value="ws://192.168.1.10:8765/ws" /></label>
-      <div id="rosOpts" class="hidden">
-        <label>Topik perintah <input id="rosCmd" value="/arm_controller/joint_trajectory" /></label>
-        <label>Topik state <input id="rosState" value="/joint_states" /></label>
+      <div class="card">
+        <label>Protokol
+          <select id="connType">
+            <option value="bridge">QI-VLA Bridge (Python / ESP32 Wi-Fi / MuJoCo)</option>
+            <option value="ros">rosbridge (ROS 1 / ROS 2)</option>
+          </select>
+        </label>
+        <label>URL <input id="connUrl" value="ws://192.168.1.10:8765/ws" /></label>
+        <div id="rosOpts" class="hidden">
+          <label>Topik perintah lengan <input id="rosCmd" value="/arm_controller/joint_trajectory" /></label>
+          <label>Topik state lengan <input id="rosState" value="/joint_states" /></label>
+          <p class="muted">Mobile robot memakai <code>/cmd_vel</code>, <code>/odom</code>, <code>/scan</code> (konvensi TurtleBot3/Nav2).</p>
+        </div>
+        <div class="row">
+          <button id="btnConnect" class="primary">Hubungkan</button>
+          <button id="btnDisconnect">Putuskan</button>
+          <label class="inline"><input type="checkbox" id="armed" /> Armed (kirim perintah)</label>
+        </div>
+        <p class="muted">Saat terhubung, pose perintah disinkronkan ke pose robot terukur dulu (tidak ada lompatan). Perintah dikirim hanya setelah <b>Armed</b>. Bayangan biru = state terukur robot.</p>
       </div>
-      <div class="row">
-        <button id="btnConnect" class="primary">Hubungkan</button>
-        <button id="btnDisconnect">Putuskan</button>
-        <label class="inline"><input type="checkbox" id="armed" /> Armed (kirim perintah)</label>
-      </div>
-      <p class="muted">Saat terhubung, pose perintah disinkronkan ke pose robot terukur dulu (tidak ada lompatan). Perintah baru dikirim setelah <b>Armed</b> dicentang. Bayangan biru = state terukur robot.</p>
     </section>
 
     <section class="panel hidden" id="tab-model">
-      <label>Policy
-        <select id="policySel">
-          <option value="ttns">TTNS terkompresi (tensor network)</option>
-          <option value="dense">Dense FP32 (baseline)</option>
-          <option value="ik">IK klasik saja (tanpa learning)</option>
-          <option value="remote">Server (HTTP /act)</option>
-        </select>
-      </label>
-      <label id="remoteRow" class="hidden">URL server <input id="remoteUrl" value="http://192.168.1.10:8765" /></label>
-      <label class="inline"><input type="checkbox" id="shieldOn" checked /> Safety shield + Lyapunov monitor</label>
-      <label class="inline"><input type="checkbox" id="perturb" /> Uji gangguan (noise pada aksi policy)</label>
+      <div class="card">
+        <label class="rover-only hidden">Pengendali lokal navigasi
+          <select id="navPolicySel">
+            <option value="nav_ttns">Policy TTNS terkompresi (dilatih di MuJoCo)</option>
+            <option value="nav_dense">Policy dense (dilatih di MuJoCo)</option>
+            <option value="expert">Pure pursuit klasik (tanpa learning)</option>
+          </select>
+        </label>
+        <label class="arm-only">Policy lengan
+          <select id="policySel">
+            <option value="ttns">Reach TTNS terkompresi + agent skill</option>
+            <option value="dense">Reach dense FP32 + agent skill</option>
+            <option value="pp_ttns">Pick-place end-to-end TTNS (dilatih di MuJoCo)</option>
+            <option value="pp_dense">Pick-place end-to-end dense (dilatih di MuJoCo)</option>
+            <option value="ik">IK klasik saja (tanpa learning)</option>
+            <option value="remote">Server (HTTP /act)</option>
+          </select>
+        </label>
+        <label id="remoteRow" class="hidden">URL server <input id="remoteUrl" value="http://192.168.1.10:8765" /></label>
+        <div class="row"><label class="inline"><input type="checkbox" id="shieldOn" checked /> Safety shield (lengan: batas + monitor Lyapunov · mobile: barrier lidar)</label></div>
+        <div class="row"><label class="inline"><input type="checkbox" id="perturb" /> Uji gangguan (noise pada aksi policy)</label></div>
+      </div>
       <div id="modelInfo" class="muted"></div>
+    </section>
+
+    <section class="panel hidden" id="tab-research">
+      <div id="research"><p class="muted">memuat hasil eksperimen…</p></div>
     </section>
 
     <section class="panel hidden" id="tab-log">
