@@ -15,6 +15,7 @@ from launch.actions import DeclareLaunchArgument
 from launch.conditions import IfCondition
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
+from launch_ros.parameter_descriptions import ParameterValue
 
 
 def generate_launch_description():
@@ -32,7 +33,8 @@ def generate_launch_description():
              parameters=[{"robot_description": urdf}]),
         Node(package="qi_vla_ros", executable="qi_vla_rover_sim", output="screen",
              parameters=[{"backend": LaunchConfiguration("backend"), "map": LaunchConfiguration("map"),
-                          "unknown": LaunchConfiguration("unknown")}]),
+                          # launch arguments are strings; the node declares `unknown` as an int
+                          "unknown": ParameterValue(LaunchConfiguration("unknown"), value_type=int)}]),
         Node(package="rosbridge_server", executable="rosbridge_websocket", output="screen",
              condition=IfCondition(LaunchConfiguration("rosbridge"))),
         Node(package="rviz2", executable="rviz2", arguments=["-d", os.path.join(share, "rviz", "qi_vla.rviz")],
