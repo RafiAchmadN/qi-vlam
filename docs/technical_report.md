@@ -305,6 +305,10 @@ Teleoperated demonstrations recorded on physical arms (LeRobot hub): `koch_pick_
 | cnn_ttns | 175,404 | 685 | 0.094 ± 0.009 | 0.018 | 3.04 | 0.978 | 2.74 |
 | cnn_ttns_noheal | 175,404 | 685 | 0.255 ± 0.037 | 0.081 | 8.93 | 0.970 | 2.12 |
 | cnn_int8 | 379,068 | 806 | 0.091 ± 0.010 | 0.016 | 2.64 | 0.979 | 2.48 |
+| cnn_mps | 194,892 | 761 | 0.110 ± 0.004 | 0.021 | 3.54 | 0.977 | 4.33 |
+| head_tanh | 381,030 | 1488 | 0.267 ± 0.014 | 0.152 | 11.47 | 0.944 | 2.95 |
+| head_surrogate | 381,060 | 1489 | 0.389 ± 0.029 | 0.210 | 13.41 | 0.931 | 2.99 |
+| head_pqc | 381,072 | 1489 | 0.356 ± 0.074 | 0.209 | 13.43 | 0.935 | 16.54 |
 
 Scope: REAL teleoperated demonstrations from physical koch arms (LeRobot hub). Offline, open-loop action prediction on held-out episodes; closed-loop task success requires the physical robot (src/real/deploy.py). PQC simulated noiselessly.
 

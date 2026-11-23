@@ -102,19 +102,32 @@ python -m src.real.train_real --datasets koch_pick_place_5_lego --seeds 3 --step
 | kontrol healing | 379.068 | 1.481 KB | 0,091 ± 0,010 | 2,56 | 97,9% | 2,6 ms |
 | CNN INT8 | 379.068 | **806 KB** | 0,091 ± 0,010 | 2,64 | 97,9% | 2,5 ms |
 | **CNN + TTNS + healing** | **175.404** | **685 KB** | 0,094 ± 0,009 | 3,04 | 97,8% | 2,7 ms |
+| CNN + MPS + healing | 194.892 | 761 KB | 0,110 ± 0,004 | 3,54 | 97,7% | 4,3 ms |
 | tanpa kamera | 149.052 | 582 KB | 0,150 ± 0,002 | 1,92 | 98,3% | 0,2 ms |
 | TTNS tanpa healing | 175.404 | 685 KB | 0,255 ± 0,037 | 8,93 | 97,0% | 2,1 ms |
+| head tanh 6 unit | 381.030 | 1.488 KB | 0,267 ± 0,014 | 11,47 | 94,4% | 2,9 ms |
+| head PQC kuantum | 381.072 | 1.489 KB | 0,356 ± 0,074 | 13,43 | 93,5% | 16,5 ms |
+| head surrogate | 381.060 | 1.489 KB | 0,389 ± 0,029 | 13,41 | 93,1% | 3,0 ms |
 
 Pola di robot kedua sama dengan SO-100/101:
 * kamera menurunkan galat gerakan 39% (0,150 → 0,091)
 * TTNS 2,2× lebih kecil hanya +3% galat (0,094 vs 0,091), dalam rentang std antar-seed
 * tanpa healing galatnya 2,8× lebih besar
 * ACT sedikit unggul, tetapi selisihnya lebih kecil dari std
+* MPS kalah dari TTNS lagi (0,110 vs 0,094) walau parameternya lebih banyak
+* head PQC: lebih baik dari surrogate kosinus (0,356 vs 0,389) tetapi kalah dari
+  tanh klasik (0,267), variansnya terbesar (0,26–0,44 antar seed) dan 5,6× lebih lambat.
+  Di SO-100/101 PQC juga kalah dari tanh. Tidak ada keunggulan kuantum.
 
 Tugas Koch lebih mudah dari campuran 4 tugas SO-100/101 (galat absolut 0,09 vs
 0,25), jadi angka antar-robot tidak dibandingkan langsung; yang dibandingkan
-adalah urutan model di dalam tiap robot. Varian MPS dan head PQC tidak
-dijalankan di Koch (sudah kalah jelas di SO-100/101).
+adalah urutan model di dalam tiap robot.
+
+MPS dan head bottleneck dilatih pada run kedua (`--models cnn_mlp,cnn_mps,head_tanh,head_surrogate,head_pqc
+--out results/real_benchmark_koch_extra.json`) lalu digabung dengan
+`python scripts/merge_real_results.py results/real_benchmark_koch.json results/real_benchmark_koch_extra.json`.
+Base CNN run kedua identik bit-per-bit dengan run pertama di ketiga seed
+(`reproducibility` di JSON), jadi kedua run memakai model dasar dan episode uji yang sama.
 
 ## 3. Model berjalan di aplikasi (di HP), pada data nyata
 

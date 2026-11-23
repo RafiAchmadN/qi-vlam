@@ -89,8 +89,11 @@ concise, no filler.
   is NOT hardware-tested. App runs the exported JSON with a JS CNN (parity 5e-6).
 - Koch v1.1 (`koch_pick_place_5_lego`, 50 ep, trained separately — joint units differ;
   results/real_benchmark_koch.json, 3 seeds): act_tf 0.088, cnn_mlp/healing_ctrl/INT8 0.091,
-  TTNS 0.094 (175k), no-camera 0.150, TTNS no-heal 0.255. Same ranking as SO-100/101; MPS/PQC
-  not run on Koch. Don't compare absolute nMSE across robots (Koch task is easier).
+  TTNS 0.094 (175k), MPS 0.110, no-camera 0.150, TTNS no-heal 0.255, head_tanh 0.267,
+  PQC 0.356±0.074 (beats surrogate 0.389, loses to tanh — no quantum advantage, 16.5 ms).
+  MPS/heads came from a 2nd run merged with scripts/merge_real_results.py; its cnn_mlp
+  base reproduced the 1st run bit-for-bit. Same ranking as SO-100/101. Don't compare
+  absolute nMSE across robots (Koch task is easier).
 - On Windows, scripts using ProcessPoolExecutor cannot be run from stdin
   (`python - <<EOF`): spawn needs a real file with `if __name__ == "__main__"`.
 

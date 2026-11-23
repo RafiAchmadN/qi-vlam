@@ -133,3 +133,27 @@ def test_controller_safety_clamps():
         a = c.act(np.zeros((8, 8, 3), np.uint8), np.zeros(6))["action"]
     assert np.allclose(a, 10.0)                     # and never beyond the recorded max
     assert Policy("cnn_mlp", 2, 3)(torch.zeros(1, 3, 64, 64), torch.zeros(1, 6), torch.zeros(1, 2)).shape == (1, 3, 6)
+
+
+def test_merge_real_results(tmp_path):
+    import json
+    import sys
+    sys.path.insert(0, "scripts")
+    from merge_real_results import merge
+
+    cfg = {"seeds": 1, "steps": 10, "heal_steps": 2, "chi": 4, "chunk_k": 3}
+    m = lambda v: {"params": 1, "storage_kb": 1.0, "motion_nmse": {"mean": v, "std": 0.0}}
+    base = {"datasets": {"d": {}}, "config": cfg, "summary": {"cnn_mlp": m(0.1)},
+            "runs": {"cnn_mlp": [{"motion_nmse": 0.1}]}}
+    extra = {"datasets": {"d": {}}, "config": cfg, "summary": {"cnn_mlp": m(0.2), "head_pqc": m(0.3)},
+             "runs": {"cnn_mlp": [{"motion_nmse": 0.2}], "head_pqc": [{"motion_nmse": 0.3}]}}
+    b, e = tmp_path / "b.json", tmp_path / "e.json"
+    b.write_text(json.dumps(base)), e.write_text(json.dumps(extra))
+    r = merge(str(b), str(e))
+    assert r["summary"]["cnn_mlp"]["motion_nmse"]["mean"] == 0.1      # original kept
+    assert "head_pqc" in r["summary"] and r["reproducibility"]["cnn_mlp"]["per_seed"] == [[0.1, 0.2]]
+    extra["config"] = {**cfg, "steps": 99}
+    e.write_text(json.dumps(extra))
+    import pytest
+    with pytest.raises(ValueError):
+        merge(str(b), str(e))

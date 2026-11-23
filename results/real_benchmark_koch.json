@@ -303,6 +303,170 @@
           "grip_acc": 0.9793177173767867
         }
       }
+    },
+    "cnn_mps": {
+      "params": 194892,
+      "storage_kb": 761.296875,
+      "nmse_first": {
+        "mean": 0.02145846871038278,
+        "std": 0.001334186135375198
+      },
+      "nmse_chunk": {
+        "mean": 0.06529336795210838,
+        "std": 0.0036304661328440476
+      },
+      "motion_nmse": {
+        "mean": 0.1097162394076331,
+        "std": 0.0043945726256202355
+      },
+      "joint_mae": {
+        "mean": 3.535409849253188,
+        "std": 0.22534214680017162
+      },
+      "grip_acc": {
+        "mean": 0.9765509086768551,
+        "std": 0.0010269899747437975
+      },
+      "latency_ms": {
+        "mean": 4.3292986663679285,
+        "std": 0.24430675126499854
+      },
+      "train_s": {
+        "mean": 187.4333333333333,
+        "std": 26.637484032009397
+      },
+      "per_dataset": {
+        "koch_pick_place_5_lego": {
+          "nmse_first": 0.02145846871038278,
+          "nmse_chunk": 0.06529336795210838,
+          "motion_nmse": 0.1097162394076331,
+          "joint_mae": 3.535409849253188,
+          "grip_acc": 0.9765509086768551
+        }
+      }
+    },
+    "head_tanh": {
+      "params": 381030,
+      "storage_kb": 1488.3984375,
+      "nmse_first": {
+        "mean": 0.15167189141114554,
+        "std": 0.0041020507595906485
+      },
+      "nmse_chunk": {
+        "mean": 0.13944045205911001,
+        "std": 0.005362649032726333
+      },
+      "motion_nmse": {
+        "mean": 0.2671790895643554,
+        "std": 0.014383526830878696
+      },
+      "joint_mae": {
+        "mean": 11.471035498530412,
+        "std": 0.5000365352666453
+      },
+      "grip_acc": {
+        "mean": 0.9436138649873388,
+        "std": 0.0001775618811024908
+      },
+      "latency_ms": {
+        "mean": 2.9482093336991966,
+        "std": 0.5286122694722987
+      },
+      "train_s": {
+        "mean": 24.23333333333333,
+        "std": 2.946561084081275
+      },
+      "per_dataset": {
+        "koch_pick_place_5_lego": {
+          "nmse_first": 0.15167189141114554,
+          "nmse_chunk": 0.13944045205911001,
+          "motion_nmse": 0.2671790895643554,
+          "joint_mae": 11.471035498530412,
+          "grip_acc": 0.9436138649873388
+        }
+      }
+    },
+    "head_surrogate": {
+      "params": 381060,
+      "storage_kb": 1488.515625,
+      "nmse_first": {
+        "mean": 0.21003114680449167,
+        "std": 0.023563693382550766
+      },
+      "nmse_chunk": {
+        "mean": 0.19728251298268637,
+        "std": 0.014484215521776223
+      },
+      "motion_nmse": {
+        "mean": 0.38864294878657496,
+        "std": 0.028701985433852762
+      },
+      "joint_mae": {
+        "mean": 13.408352285646904,
+        "std": 0.6868633332940232
+      },
+      "grip_acc": {
+        "mean": 0.9311939760179739,
+        "std": 0.009722121064592562
+      },
+      "latency_ms": {
+        "mean": 2.987744666946431,
+        "std": 0.24688811127333707
+      },
+      "train_s": {
+        "mean": 25.366666666666664,
+        "std": 3.638070306571267
+      },
+      "per_dataset": {
+        "koch_pick_place_5_lego": {
+          "nmse_first": 0.21003114680449167,
+          "nmse_chunk": 0.19728251298268637,
+          "motion_nmse": 0.38864294878657496,
+          "joint_mae": 13.408352285646904,
+          "grip_acc": 0.9311939760179739
+        }
+      }
+    },
+    "head_pqc": {
+      "params": 381072,
+      "storage_kb": 1488.5625,
+      "nmse_first": {
+        "mean": 0.2091878056526184,
+        "std": 0.046062145547596384
+      },
+      "nmse_chunk": {
+        "mean": 0.18436155716578165,
+        "std": 0.03466845196001534
+      },
+      "motion_nmse": {
+        "mean": 0.35572540494590293,
+        "std": 0.07389572723750311
+      },
+      "joint_mae": {
+        "mean": 13.432569030988821,
+        "std": 1.7674104625097706
+      },
+      "grip_acc": {
+        "mean": 0.9349416430762107,
+        "std": 0.016810395265275536
+      },
+      "latency_ms": {
+        "mean": 16.542553333565593,
+        "std": 0.5991597972246716
+      },
+      "train_s": {
+        "mean": 41.66666666666667,
+        "std": 0.6599663291074438
+      },
+      "per_dataset": {
+        "koch_pick_place_5_lego": {
+          "nmse_first": 0.2091878056526184,
+          "nmse_chunk": 0.18436155716578165,
+          "motion_nmse": 0.35572540494590293,
+          "joint_mae": 13.432569030988821,
+          "grip_acc": 0.9349416430762107
+        }
+      }
     }
   },
   "runs": {
@@ -802,8 +966,318 @@
         "joint_mae": 2.573284052858026,
         "grip_acc": 0.9805636540330418
       }
+    ],
+    "cnn_mps": [
+      {
+        "seed": 0,
+        "train_s": 168.1,
+        "params": 194892,
+        "storage_kb": 761.296875,
+        "latency_ms": 4.5827160007320344,
+        "n_frames": 1996,
+        "per_dataset": {
+          "koch_pick_place_5_lego": {
+            "nmse_first": 0.021718213334679604,
+            "nmse_chunk": 0.06379449367523193,
+            "motion_nmse": 0.10593226108827883,
+            "joint_mae": 3.3781442189743935,
+            "grip_acc": 0.9759519038076152,
+            "frames": 1996
+          }
+        },
+        "nmse_first": 0.021718213334679604,
+        "nmse_chunk": 0.06379449367523193,
+        "motion_nmse": 0.10593226108827883,
+        "joint_mae": 3.3781442189743935,
+        "grip_acc": 0.9759519038076152
+      },
+      {
+        "seed": 1,
+        "train_s": 225.1,
+        "params": 194892,
+        "storage_kb": 761.296875,
+        "latency_ms": 4.405969998333603,
+        "n_frames": 2136,
+        "per_dataset": {
+          "koch_pick_place_5_lego": {
+            "nmse_first": 0.01971011608839035,
+            "nmse_chunk": 0.07029550522565842,
+            "motion_nmse": 0.11587783439241503,
+            "joint_mae": 3.3740025305888284,
+            "grip_acc": 0.977996254681648,
+            "frames": 2136
+          }
+        },
+        "nmse_first": 0.01971011608839035,
+        "nmse_chunk": 0.07029550522565842,
+        "motion_nmse": 0.11587783439241503,
+        "joint_mae": 3.3740025305888284,
+        "grip_acc": 0.977996254681648
+      },
+      {
+        "seed": 2,
+        "train_s": 169.1,
+        "params": 194892,
+        "storage_kb": 761.296875,
+        "latency_ms": 3.999210000038147,
+        "n_frames": 2058,
+        "per_dataset": {
+          "koch_pick_place_5_lego": {
+            "nmse_first": 0.022947076708078384,
+            "nmse_chunk": 0.0617901049554348,
+            "motion_nmse": 0.10733862274220547,
+            "joint_mae": 3.8540827981963415,
+            "grip_acc": 0.9757045675413022,
+            "frames": 2058
+          }
+        },
+        "nmse_first": 0.022947076708078384,
+        "nmse_chunk": 0.0617901049554348,
+        "motion_nmse": 0.10733862274220547,
+        "joint_mae": 3.8540827981963415,
+        "grip_acc": 0.9757045675413022
+      }
+    ],
+    "head_tanh": [
+      {
+        "seed": 0,
+        "train_s": 22.2,
+        "params": 381030,
+        "storage_kb": 1488.3984375,
+        "latency_ms": 2.512698001228273,
+        "n_frames": 1996,
+        "per_dataset": {
+          "koch_pick_place_5_lego": {
+            "nmse_first": 0.15123839676380157,
+            "nmse_chunk": 0.13438639044761658,
+            "motion_nmse": 0.24825848352224866,
+            "joint_mae": 11.20708798049895,
+            "grip_acc": 0.9433867735470942,
+            "frames": 1996
+          }
+        },
+        "nmse_first": 0.15123839676380157,
+        "nmse_chunk": 0.13438639044761658,
+        "motion_nmse": 0.24825848352224866,
+        "joint_mae": 11.20708798049895,
+        "grip_acc": 0.9433867735470942
+      },
+      {
+        "seed": 1,
+        "train_s": 28.4,
+        "params": 381030,
+        "storage_kb": 1488.3984375,
+        "latency_ms": 3.692171999718994,
+        "n_frames": 2136,
+        "per_dataset": {
+          "koch_pick_place_5_lego": {
+            "nmse_first": 0.14687871932983398,
+            "nmse_chunk": 0.14686435461044312,
+            "motion_nmse": 0.28310752727722344,
+            "joint_mae": 11.034851193539321,
+            "grip_acc": 0.9438202247191011,
+            "frames": 2136
+          }
+        },
+        "nmse_first": 0.14687871932983398,
+        "nmse_chunk": 0.14686435461044312,
+        "motion_nmse": 0.28310752727722344,
+        "joint_mae": 11.034851193539321,
+        "grip_acc": 0.9438202247191011
+      },
+      {
+        "seed": 2,
+        "train_s": 22.1,
+        "params": 381030,
+        "storage_kb": 1488.3984375,
+        "latency_ms": 2.639758000150323,
+        "n_frames": 2058,
+        "per_dataset": {
+          "koch_pick_place_5_lego": {
+            "nmse_first": 0.15689855813980103,
+            "nmse_chunk": 0.13707061111927032,
+            "motion_nmse": 0.27017125789359414,
+            "joint_mae": 12.171167321552964,
+            "grip_acc": 0.9436345966958212,
+            "frames": 2058
+          }
+        },
+        "nmse_first": 0.15689855813980103,
+        "nmse_chunk": 0.13707061111927032,
+        "motion_nmse": 0.27017125789359414,
+        "joint_mae": 12.171167321552964,
+        "grip_acc": 0.9436345966958212
+      }
+    ],
+    "head_surrogate": [
+      {
+        "seed": 0,
+        "train_s": 22.5,
+        "params": 381060,
+        "storage_kb": 1488.515625,
+        "latency_ms": 2.8688060003332794,
+        "n_frames": 1996,
+        "per_dataset": {
+          "koch_pick_place_5_lego": {
+            "nmse_first": 0.19345465302467346,
+            "nmse_chunk": 0.18906725943088531,
+            "motion_nmse": 0.35431224044436693,
+            "joint_mae": 12.909430094245577,
+            "grip_acc": 0.9328657314629258,
+            "frames": 1996
+          }
+        },
+        "nmse_first": 0.19345465302467346,
+        "nmse_chunk": 0.18906725943088531,
+        "motion_nmse": 0.35431224044436693,
+        "joint_mae": 12.909430094245577,
+        "grip_acc": 0.9328657314629258
+      },
+      {
+        "seed": 1,
+        "train_s": 30.5,
+        "params": 381060,
+        "storage_kb": 1488.515625,
+        "latency_ms": 3.3315040008164942,
+        "n_frames": 2136,
+        "per_dataset": {
+          "koch_pick_place_5_lego": {
+            "nmse_first": 0.24335509538650513,
+            "nmse_chunk": 0.21764039993286133,
+            "motion_nmse": 0.4245635102428393,
+            "joint_mae": 14.379602369301207,
+            "grip_acc": 0.9185393258426966,
+            "frames": 2136
+          }
+        },
+        "nmse_first": 0.24335509538650513,
+        "nmse_chunk": 0.21764039993286133,
+        "motion_nmse": 0.4245635102428393,
+        "joint_mae": 14.379602369301207,
+        "grip_acc": 0.9185393258426966
+      },
+      {
+        "seed": 2,
+        "train_s": 23.1,
+        "params": 381060,
+        "storage_kb": 1488.515625,
+        "latency_ms": 2.7629239996895194,
+        "n_frames": 2058,
+        "per_dataset": {
+          "koch_pick_place_5_lego": {
+            "nmse_first": 0.19328369200229645,
+            "nmse_chunk": 0.18513987958431244,
+            "motion_nmse": 0.3870530956725186,
+            "joint_mae": 12.93602439339393,
+            "grip_acc": 0.9421768707482994,
+            "frames": 2058
+          }
+        },
+        "nmse_first": 0.19328369200229645,
+        "nmse_chunk": 0.18513987958431244,
+        "motion_nmse": 0.3870530956725186,
+        "joint_mae": 12.93602439339393,
+        "grip_acc": 0.9421768707482994
+      }
+    ],
+    "head_pqc": [
+      {
+        "seed": 0,
+        "train_s": 41.2,
+        "params": 381072,
+        "storage_kb": 1488.5625,
+        "latency_ms": 17.225790000520647,
+        "n_frames": 1996,
+        "per_dataset": {
+          "koch_pick_place_5_lego": {
+            "nmse_first": 0.16482599079608917,
+            "nmse_chunk": 0.14266416430473328,
+            "motion_nmse": 0.25912758393841273,
+            "joint_mae": 11.667275607190769,
+            "grip_acc": 0.9428857715430862,
+            "frames": 1996
+          }
+        },
+        "nmse_first": 0.16482599079608917,
+        "nmse_chunk": 0.14266416430473328,
+        "motion_nmse": 0.25912758393841273,
+        "joint_mae": 11.667275607190769,
+        "grip_acc": 0.9428857715430862
+      },
+      {
+        "seed": 1,
+        "train_s": 42.6,
+        "params": 381072,
+        "storage_kb": 1488.5625,
+        "latency_ms": 15.766908000223339,
+        "n_frames": 2136,
+        "per_dataset": {
+          "koch_pick_place_5_lego": {
+            "nmse_first": 0.1900576502084732,
+            "nmse_chunk": 0.1828753501176834,
+            "motion_nmse": 0.3694915268510878,
+            "joint_mae": 12.78276216760244,
+            "grip_acc": 0.950374531835206,
+            "frames": 2136
+          }
+        },
+        "nmse_first": 0.1900576502084732,
+        "nmse_chunk": 0.1828753501176834,
+        "motion_nmse": 0.3694915268510878,
+        "joint_mae": 12.78276216760244,
+        "grip_acc": 0.950374531835206
+      },
+      {
+        "seed": 2,
+        "train_s": 41.2,
+        "params": 381072,
+        "storage_kb": 1488.5625,
+        "latency_ms": 16.634961999952793,
+        "n_frames": 2058,
+        "per_dataset": {
+          "koch_pick_place_5_lego": {
+            "nmse_first": 0.27267977595329285,
+            "nmse_chunk": 0.22754515707492828,
+            "motion_nmse": 0.43855710404820825,
+            "joint_mae": 15.84766931817325,
+            "grip_acc": 0.9115646258503401,
+            "frames": 2058
+          }
+        },
+        "nmse_first": 0.27267977595329285,
+        "nmse_chunk": 0.22754515707492828,
+        "motion_nmse": 0.43855710404820825,
+        "joint_mae": 15.84766931817325,
+        "grip_acc": 0.9115646258503401
+      }
     ]
   },
   "scope": "REAL teleoperated demonstrations from physical koch arms (LeRobot hub). Offline, open-loop action prediction on held-out episodes; closed-loop task success requires the physical robot (src/real/deploy.py). PQC simulated noiselessly.",
-  "wall_s": 7865.4
+  "wall_s": 10895.2,
+  "reproducibility": {
+    "cnn_mlp": {
+      "original": {
+        "mean": 0.09110175830855731,
+        "std": 0.009828563459131474
+      },
+      "rerun": {
+        "mean": 0.09110175830855731,
+        "std": 0.009828563459131474
+      },
+      "per_seed": [
+        [
+          0.0840347680174364,
+          0.0840347680174364
+        ],
+        [
+          0.1050007841049896,
+          0.1050007841049896
+        ],
+        [
+          0.08426972280324589,
+          0.08426972280324589
+        ]
+      ]
+    }
+  }
 }
