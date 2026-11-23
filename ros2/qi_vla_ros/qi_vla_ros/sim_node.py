@@ -66,10 +66,10 @@ class SimNode(Node):
             mk.header.stamp = self.get_clock().now().to_msg()
             mk.ns, mk.id = "qi_vla", i
             mk.type = Marker.CUBE if o["kind"] == "cube" else Marker.CYLINDER
-            mk.pose.position = Point(x=o["pos"][0], y=o["pos"][1], z=o["pos"][2])
+            mk.pose.position = Point(x=float(o["pos"][0]), y=float(o["pos"][1]), z=float(o["pos"][2]))
             import math
             mk.pose.orientation.z, mk.pose.orientation.w = math.sin(o["yaw"] / 2), math.cos(o["yaw"] / 2)
-            s = o["size"]
+            s = float(o["size"])
             mk.scale.x = mk.scale.y = s
             mk.scale.z = s if o["kind"] == "cube" else 0.002
             mk.color.r, mk.color.g, mk.color.b = COLORS.get(name, (0.8, 0.8, 0.8))

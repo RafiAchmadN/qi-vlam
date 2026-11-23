@@ -62,16 +62,16 @@ class RoverNode(Node):
         st = self.b.step(self.get_clock().now().nanoseconds * 1e-9)
         now = self.get_clock().now().to_msg()
         x, y, yaw = st["pose"]
-        qx, qy, qz, qw = _quat(yaw)
+        qx, qy, qz, qw = (float(v) for v in _quat(yaw))
         o = Odometry()
         o.header.stamp, o.header.frame_id, o.child_frame_id = now, "odom", "base_footprint"
-        o.pose.pose.position.x, o.pose.pose.position.y = x, y
+        o.pose.pose.position.x, o.pose.pose.position.y = float(x), float(y)
         o.pose.pose.orientation.z, o.pose.pose.orientation.w = qz, qw
-        o.twist.twist.linear.x, o.twist.twist.angular.z = st["vw"]
+        o.twist.twist.linear.x, o.twist.twist.angular.z = float(st["vw"][0]), float(st["vw"][1])
         self.odom_pub.publish(o)
         t = TransformStamped()
         t.header.stamp, t.header.frame_id, t.child_frame_id = now, "odom", "base_footprint"
-        t.transform.translation.x, t.transform.translation.y = x, y
+        t.transform.translation.x, t.transform.translation.y = float(x), float(y)
         t.transform.rotation.z, t.transform.rotation.w = qz, qw
         self.tf.sendTransform(t)
         s = LaserScan()
@@ -91,10 +91,11 @@ class RoverNode(Node):
             mk = Marker()
             mk.header.frame_id, mk.header.stamp = "odom", now
             mk.ns, mk.id, mk.type = "qi_vla_map", i, Marker.CUBE
-            mk.pose.position.x, mk.pose.position.y, mk.pose.position.z = b["pos"][0], b["pos"][1], b["h"] / 2
+            # ROS 2 message fields are strictly typed: map JSON holds ints like 8 -> cast to float
+            mk.pose.position.x, mk.pose.position.y, mk.pose.position.z = float(b["pos"][0]), float(b["pos"][1]), float(b["h"]) / 2
             mk.pose.orientation.w = 1.0
-            mk.scale.x, mk.scale.y, mk.scale.z = b["size"][0], b["size"][1], b["h"]
-            mk.color.r, mk.color.g, mk.color.b, mk.color.a = (*b["rgb"], 1.0)
+            mk.scale.x, mk.scale.y, mk.scale.z = float(b["size"][0]), float(b["size"][1]), float(b["h"])
+            mk.color.r, mk.color.g, mk.color.b, mk.color.a = (*(float(c) for c in b["rgb"]), 1.0)
             arr.markers.append(mk)
         self.map_pub.publish(arr)
 
