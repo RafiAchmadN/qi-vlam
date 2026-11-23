@@ -1,30 +1,809 @@
 {
- "partial": true,
- "runs": {
-  "state_mlp": [
-   {
-    "seed": 0,
-    "train_s": 50.0,
-    "params": 149052,
-    "storage_kb": 582.234375,
-    "latency_ms": 0.21221600007265806,
-    "n_frames": 1996,
-    "per_dataset": {
-     "koch_pick_place_5_lego": {
-      "nmse_first": 0.012367261573672295,
-      "nmse_chunk": 0.08506157994270325,
-      "motion_nmse": 0.14965316714436686,
-      "joint_mae": 1.9472516927616335,
-      "grip_acc": 0.9824649298597194,
-      "frames": 1996
-     }
+  "datasets": {
+    "koch_pick_place_5_lego": {
+      "robot": "koch",
+      "task": "Pick the lego blocks and place them in the box",
+      "frames": 12672,
+      "episodes": 50
+    }
+  },
+  "config": {
+    "seeds": 3,
+    "steps": 6000,
+    "heal_steps": 1200,
+    "chi": 16,
+    "chunk_k": 10,
+    "image": "64x64 RGB main camera, 10 Hz",
+    "split": "per episode 75/10/15"
+  },
+  "summary": {
+    "state_mlp": {
+      "params": 149052,
+      "storage_kb": 582.234375,
+      "nmse_first": {
+        "mean": 0.011579645176728567,
+        "std": 0.0005719574674594042
+      },
+      "nmse_chunk": {
+        "mean": 0.08303110301494598,
+        "std": 0.0021330491235560475
+      },
+      "motion_nmse": {
+        "mean": 0.15043816116366668,
+        "std": 0.002178573674960737
+      },
+      "joint_mae": {
+        "mean": 1.916116467236856,
+        "std": 0.02205388098553243
+      },
+      "grip_acc": {
+        "mean": 0.9831683454773478,
+        "std": 0.0013208877886370218
+      },
+      "latency_ms": {
+        "mean": 0.1999559998512268,
+        "std": 0.008670240431907119
+      },
+      "train_s": {
+        "mean": 44.43333333333334,
+        "std": 4.046672158151135
+      },
+      "per_dataset": {
+        "koch_pick_place_5_lego": {
+          "nmse_first": 0.011579645176728567,
+          "nmse_chunk": 0.08303110301494598,
+          "motion_nmse": 0.15043816116366668,
+          "joint_mae": 1.916116467236856,
+          "grip_acc": 0.9831683454773478
+        }
+      }
     },
-    "nmse_first": 0.012367261573672295,
-    "nmse_chunk": 0.08506157994270325,
-    "motion_nmse": 0.14965316714436686,
-    "joint_mae": 1.9472516927616335,
-    "grip_acc": 0.9824649298597194
-   }
-  ]
- }
+    "cnn_mlp": {
+      "params": 379068,
+      "storage_kb": 1480.734375,
+      "nmse_first": {
+        "mean": 0.015916734002530575,
+        "std": 0.0010533538597326765
+      },
+      "nmse_chunk": {
+        "mean": 0.057970418284336724,
+        "std": 0.006444523484512104
+      },
+      "motion_nmse": {
+        "mean": 0.09110175830855731,
+        "std": 0.009828563459131474
+      },
+      "joint_mae": {
+        "mean": 2.6333871119622465,
+        "std": 0.1152453750638659
+      },
+      "grip_acc": {
+        "mean": 0.9789996928957262,
+        "std": 0.0007623043832482542
+      },
+      "latency_ms": {
+        "mean": 2.4984626658260822,
+        "std": 0.07557556426896957
+      },
+      "train_s": {
+        "mean": 742.5666666666666,
+        "std": 62.1300964822113
+      },
+      "per_dataset": {
+        "koch_pick_place_5_lego": {
+          "nmse_first": 0.015916734002530575,
+          "nmse_chunk": 0.057970418284336724,
+          "motion_nmse": 0.09110175830855731,
+          "joint_mae": 2.6333871119622465,
+          "grip_acc": 0.9789996928957262
+        }
+      }
+    },
+    "act_tf": {
+      "params": 520252,
+      "storage_kb": 2032.234375,
+      "nmse_first": {
+        "mean": 0.014046785421669483,
+        "std": 0.0005142440659368802
+      },
+      "nmse_chunk": {
+        "mean": 0.05576186254620552,
+        "std": 0.0029004641174995155
+      },
+      "motion_nmse": {
+        "mean": 0.08798333165826137,
+        "std": 0.005697313163527796
+      },
+      "joint_mae": {
+        "mean": 2.252991858322213,
+        "std": 0.022615948750286972
+      },
+      "grip_acc": {
+        "mean": 0.9790340272235616,
+        "std": 0.0027608383598393617
+      },
+      "latency_ms": {
+        "mean": 3.8652039994485676,
+        "std": 0.1511343648398728
+      },
+      "train_s": {
+        "mean": 1544.1333333333332,
+        "std": 72.95909051577384
+      },
+      "per_dataset": {
+        "koch_pick_place_5_lego": {
+          "nmse_first": 0.014046785421669483,
+          "nmse_chunk": 0.05576186254620552,
+          "motion_nmse": 0.08798333165826137,
+          "joint_mae": 2.252991858322213,
+          "grip_acc": 0.9790340272235616
+        }
+      }
+    },
+    "healing_ctrl": {
+      "params": 379068,
+      "storage_kb": 1480.734375,
+      "nmse_first": {
+        "mean": 0.015719479881227016,
+        "std": 0.0011032441623182656
+      },
+      "nmse_chunk": {
+        "mean": 0.0583701990544796,
+        "std": 0.0066906166415867455
+      },
+      "motion_nmse": {
+        "mean": 0.09130812951556366,
+        "std": 0.009930177946480384
+      },
+      "joint_mae": {
+        "mean": 2.559287774538334,
+        "std": 0.1222761131910154
+      },
+      "grip_acc": {
+        "mean": 0.9788335757278345,
+        "std": 0.0015824479351935275
+      },
+      "latency_ms": {
+        "mean": 2.6271759998053312,
+        "std": 0.2663391253863639
+      },
+      "train_s": {
+        "mean": 138.36666666666667,
+        "std": 0.8219218670625296
+      },
+      "per_dataset": {
+        "koch_pick_place_5_lego": {
+          "nmse_first": 0.015719479881227016,
+          "nmse_chunk": 0.0583701990544796,
+          "motion_nmse": 0.09130812951556366,
+          "joint_mae": 2.559287774538334,
+          "grip_acc": 0.9788335757278345
+        }
+      }
+    },
+    "cnn_ttns": {
+      "params": 175404,
+      "storage_kb": 685.171875,
+      "nmse_first": {
+        "mean": 0.01765749789774418,
+        "std": 0.0009703486688804187
+      },
+      "nmse_chunk": {
+        "mean": 0.05821177735924721,
+        "std": 0.0060223882073063275
+      },
+      "motion_nmse": {
+        "mean": 0.09420020990563882,
+        "std": 0.009198035694329379
+      },
+      "joint_mae": {
+        "mean": 3.0369540553999657,
+        "std": 0.13365887036309493
+      },
+      "grip_acc": {
+        "mean": 0.9776974082618161,
+        "std": 0.0024156564284734845
+      },
+      "latency_ms": {
+        "mean": 2.7396173340578875,
+        "std": 0.3214176729715159
+      },
+      "train_s": {
+        "mean": 139.93333333333334,
+        "std": 0.26246692913373376
+      },
+      "per_dataset": {
+        "koch_pick_place_5_lego": {
+          "nmse_first": 0.01765749789774418,
+          "nmse_chunk": 0.05821177735924721,
+          "motion_nmse": 0.09420020990563882,
+          "joint_mae": 3.0369540553999657,
+          "grip_acc": 0.9776974082618161
+        }
+      }
+    },
+    "cnn_ttns_noheal": {
+      "params": 175404,
+      "storage_kb": 685.171875,
+      "nmse_first": {
+        "mean": 0.08063724388678868,
+        "std": 0.011049727423365779
+      },
+      "nmse_chunk": {
+        "mean": 0.12059287230173747,
+        "std": 0.0076313932629199985
+      },
+      "motion_nmse": {
+        "mean": 0.25511884107429417,
+        "std": 0.03681491208383783
+      },
+      "joint_mae": {
+        "mean": 8.928849982070867,
+        "std": 0.8109393789629121
+      },
+      "grip_acc": {
+        "mean": 0.9701574022279754,
+        "std": 0.005498306357599265
+      },
+      "latency_ms": {
+        "mean": 2.124711999980112,
+        "std": 0.08963675562871547
+      },
+      "train_s": {
+        "mean": 0.10000000000000002,
+        "std": 1.3877787807814457e-17
+      },
+      "per_dataset": {
+        "koch_pick_place_5_lego": {
+          "nmse_first": 0.08063724388678868,
+          "nmse_chunk": 0.12059287230173747,
+          "motion_nmse": 0.25511884107429417,
+          "joint_mae": 8.928849982070867,
+          "grip_acc": 0.9701574022279754
+        }
+      }
+    },
+    "cnn_int8": {
+      "params": 379068,
+      "storage_kb": 806.484375,
+      "nmse_first": {
+        "mean": 0.0159275084733963,
+        "std": 0.0010914521897425872
+      },
+      "nmse_chunk": {
+        "mean": 0.05800869191686312,
+        "std": 0.0064276579912892155
+      },
+      "motion_nmse": {
+        "mean": 0.09124206476978353,
+        "std": 0.009863170595495935
+      },
+      "joint_mae": {
+        "mean": 2.6374361395413053,
+        "std": 0.12143988944660475
+      },
+      "grip_acc": {
+        "mean": 0.9793177173767867,
+        "std": 0.0009021582292480913
+      },
+      "latency_ms": {
+        "mean": 2.478039332975944,
+        "std": 0.052007551412979657
+      },
+      "train_s": {
+        "mean": 0.0,
+        "std": 0.0
+      },
+      "per_dataset": {
+        "koch_pick_place_5_lego": {
+          "nmse_first": 0.0159275084733963,
+          "nmse_chunk": 0.05800869191686312,
+          "motion_nmse": 0.09124206476978353,
+          "joint_mae": 2.6374361395413053,
+          "grip_acc": 0.9793177173767867
+        }
+      }
+    }
+  },
+  "runs": {
+    "state_mlp": [
+      {
+        "seed": 0,
+        "train_s": 50.0,
+        "params": 149052,
+        "storage_kb": 582.234375,
+        "latency_ms": 0.21221600007265806,
+        "n_frames": 1996,
+        "per_dataset": {
+          "koch_pick_place_5_lego": {
+            "nmse_first": 0.012367261573672295,
+            "nmse_chunk": 0.08506157994270325,
+            "motion_nmse": 0.14965316714436686,
+            "joint_mae": 1.9472516927616335,
+            "grip_acc": 0.9824649298597194,
+            "frames": 1996
+          }
+        },
+        "nmse_first": 0.012367261573672295,
+        "nmse_chunk": 0.08506157994270325,
+        "motion_nmse": 0.14965316714436686,
+        "joint_mae": 1.9472516927616335,
+        "grip_acc": 0.9824649298597194
+      },
+      {
+        "seed": 1,
+        "train_s": 42.8,
+        "params": 149052,
+        "storage_kb": 582.234375,
+        "latency_ms": 0.19365600077435374,
+        "n_frames": 2136,
+        "per_dataset": {
+          "koch_pick_place_5_lego": {
+            "nmse_first": 0.011345362290740013,
+            "nmse_chunk": 0.08394788950681686,
+            "motion_nmse": 0.1534107963824239,
+            "joint_mae": 1.902132773167763,
+            "grip_acc": 0.9850187265917603,
+            "frames": 2136
+          }
+        },
+        "nmse_first": 0.011345362290740013,
+        "nmse_chunk": 0.08394788950681686,
+        "motion_nmse": 0.1534107963824239,
+        "joint_mae": 1.902132773167763,
+        "grip_acc": 0.9850187265917603
+      },
+      {
+        "seed": 2,
+        "train_s": 40.5,
+        "params": 149052,
+        "storage_kb": 582.234375,
+        "latency_ms": 0.19399599870666862,
+        "n_frames": 2058,
+        "per_dataset": {
+          "koch_pick_place_5_lego": {
+            "nmse_first": 0.011026311665773392,
+            "nmse_chunk": 0.08008383959531784,
+            "motion_nmse": 0.14825051996420924,
+            "joint_mae": 1.898964935781171,
+            "grip_acc": 0.9820213799805636,
+            "frames": 2058
+          }
+        },
+        "nmse_first": 0.011026311665773392,
+        "nmse_chunk": 0.08008383959531784,
+        "motion_nmse": 0.14825051996420924,
+        "joint_mae": 1.898964935781171,
+        "grip_acc": 0.9820213799805636
+      }
+    ],
+    "cnn_mlp": [
+      {
+        "seed": 0,
+        "train_s": 830.4,
+        "params": 379068,
+        "storage_kb": 1480.734375,
+        "latency_ms": 2.464286000467837,
+        "n_frames": 1996,
+        "per_dataset": {
+          "koch_pick_place_5_lego": {
+            "nmse_first": 0.01581818051636219,
+            "nmse_chunk": 0.056030746549367905,
+            "motion_nmse": 0.0840347680174364,
+            "joint_mae": 2.5324102532415056,
+            "grip_acc": 0.9784569138276553,
+            "frames": 1996
+          }
+        },
+        "nmse_first": 0.01581818051636219,
+        "nmse_chunk": 0.056030746549367905,
+        "motion_nmse": 0.0840347680174364,
+        "joint_mae": 2.5324102532415056,
+        "grip_acc": 0.9784569138276553
+      },
+      {
+        "seed": 1,
+        "train_s": 700.7,
+        "params": 379068,
+        "storage_kb": 1480.734375,
+        "latency_ms": 2.427849997766316,
+        "n_frames": 2136,
+        "per_dataset": {
+          "koch_pick_place_5_lego": {
+            "nmse_first": 0.017253274098038673,
+            "nmse_chunk": 0.0666523277759552,
+            "motion_nmse": 0.1050007841049896,
+            "joint_mae": 2.794668141312803,
+            "grip_acc": 0.9784644194756554,
+            "frames": 2136
+          }
+        },
+        "nmse_first": 0.017253274098038673,
+        "nmse_chunk": 0.0666523277759552,
+        "motion_nmse": 0.1050007841049896,
+        "joint_mae": 2.794668141312803,
+        "grip_acc": 0.9784644194756554
+      },
+      {
+        "seed": 2,
+        "train_s": 696.6,
+        "params": 379068,
+        "storage_kb": 1480.734375,
+        "latency_ms": 2.603251999244094,
+        "n_frames": 2058,
+        "per_dataset": {
+          "koch_pick_place_5_lego": {
+            "nmse_first": 0.01467874739319086,
+            "nmse_chunk": 0.05122818052768707,
+            "motion_nmse": 0.08426972280324589,
+            "joint_mae": 2.5730829413324314,
+            "grip_acc": 0.9800777453838678,
+            "frames": 2058
+          }
+        },
+        "nmse_first": 0.01467874739319086,
+        "nmse_chunk": 0.05122818052768707,
+        "motion_nmse": 0.08426972280324589,
+        "joint_mae": 2.5730829413324314,
+        "grip_acc": 0.9800777453838678
+      }
+    ],
+    "act_tf": [
+      {
+        "seed": 0,
+        "train_s": 1646.8,
+        "params": 520252,
+        "storage_kb": 2032.234375,
+        "latency_ms": 4.058574000373483,
+        "n_frames": 1996,
+        "per_dataset": {
+          "koch_pick_place_5_lego": {
+            "nmse_first": 0.013503325171768665,
+            "nmse_chunk": 0.05333247780799866,
+            "motion_nmse": 0.08213640036162731,
+            "joint_mae": 2.2484739396309386,
+            "grip_acc": 0.9824649298597194,
+            "frames": 1996
+          }
+        },
+        "nmse_first": 0.013503325171768665,
+        "nmse_chunk": 0.05333247780799866,
+        "motion_nmse": 0.08213640036162731,
+        "joint_mae": 2.2484739396309386,
+        "grip_acc": 0.9824649298597194
+      },
+      {
+        "seed": 1,
+        "train_s": 1501.7,
+        "params": 520252,
+        "storage_kb": 2032.234375,
+        "latency_ms": 3.847375998739153,
+        "n_frames": 2136,
+        "per_dataset": {
+          "koch_pick_place_5_lego": {
+            "nmse_first": 0.01389999594539404,
+            "nmse_chunk": 0.059838827699422836,
+            "motion_nmse": 0.09570774635174556,
+            "joint_mae": 2.282671850012343,
+            "grip_acc": 0.9789325842696629,
+            "frames": 2136
+          }
+        },
+        "nmse_first": 0.01389999594539404,
+        "nmse_chunk": 0.059838827699422836,
+        "motion_nmse": 0.09570774635174556,
+        "joint_mae": 2.282671850012343,
+        "grip_acc": 0.9789325842696629
+      },
+      {
+        "seed": 2,
+        "train_s": 1483.9,
+        "params": 520252,
+        "storage_kb": 2032.234375,
+        "latency_ms": 3.689661999233067,
+        "n_frames": 2058,
+        "per_dataset": {
+          "koch_pick_place_5_lego": {
+            "nmse_first": 0.014737035147845745,
+            "nmse_chunk": 0.05411428213119507,
+            "motion_nmse": 0.08610584826141121,
+            "joint_mae": 2.2278297853233586,
+            "grip_acc": 0.9757045675413022,
+            "frames": 2058
+          }
+        },
+        "nmse_first": 0.014737035147845745,
+        "nmse_chunk": 0.05411428213119507,
+        "motion_nmse": 0.08610584826141121,
+        "joint_mae": 2.2278297853233586,
+        "grip_acc": 0.9757045675413022
+      }
+    ],
+    "healing_ctrl": [
+      {
+        "seed": 0,
+        "train_s": 139.3,
+        "params": 379068,
+        "storage_kb": 1480.734375,
+        "latency_ms": 2.4165159999392927,
+        "n_frames": 1996,
+        "per_dataset": {
+          "koch_pick_place_5_lego": {
+            "nmse_first": 0.015727367252111435,
+            "nmse_chunk": 0.056385114789009094,
+            "motion_nmse": 0.08430031896023667,
+            "joint_mae": 2.4640052683711273,
+            "grip_acc": 0.9774549098196392,
+            "frames": 1996
+          }
+        },
+        "nmse_first": 0.015727367252111435,
+        "nmse_chunk": 0.056385114789009094,
+        "motion_nmse": 0.08430031896023667,
+        "joint_mae": 2.4640052683711273,
+        "grip_acc": 0.9774549098196392
+      },
+      {
+        "seed": 1,
+        "train_s": 137.3,
+        "params": 379068,
+        "storage_kb": 1480.734375,
+        "latency_ms": 2.4620960000902414,
+        "n_frames": 2136,
+        "per_dataset": {
+          "koch_pick_place_5_lego": {
+            "nmse_first": 0.0170667115598917,
+            "nmse_chunk": 0.06737467646598816,
+            "motion_nmse": 0.10535151269721434,
+            "joint_mae": 2.7319014437765636,
+            "grip_acc": 0.977996254681648,
+            "frames": 2136
+          }
+        },
+        "nmse_first": 0.0170667115598917,
+        "nmse_chunk": 0.06737467646598816,
+        "motion_nmse": 0.10535151269721434,
+        "joint_mae": 2.7319014437765636,
+        "grip_acc": 0.977996254681648
+      },
+      {
+        "seed": 2,
+        "train_s": 138.5,
+        "params": 379068,
+        "storage_kb": 1480.734375,
+        "latency_ms": 3.0029159993864596,
+        "n_frames": 2058,
+        "per_dataset": {
+          "koch_pick_place_5_lego": {
+            "nmse_first": 0.014364360831677914,
+            "nmse_chunk": 0.051350805908441544,
+            "motion_nmse": 0.08427255688924001,
+            "joint_mae": 2.48195661146731,
+            "grip_acc": 0.9810495626822158,
+            "frames": 2058
+          }
+        },
+        "nmse_first": 0.014364360831677914,
+        "nmse_chunk": 0.051350805908441544,
+        "motion_nmse": 0.08427255688924001,
+        "joint_mae": 2.48195661146731,
+        "grip_acc": 0.9810495626822158
+      }
+    ],
+    "cnn_ttns": [
+      {
+        "seed": 0,
+        "train_s": 140.3,
+        "params": 175404,
+        "storage_kb": 685.171875,
+        "latency_ms": 2.561982001643628,
+        "n_frames": 1996,
+        "per_dataset": {
+          "koch_pick_place_5_lego": {
+            "nmse_first": 0.01744816266000271,
+            "nmse_chunk": 0.05587124079465866,
+            "motion_nmse": 0.0853543997066668,
+            "joint_mae": 2.8498801840261843,
+            "grip_acc": 0.9754509018036072,
+            "frames": 1996
+          }
+        },
+        "nmse_first": 0.01744816266000271,
+        "nmse_chunk": 0.05587124079465866,
+        "motion_nmse": 0.0853543997066668,
+        "joint_mae": 2.8498801840261843,
+        "grip_acc": 0.9754509018036072
+      },
+      {
+        "seed": 1,
+        "train_s": 139.7,
+        "params": 175404,
+        "storage_kb": 685.171875,
+        "latency_ms": 3.190786000341177,
+        "n_frames": 2136,
+        "per_dataset": {
+          "koch_pick_place_5_lego": {
+            "nmse_first": 0.01893668621778488,
+            "nmse_chunk": 0.06647395342588425,
+            "motion_nmse": 0.10688262603145429,
+            "joint_mae": 3.1539338029281723,
+            "grip_acc": 0.9765917602996255,
+            "frames": 2136
+          }
+        },
+        "nmse_first": 0.01893668621778488,
+        "nmse_chunk": 0.06647395342588425,
+        "motion_nmse": 0.10688262603145429,
+        "joint_mae": 3.1539338029281723,
+        "grip_acc": 0.9765917602996255
+      },
+      {
+        "seed": 2,
+        "train_s": 139.8,
+        "params": 175404,
+        "storage_kb": 685.171875,
+        "latency_ms": 2.4660840001888573,
+        "n_frames": 2058,
+        "per_dataset": {
+          "koch_pick_place_5_lego": {
+            "nmse_first": 0.016587644815444946,
+            "nmse_chunk": 0.052290137857198715,
+            "motion_nmse": 0.09036360397879535,
+            "joint_mae": 3.1070481792455404,
+            "grip_acc": 0.9810495626822158,
+            "frames": 2058
+          }
+        },
+        "nmse_first": 0.016587644815444946,
+        "nmse_chunk": 0.052290137857198715,
+        "motion_nmse": 0.09036360397879535,
+        "joint_mae": 3.1070481792455404,
+        "grip_acc": 0.9810495626822158
+      }
+    ],
+    "cnn_ttns_noheal": [
+      {
+        "seed": 0,
+        "train_s": 0.1,
+        "params": 175404,
+        "storage_kb": 685.171875,
+        "latency_ms": 2.0566620002500713,
+        "n_frames": 1996,
+        "per_dataset": {
+          "koch_pick_place_5_lego": {
+            "nmse_first": 0.08649778366088867,
+            "nmse_chunk": 0.11976025253534317,
+            "motion_nmse": 0.2160550345662713,
+            "joint_mae": 8.891392665440744,
+            "grip_acc": 0.9624248496993988,
+            "frames": 1996
+          }
+        },
+        "nmse_first": 0.08649778366088867,
+        "nmse_chunk": 0.11976025253534317,
+        "motion_nmse": 0.2160550345662713,
+        "joint_mae": 8.891392665440744,
+        "grip_acc": 0.9624248496993988
+      },
+      {
+        "seed": 1,
+        "train_s": 0.1,
+        "params": 175404,
+        "storage_kb": 685.171875,
+        "latency_ms": 2.2513599996455014,
+        "n_frames": 2136,
+        "per_dataset": {
+          "koch_pick_place_5_lego": {
+            "nmse_first": 0.06516164541244507,
+            "nmse_chunk": 0.11169052869081497,
+            "motion_nmse": 0.24484267673849233,
+            "joint_mae": 7.954914685866434,
+            "grip_acc": 0.973314606741573,
+            "frames": 2136
+          }
+        },
+        "nmse_first": 0.06516164541244507,
+        "nmse_chunk": 0.11169052869081497,
+        "motion_nmse": 0.24484267673849233,
+        "joint_mae": 7.954914685866434,
+        "grip_acc": 0.973314606741573
+      },
+      {
+        "seed": 2,
+        "train_s": 0.1,
+        "params": 175404,
+        "storage_kb": 685.171875,
+        "latency_ms": 2.066114000044763,
+        "n_frames": 2058,
+        "per_dataset": {
+          "koch_pick_place_5_lego": {
+            "nmse_first": 0.09025230258703232,
+            "nmse_chunk": 0.13032783567905426,
+            "motion_nmse": 0.30445881191811885,
+            "joint_mae": 9.940242594905426,
+            "grip_acc": 0.9747327502429544,
+            "frames": 2058
+          }
+        },
+        "nmse_first": 0.09025230258703232,
+        "nmse_chunk": 0.13032783567905426,
+        "motion_nmse": 0.30445881191811885,
+        "joint_mae": 9.940242594905426,
+        "grip_acc": 0.9747327502429544
+      }
+    ],
+    "cnn_int8": [
+      {
+        "seed": 0,
+        "train_s": 0.0,
+        "params": 379068,
+        "storage_kb": 806.484375,
+        "latency_ms": 2.5099659990519285,
+        "n_frames": 1996,
+        "per_dataset": {
+          "koch_pick_place_5_lego": {
+            "nmse_first": 0.015826363116502762,
+            "nmse_chunk": 0.056047357618808746,
+            "motion_nmse": 0.08406362828109455,
+            "joint_mae": 2.531545330147075,
+            "grip_acc": 0.9784569138276553,
+            "frames": 1996
+          }
+        },
+        "nmse_first": 0.015826363116502762,
+        "nmse_chunk": 0.056047357618808746,
+        "motion_nmse": 0.08406362828109455,
+        "joint_mae": 2.531545330147075,
+        "grip_acc": 0.9784569138276553
+      },
+      {
+        "seed": 1,
+        "train_s": 0.0,
+        "params": 379068,
+        "storage_kb": 806.484375,
+        "latency_ms": 2.4046939983963966,
+        "n_frames": 2136,
+        "per_dataset": {
+          "koch_pick_place_5_lego": {
+            "nmse_first": 0.017311958596110344,
+            "nmse_chunk": 0.06667616963386536,
+            "motion_nmse": 0.10518868319357351,
+            "joint_mae": 2.8074790356188144,
+            "grip_acc": 0.9789325842696629,
+            "frames": 2136
+          }
+        },
+        "nmse_first": 0.017311958596110344,
+        "nmse_chunk": 0.06667616963386536,
+        "motion_nmse": 0.10518868319357351,
+        "joint_mae": 2.8074790356188144,
+        "grip_acc": 0.9789325842696629
+      },
+      {
+        "seed": 2,
+        "train_s": 0.0,
+        "params": 379068,
+        "storage_kb": 806.484375,
+        "latency_ms": 2.5194580014795065,
+        "n_frames": 2058,
+        "per_dataset": {
+          "koch_pick_place_5_lego": {
+            "nmse_first": 0.014644203707575798,
+            "nmse_chunk": 0.05130254849791527,
+            "motion_nmse": 0.08447388283468253,
+            "joint_mae": 2.573284052858026,
+            "grip_acc": 0.9805636540330418,
+            "frames": 2058
+          }
+        },
+        "nmse_first": 0.014644203707575798,
+        "nmse_chunk": 0.05130254849791527,
+        "motion_nmse": 0.08447388283468253,
+        "joint_mae": 2.573284052858026,
+        "grip_acc": 0.9805636540330418
+      }
+    ]
+  },
+  "scope": "REAL teleoperated demonstrations from physical koch arms (LeRobot hub). Offline, open-loop action prediction on held-out episodes; closed-loop task success requires the physical robot (src/real/deploy.py). PQC simulated noiselessly.",
+  "wall_s": 7865.4
 }

@@ -292,6 +292,22 @@ Teleoperated demonstrations recorded on physical arms (LeRobot hub): `svla_so101
 
 Scope: REAL teleoperated demonstrations from physical SO-100/SO-101 arms (LeRobot hub). Offline, open-loop action prediction on held-out episodes; closed-loop task success requires the physical robot (src/real/deploy.py). PQC simulated noiselessly.
 
+## 6.10 Policies Trained on REAL Robot Data (Koch v1.1)
+
+Teleoperated demonstrations recorded on physical arms (LeRobot hub): `koch_pick_place_5_lego` (koch, 50 episodes, 12,672 frames @10 Hz, "Pick the lego blocks and place them in the box"). Camera 64x64 + joints -> 10-step action chunk; split per episode; 3 seeds. Open-loop metrics on held-out real episodes (motion nMSE: 1.0 = predicting no motion):
+
+| Model | Params | Storage (KB) | Motion nMSE | Next-action nMSE | Joint MAE | Gripper acc. | CPU ms |
+|---|---|---|---|---|---|---|---|
+| state_mlp | 149,052 | 582 | 0.150 ± 0.002 | 0.012 | 1.92 | 0.983 | 0.20 |
+| cnn_mlp | 379,068 | 1481 | 0.091 ± 0.010 | 0.016 | 2.63 | 0.979 | 2.50 |
+| act_tf | 520,252 | 2032 | 0.088 ± 0.006 | 0.014 | 2.25 | 0.979 | 3.87 |
+| healing_ctrl | 379,068 | 1481 | 0.091 ± 0.010 | 0.016 | 2.56 | 0.979 | 2.63 |
+| cnn_ttns | 175,404 | 685 | 0.094 ± 0.009 | 0.018 | 3.04 | 0.978 | 2.74 |
+| cnn_ttns_noheal | 175,404 | 685 | 0.255 ± 0.037 | 0.081 | 8.93 | 0.970 | 2.12 |
+| cnn_int8 | 379,068 | 806 | 0.091 ± 0.010 | 0.016 | 2.64 | 0.979 | 2.48 |
+
+Scope: REAL teleoperated demonstrations from physical koch arms (LeRobot hub). Offline, open-loop action prediction on held-out episodes; closed-loop task success requires the physical robot (src/real/deploy.py). PQC simulated noiselessly.
+
 ## 7. Resource Declaration
 
 CPU-only (x86_64), no GPU, for all results above except the LLaVA-1.5-7B

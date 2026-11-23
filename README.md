@@ -21,7 +21,7 @@ train new policies — see [`docs/SIMULATION.md`](docs/SIMULATION.md).
 
 | Question | Result | Evidence |
 |---|---|---|
-| Policies trained on **REAL robot data** (SO-100/SO-101: 208 teleop episodes, 4 tasks, camera + joints; Koch v1.1) | camera policy motion error **0.255** vs 0.351 without camera; **INT8 807 KB (−46%)** and **TTNS 175k params (2.2×)** keep quality (0.255 / 0.268); MPS 0.374; TTNS without healing 0.771; quantum PQC head 1.245 (no advantage, 5× slower). Runs on-device in the app and in a 23 ms replay control loop | 3 seeds, held-out real episodes, `results/real_benchmark*.json` |
+| Policies trained on **REAL robot data** (SO-100/SO-101: 208 teleop episodes, 4 tasks, camera + joints; Koch v1.1) | camera policy motion error **0.255** vs 0.351 without camera; **INT8 807 KB (−46%)** and **TTNS 175k params (2.2×)** keep quality (0.255 / 0.268); MPS 0.374; TTNS without healing 0.771; quantum PQC head 1.245 (no advantage, 5× slower). Same ranking on a second robot (Koch v1.1, 50 episodes): camera 0.091 vs 0.150, TTNS 0.094, no-heal 0.255. Runs on-device in the app and in a 23 ms replay control loop | 3 seeds, held-out real episodes, `results/real_benchmark*.json` |
 | Tensor-network compression on real VLA data (LIBERO, held-out episodes) | TTNS χ=64: **2.95× fewer params, nMSE 0.0845 vs 0.0831 dense**, faster on CPU | 3 seeds, `results/libero_benchmark.json` |
 | MPS vs TTNS at equal compression | TTNS wins: 0.0845 vs 0.0985 (≈3×); 0.106 vs 0.143 (≈11×) | same |
 | Is healing needed? | Yes — MPS without healing nMSE 0.87 → 0.099 with it | same |

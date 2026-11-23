@@ -233,7 +233,8 @@ def run(names: Sequence[str] = (), seeds: int = 3, steps: int = 4000, heal_steps
               "config": {"seeds": seeds, "steps": steps, "heal_steps": heal_steps, "chi": chi, "chunk_k": K,
                          "image": "64x64 RGB main camera, 10 Hz", "split": "per episode 75/10/15"},
               "summary": summary, "runs": runs,
-              "scope": ("REAL teleoperated demonstrations from physical SO-100/SO-101 arms (LeRobot hub). Offline, "
+              "scope": (f"REAL teleoperated demonstrations from physical {'/'.join(sorted({B0.norm[n]['robot'] for n in names}))} "
+                        "arms (LeRobot hub). Offline, "
                         "open-loop action prediction on held-out episodes; closed-loop task success requires the "
                         "physical robot (src/real/deploy.py). PQC simulated noiselessly."),
               "wall_s": round(time.time() - t_all, 1)}
@@ -248,8 +249,11 @@ def main() -> None:
     p.add_argument("--steps", type=int, default=4000)
     p.add_argument("--heal-steps", type=int, default=800)
     p.add_argument("--models", default=",".join(MODELS))
+    p.add_argument("--out", default="results/real_benchmark.json")
+    p.add_argument("--models-dir", default="models/real")
     a = p.parse_args()
-    r = run([d for d in a.datasets.split(",") if d], a.seeds, a.steps, a.heal_steps, models=a.models.split(","))
+    r = run([d for d in a.datasets.split(",") if d], a.seeds, a.steps, a.heal_steps, models=a.models.split(","),
+            out_json=a.out, out_models=a.models_dir)
     print(json.dumps({k: {m: v[m]["mean"] for m in ("motion_nmse", "nmse_first", "joint_mae", "grip_acc")} for k, v in r["summary"].items()}, indent=1))
 
 

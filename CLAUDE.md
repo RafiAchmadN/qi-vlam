@@ -87,6 +87,10 @@ concise, no filler.
   (175k = 2.2x), no-camera 0.351, MPS 0.374, head_tanh 0.754, TTNS no-heal 0.771,
   PQC 1.245, surrogate 1.267. Physical-robot path (`src.real.deploy robot`, lerobot)
   is NOT hardware-tested. App runs the exported JSON with a JS CNN (parity 5e-6).
+- Koch v1.1 (`koch_pick_place_5_lego`, 50 ep, trained separately — joint units differ;
+  results/real_benchmark_koch.json, 3 seeds): act_tf 0.088, cnn_mlp/healing_ctrl/INT8 0.091,
+  TTNS 0.094 (175k), no-camera 0.150, TTNS no-heal 0.255. Same ranking as SO-100/101; MPS/PQC
+  not run on Koch. Don't compare absolute nMSE across robots (Koch task is easier).
 - On Windows, scripts using ProcessPoolExecutor cannot be run from stdin
   (`python - <<EOF`): spawn needs a real file with `if __name__ == "__main__"`.
 

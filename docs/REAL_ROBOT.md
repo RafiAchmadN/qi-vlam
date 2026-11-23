@@ -83,6 +83,39 @@ Kesimpulan:
 * healing wajib
 * head kuantum tidak memberi keunggulan
 
+### Robot kedua: Koch v1.1 (data nyata, dilatih terpisah)
+
+`lerobot/koch_pick_place_5_lego`, 50 episode, 12.672 frame, kamera `phone`.
+Satuan sendi Koch berbeda dari SO-100/101, jadi model dilatih terpisah
+(bukan digabung), 3 seed, episode uji yang sama untuk semua model.
+
+```bash
+python -m src.real.train_real --datasets koch_pick_place_5_lego --seeds 3 --steps 6000 --heal-steps 1200 \
+    --models state_mlp,cnn_mlp,act_tf,healing_ctrl,cnn_ttns,cnn_ttns_noheal,cnn_int8 \
+    --out results/real_benchmark_koch.json --models-dir models/real_koch
+```
+
+| Model | Param | Ukuran | Galat gerakan ↓ | MAE sendi | Gripper | CPU |
+|---|---|---|---|---|---|---|
+| ACT Transformer | 520.252 | 2.032 KB | **0,088 ± 0,006** | 2,25 | 97,9% | 3,9 ms |
+| CNN dense | 379.068 | 1.481 KB | 0,091 ± 0,010 | 2,63 | 97,9% | 2,5 ms |
+| kontrol healing | 379.068 | 1.481 KB | 0,091 ± 0,010 | 2,56 | 97,9% | 2,6 ms |
+| CNN INT8 | 379.068 | **806 KB** | 0,091 ± 0,010 | 2,64 | 97,9% | 2,5 ms |
+| **CNN + TTNS + healing** | **175.404** | **685 KB** | 0,094 ± 0,009 | 3,04 | 97,8% | 2,7 ms |
+| tanpa kamera | 149.052 | 582 KB | 0,150 ± 0,002 | 1,92 | 98,3% | 0,2 ms |
+| TTNS tanpa healing | 175.404 | 685 KB | 0,255 ± 0,037 | 8,93 | 97,0% | 2,1 ms |
+
+Pola di robot kedua sama dengan SO-100/101:
+* kamera menurunkan galat gerakan 39% (0,150 → 0,091)
+* TTNS 2,2× lebih kecil hanya +3% galat (0,094 vs 0,091), dalam rentang std antar-seed
+* tanpa healing galatnya 2,8× lebih besar
+* ACT sedikit unggul, tetapi selisihnya lebih kecil dari std
+
+Tugas Koch lebih mudah dari campuran 4 tugas SO-100/101 (galat absolut 0,09 vs
+0,25), jadi angka antar-robot tidak dibandingkan langsung; yang dibandingkan
+adalah urutan model di dalam tiap robot. Varian MPS dan head PQC tidak
+dijalankan di Koch (sudah kalah jelas di SO-100/101).
+
 ## 3. Model berjalan di aplikasi (di HP), pada data nyata
 
 Pilih **Data robot nyata (SO-100/101)** di header. Aplikasi memutar episode uji
