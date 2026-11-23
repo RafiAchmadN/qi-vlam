@@ -1,0 +1,409 @@
+# CLAUDE.md — Project Context for Claude Code
+
+QI-VLA: open research project. Quantum-inspired tensor network (MPS/TTNS) compression, PQC policy
+heads and Lyapunov/SDP safety for Vision-Language-Action policies, evaluated on
+the open LIBERO dataset, plus an open-source robot app (web + Android APK) with
+simulation and live-robot modes. Owner: Rafi (D4 Teknik Elektro Otomasi ITS).
+Communication: Indonesian preferred, technical terms in English OK. Direct,
+concise, no filler.
+
+## Verified state — research/app layer (added Nov 2026)
+
+- Python: all tests pass (tests/ incl. tests/test_robot.py), coverage ≈85%
+  (gate 80%). JS: `cd app && npm test` — 11/11 (kinematics + policy parity
+  with Python to 1e-4, grounding, shield, vision).
+- LIBERO (`lerobot/libero`, parquet only, `python scripts/download_libero.py`
+  → data/libero, gitignored): `src/evaluation/libero_benchmark.py`, 3 seeds,
+  per-episode split → `results/libero_benchmark.json`. dense nMSE 0.0831,
+  healing-ctrl 0.0826, TTNS χ64 0.0845 (2.95x), MPS χ32 0.0985 (2.84x),
+  TTNS χ16 0.106 (11.8x), MPS χ16 0.143 (10.3x); MPS no-heal 0.87.
+  PQC bottleneck head 0.444 vs tanh 0.215 vs surrogate 0.380 — NEGATIVE
+  quantum result, keep reporting it. Scope: offline, no images.
+- App policy (`python -m src.robot.train_policy` → app/public/models,
+  results/app_policy.json): dense 35,076 vs TTNS χ16 11,012 params, both 100%
+  reach; TTNS no-heal 74%. SDP certificate feasible, ρ=0.922, R²=0.996
+  (identified linear model only).
+- Shield eval (`cd app && node test/shield_eval.mjs` →
+  results/app_shield_eval.json): with ±1.5 rad/s action noise, reach 8%→78%,
+  table collision 14%→0%; monitor intervenes 21% (TTNS) vs 10% (dense)
+  without noise.
+- App e2e (browser): 30/30 instructions; live mode verified only against the
+  bridge MockDriver (`python -m src.bridge.server --driver mock`), NOT on
+  physical hardware. Firmware not compiled in CI. APK built by
+  .github/workflows/android.yml (no local Android SDK/JDK on the dev PC).
+- JS kinematics (`app/src/robot/kinematics.js`) must stay identical to
+  `src/robot/arm.py`; policy feature vector identical to
+  `arm.policy_features` / `app/src/vla/policy.js::features`. Re-export the
+  policy after changing either (tests check parity).
+- Vision render target must stay sRGB (`texture.colorSpace = SRGBColorSpace`)
+  and the table low-saturation, or HSV detection breaks (found the hard way).
+
+## Verified state — original experiments (do not regress)
+
+- Original suite: 45/45 tests pass, coverage 95.79%: `bash scripts/run_tests.sh`
+- Benchmark (3 seeds): 2.47x MPS compression, 0.87±0.77% accuracy drop
+  (post-healing), 79.7% net training-FLOPs reduction (TTNS), latency p95
+  1.4 ms, SDP certificate feasible, 100/100 safety episodes safe.
+- Real LLaVA-1.5-7B (Colab T4, not the CPU sandbox): 1 decoder layer, TTNS
+  χ=768 → 3.70x compression, perplexity +1.9% — see roadmap item 1 and
+  `docs/technical_report.md` §6 for full scope/caveats. This 1-layer/no-heal
+  result is still the one `llava_results.json`/the report cite.
+  `compress_llava_colab.py` was restructured to compress-and-heal
+  SEQUENTIALLY (roadmap item 2), then run for real on Colab **four times**
+  at `--layers 4` across very different bond_dimension/heal-steps/heal-lr
+  combinations — layer0 healed correctly in the later attempts, but
+  **layer1 diverged to NaN at step 0 in all four**, pointing to a
+  structural fp16-precision limitation on T4 (no bf16 tensor cores) rather
+  than a hyperparameter problem. **Multi-layer sequential healing on T4 is
+  now a closed, documented dead end** (roadmap item 2) — not pursued
+  further; would need an Ampere+ GPU (bf16) to retest. 1-layer/no-heal
+  remains the reported LLaVA evidence.
+- RLBench/CoppeliaSim (verified working end-to-end on this machine): safety
+  eval + behavior-cloning training both run for real —
+  `docs/learning/03-rlbench-simulation.md` §8 (esp. §8.1a) has the full
+  comparison table and diagnosis chronology. ReachTarget BC (200 demos,
+  512×6 tower) task success rate is realistically **0-8%, highly
+  run-to-run variable** — a proper 3-seed ablation showed the variance
+  (std ≈ mean) is dominated by RLBench's own uncontrolled internal RNG in
+  `task.get_demos()` (not our `--seed`), not by our architecture/feature
+  choices. A single standout run (`rlbench_bc_policy_v4_big.pt`, now in
+  `experiments/rlbench_bc_ablation/`, 16.7%) did NOT reproduce when the
+  identical config was re-run — do not quote
+  it as representative. Lesson learned the hard way, twice: (1) don't
+  report a success rate from <20 trials without saying so explicitly, (2)
+  don't trust a single training run's result without a multi-seed check —
+  both apply generally, not just to RLBench.
+- Safety classical-baseline comparison (heuristic reward clipping,
+  `src/evaluation/safety_baseline_comparison.py`, real run in
+  `safety_baseline_comparison.json`): swept closed-loop gain from stable to
+  unstable — 2/6 gains showed the heuristic clipping baseline reporting
+  ≥90% episodes "safe" for a system that is mathematically unstable, while
+  `solve_lyapunov_sdp` never gets this wrong (answers from spectral radius,
+  not observed outcomes). Wired into `docs/technical_report.md` §4.4.
+- RL Alignment connected to real RLBench reward (not just the CPU-proxy
+  bandit task): `GRPOAligner.align()` now accepts an optional `rollout_fn`
+  (backward-compatible, existing `env_reward`/`state_dim` callers
+  unaffected — see `src/training/rl_alignment.py`).
+  `scripts/rlbench_rl_experiment.py` feeds it single-step
+  (state, action, reward) triples from real CoppeliaSim physics
+  (ReachTarget, shaped/dense reward). Real run (2 seeds, 120 rollouts/run,
+  group_size=4): all three heads (mlp/surrogate/pqc) stayed around
+  reward≈-0.53, statistically indistinguishable at this small budget, none
+  reached target — honestly this is evidence the real-RLBench connection
+  works end-to-end without divergence, NOT a PQC-vs-classical claim (that
+  claim still rests on the CPU-proxy comparison, which has a real budget:
+  2000 rollouts, 3 seeds). See `docs/technical_report.md` §4.5.
+- Full pipeline: `bash scripts/run_benchmark.sh` → results.json, pareto.json,
+  safety.json, rl_results.json, docs/technical_report.md
+- Env: Python 3.10+, CPU-only torch is fine. Install:
+  `pip install -r requirements.txt --extra-index-url https://download.pytorch.org/whl/cpu`
+
+## Local-only docs
+
+`docs/paper/` (paper draft + Indonesian roadmap) and `docs/learning/`
+(learning notes) are gitignored at the owner's request — keep them local,
+never commit or push them. References to them below are to local files.
+
+## Architecture invariants (things that WILL break if changed carelessly)
+
+1. **MPS core shapes are data-dependent.** `MPSLinear.from_linear` rebuilds
+   `self.cores` as a fresh `ParameterList` because truncated SVD ranks can be
+   SMALLER than the requested bond_dimension (rank limited by matrix
+   dimensions). Never assume `cores[j].shape == (chi, phys, chi)`; always read
+   shapes from the tensors. This caused the first real bug in development.
+
+2. **Forward = direct contraction, index bookkeeping is delicate.**
+   `MPSLinear.forward` maintains T of shape (B, O, i_j, R, c) and reshapes
+   between steps: `T.reshape(B, O*p, next_in_factor, R//next_in_factor, d)`.
+   The output flattening order (o1⊗o2⊗...⊗ok) must match
+   `reconstruct_weight`'s inverse permutation. If you touch either, run
+   `tests/test_compression.py::TestDirectContraction` — it asserts
+   contraction == dense reconstruction to atol=1e-4. Full-rank round-trip
+   (`bond_dimension=999`) must equal the original Linear.
+
+3. **`_factorize` must return factors whose product == n exactly.** Prime or
+   awkward dimensions (e.g. 7B models have 11008 = 2^5·344... check!) can
+   produce factor 1 in a slot, degrading MPS to fewer effective cores. For
+   LLaVA MLP dims (4096, 11008) verify factorizations before long runs.
+
+4. **Healing is mandatory, not optional.** Raw MPS truncation drops accuracy
+   ~32 points on the proxy; a short fine-tune of the cores (ordinary autograd)
+   recovers to <1% drop. Any benchmark comparing "MPS accuracy" without
+   healing is measuring the wrong thing.
+
+5. **Ablation must include the healing-only control.** Extra training steps
+   improve the UNCOMPRESSED model too (0.837 → 0.907 on proxy). Fair
+   comparison: compressed-healed vs healing-only control, NOT vs the original
+   baseline. `pareto.json` carries `healing_only_control_accuracy` — keep it.
+
+6. **RNG discipline in tests.** Tests were flaky when helper batch functions
+   consumed the global torch RNG (test order changed results). Fix pattern
+   used: pre-generate fixed datasets or use dedicated
+   `torch.Generator().manual_seed(...)`. Never call bare `torch.randn` inside
+   shared test fixtures.
+
+7. **TTNS == truncated SVD (LoRA-style).** This is intentional: it doubles as
+   the classical low-rank baseline. MPS-vs-TTNS at equal compression isolates
+   the tensor-network-topology contribution. Don't "fix" TTNS into something
+   fancier or the ablation loses meaning.
+
+## Honest-claims policy (report/docs)
+
+- FLOPs numbers: report per-step AND net-to-convergence
+  (`total_training_flops_reduction_pct`). TTNS can need MORE steps.
+- RL: PQC beats param-matched surrogate (0.57 vs 0.42) — that's the claim.
+  The larger MLP wins overall (0.82) — never hide this.
+- Lyapunov: SDP certificate = formal proof for the LINEARIZED closed loop
+  only. Trajectory stats = empirical robustness. Never write "formal proof"
+  about the trajectory monitoring.
+- Proxy-model scope: all headline numbers are on a CPU proxy tower whose task
+  is low-rank by construction. The report's Limitations section says so —
+  keep that language. Real-model evidence comes from
+  `scripts/compress_llava_colab.py` (run on Colab T4, not locally).
+
+## Known environment quirks
+
+- `pip install` in some sandboxes needs `--break-system-packages`.
+- pandoc PDF fails without texlive (`lmodern.sty`); markdown report is the
+  source of truth, convert to PDF locally.
+- PennyLane sim of `StronglyEntanglingLayers` is slow-ish; RL experiment with
+  PQC takes minutes. Tests skip PQC gracefully if pennylane missing;
+  `test_rl_experiment_smoke` monkeypatches `_HAS_PQC=False` to stay fast.
+- CVXPY default solver handles the small SDPs here; if SolverError appears,
+  `solve_lyapunov_sdp` returns an infeasible certificate rather than crashing.
+- Docker CMD uses uvicorn factory `src.inference.app:create_app`; the compose
+  `bench` service is behind profile `bench`.
+- The editable install's `.pth` points at `src/` itself, not repo root, so
+  direct script invocation (`python scripts/foo.py`, not `-m`) can't see
+  `import src...` unless `PYTHONPATH=.` is set — this bit `rlbench_eval.py`
+  and likely also affects `compress_llava_colab.py` run the way its own
+  docstring shows it. `-m src.evaluation.benchmark` style invocation is
+  unaffected (cwd goes on sys.path automatically).
+- CoppeliaSim v4.1.0 + PyRep + RLBench: verified working end-to-end on this
+  machine (Ubuntu 24.04, AMD iGPU) in headless mode — the "CoppeliaSim
+  version expired" issue reported in 2021 (stepjam/RLBench#141) does NOT
+  reproduce with this download. No Qt/xcb apt packages were needed for the
+  headless path (only relevant if you drop `headless=True`). `pip install
+  git+https://github.com/stepjam/RLBench.git` does NOT pull in `gymnasium`
+  despite importing it — install manually. Full setup: docs/USAGE.md #10.
+
+## Commands cheat sheet
+
+```bash
+bash scripts/run_tests.sh                      # tests + coverage gate 80%
+bash scripts/run_benchmark.sh                  # everything + report
+python -m src.evaluation.benchmark --seeds 3   # just the main benchmark
+python -m src.evaluation.ablation              # Pareto sweep (χ=4..48, mps+ttns, heal/no-heal)
+python -m src.evaluation.safety_suite          # episodes + SDP certificate
+python -m src.evaluation.rl_experiment         # mlp vs surrogate vs pqc
+python scripts/generate_report.py              # regenerate technical report
+docker compose up inference                    # serve on :8000
+source scripts/rlbench_env.sh && PYTHONPATH=. python scripts/rlbench_eval.py  # RLBench/CoppeliaSim safety eval — verified working, see docs/USAGE.md #10
+source scripts/rlbench_env.sh && PYTHONPATH=. python scripts/rlbench_train_bc.py  # behavior cloning from RLBench live demos → rlbench_bc_policy.pt
+source scripts/rlbench_env.sh && PYTHONPATH=. python scripts/rlbench_eval.py --policy-path rlbench_bc_policy.pt --max-joint-vel 1.0  # evaluate the trained policy
+PYTHONPATH=. python scripts/wallclock_bench.py         # measured wall-clock dense vs MPS vs TTNS (crossover dim, not analytic FLOPs)
+python -m src.evaluation.safety_baseline_comparison    # heuristic-clipping vs SDP certificate (classical safety baseline)
+source scripts/rlbench_env.sh && PYTHONPATH=. python scripts/rlbench_rl_experiment.py  # GRPOAligner/PQC vs classical on REAL RLBench reward (not the CPU-proxy bandit task)
+```
+
+## Roadmap / next work items (priority order)
+
+1. DONE (scope: 1 layer) — `scripts/compress_llava_colab.py` run for real on
+   Colab T4, real llava-1.5-7b-hf weights → `llava_results.json` (checked
+   into repo root, feeds `generate_report.py` §6 "Real-Model Evidence").
+   Accepted result: 1 of ~32 decoder layers compressed, TTNS,
+   bond_dimension=768 → **3.70x compression, perplexity +1.9%** (20.586 →
+   20.984 on the built-in smoke-test text set) — meets the common
+   ≥2x/≤5%-drop compression target.
+   Three real bugs hit and fixed along the way (see conversation /
+   `scripts/compress_llava_colab.py` comments for detail): (a)
+   `transformers` refactored `LlavaForConditionalGeneration` —
+   `model.language_model` doesn't exist, it's `model.model.language_model`,
+   and loss/lm_head moved to the outer class; (b) fp16-stored MPS/TTNS core
+   parameters trained directly with AdamW reliably diverge to NaN within
+   1-2 steps regardless of lr/clipping — fixed with `FP32Island` (fp32
+   "master weight" wrapper around just the compressed cores, standard
+   mixed-precision pattern, verified in isolation); (c) **NOT fixed, not a
+   bug** — compressing 4 layers simultaneously at bond_dimension=768
+   compounds each layer's ~0.6-0.77 relative error through the residual
+   stream into a forward-pass NaN before healing can even start. 4-layer
+   target abandoned as disproportionate Colab time for optional
+   evidence. `perplexity_after_heal` is NOT
+   trustworthy for LLaVA at any bond dimension tried so far — every
+   multi-layer attempt hit the compounding-NaN wall before healing ran.
+2. PARTIALLY DONE, re-run needed — `compress_llava_colab.py` restructured to
+   sequential per-layer compress-then-heal (compress layer *i*, heal layer
+   *i*, only then move to layer *i*+1, GPTQ/AWQ-style), replacing the old
+   compress-all-then-heal-all structure. `llava_results.json` in the repo
+   still holds the older 1-layer/no-heal accepted run (unchanged) — the
+   4-layer sequential run has NOT yet produced a usable result, across two
+   real Colab attempts, each hitting a DIFFERENT real bug:
+   - Attempt 1 (`--layers 4 --bond-dimension 768 --method ttns
+     --heal-steps 100`, before the fixes below): crashed in
+     `loss.backward()`. Root cause: `from_pretrained` leaves every
+     parameter `requires_grad=True` by default, and the script never froze
+     the backbone — `loss.backward()` during healing was computing/storing
+     gradients for the entire ~7B model, not just the tiny compressed
+     cores, blowing a T4's 15GB VRAM (compounded by `device_map="auto"`
+     already having partially CPU/meta-offloaded the model — visible in
+     the Colab log as "Some parameters are on the meta device"). Fixed:
+     `model.requires_grad_(False)` once up front (layer loop already
+     correctly re-enables grad only on its own cores), plus
+     `model.gradient_checkpointing_enable()` (+`use_cache=False`) since
+     even with the backbone frozen, healing an early layer still needs to
+     backprop activations through every later frozen layer.
+   - Attempt 2 (same command, with the above fix applied): ran to
+     completion (764s, no crash) but `perplexity_final=NaN`. layer0
+     "healed" — loss 3.13→0.28 over 100 steps — but
+     `perplexity_after_layer0` dropped from 20.6 to **1.3**, an implausible
+     improvement. Root cause: `HEAL_TEXTS` and the perplexity-eval `texts`
+     were the SAME 2-sentence set — 100 healing steps memorized them
+     outright (train-on-eval-set leak), not a real quality recovery. That
+     overfit drift in layer0's cores was then large enough that layer1's
+     first healing gradient step diverged straight to NaN/Inf
+     (`diverged_at_step=0`, empty loss list) — layer2/layer3 then inherit
+     NaN from the already-broken forward pass. Fixed: `HEAL_TEXTS` (12
+     sentences, healing only) and `EVAL_TEXTS` (8 sentences, perplexity()
+     only) are now disjoint pools.
+   - Attempt 3 (`--bond-dimension 384 --heal-steps 25 --heal-lr 5e-6`, texts
+     now split): layer0 barely healed (loss 3.13→3.03 over 25 steps — the
+     lower step count avoided overfitting, but was also too gentle to fix
+     chi=384's much higher rel_err, ~0.75-0.84 vs chi=768's ~0.63-0.72 —
+     lower bond_dimension means MORE compression error, not less; an
+     earlier suggestion to lower it to "reduce rel_err" was a mistake, now
+     corrected). `perplexity_after_layer0` = 65.8, WORSE than the
+     (differently-scaled, post-split) baseline of 67.9 — i.e. barely moved.
+     layer1 still diverged to NaN at step 0, in the loss/forward pass
+     itself, before any gradient step — same failure point as attempts 1-2.
+   - Attempt 4 (`--bond-dimension 768 --heal-steps 50 --heal-lr 8e-6`,
+     texts split): layer0 healed genuinely this time (noisy but real
+     descent, loss 3.13→~2.4; `perplexity_after_layer0` 67.9→53.9, a
+     plausible partial recovery, not memorization). **layer1 STILL
+     diverged to NaN at step 0** — identical failure point across FOUR
+     attempts spanning very different bond_dimension/heal-steps/heal-lr
+     combinations. Conclusion: this rules out "wrong hyperparameters" as
+     the cause (if it were, at least one of four quite different
+     combinations should have worked) and points to a structural
+     limitation instead — most likely fp16's narrow dynamic range
+     (max ~65504) on Turing-architecture T4 (no bf16 tensor-core support;
+     that needs Ampere+ — A100/A10/L4/RTX30xx+). Stacking two compressed
+     (and only partially healed) layers' worth of residual-stream signal
+     in fp16 plausibly overflows regardless of healing quality. **Decision:
+     stop pursuing multi-layer sequential healing on T4/fp16** — 4 real
+     attempts is enough to distinguish "needs different hyperparameters"
+     from "needs different hardware/precision." `llava_results.json`
+     keeps the 1-layer/no-heal accepted result as the reported evidence;
+     multi-layer healing remains optional future work. If
+     Ampere+ GPU access becomes available later, the concrete next thing
+     to try is `torch_dtype=torch.bfloat16` instead of `float16` at model
+     load — untested, but directly targets the hypothesized root cause
+     rather than another hyperparameter sweep.
+3. ~~Optional: replace analytic FLOPs accounting with measured wall-clock~~
+   DONE — `scripts/wallclock_bench.py`, run for real: TTNS crosses over to
+   wall-clock-faster than dense at dim=512 (1.72x), reaching 15.84x at
+   dim=2048; MPS (3-core tensor-train) never beat dense in wall-clock up to
+   dim=2048 in this run — more `einsum` dispatch steps than TTNS's single
+   contraction, so fewer analytic FLOPs does not mean faster wall-clock at
+   small-to-medium dim. Report this distinction, don't conflate the two.
+4. Report conversion to PDF + GitHub repo publication (MIT license already
+   stated in README). texlive/pandoc are NOT installed in this sandbox
+   (`which pdflatex xelatex pandoc` all empty) — needs either a no-sudo
+   alternative (e.g. weasyprint) or `sudo apt install texlive-...` run by
+   the user (no passwordless sudo here). GitHub repo: `RafiAchmadN/qi-vlam` (public).
+5. DONE — `scripts/rlbench_train_bc.py` (behavior cloning on RLBench's own
+   live demos, no external dataset), `--policy-path` in `rlbench_eval.py`,
+   `identify_linear_dynamics` (ridge sysid) feeding the existing
+   `solve_lyapunov_sdp` for a RLBench-track formal certificate, and
+   `--hidden-dim`/`--depth` on both scripts (must match between train and
+   eval). All results below are N=60 headless eval, ReachTarget, seed=0 —
+   an original N=15 estimate (6.7% for both raw and MPS) was 1/15
+   successes, too noisy to trust; re-checked at N=60 after live GUI demo
+   runs kept showing 0/15 and 0/20.
+   **Do NOT quote 16.7% (checkpoint `rlbench_bc_policy_v4_big.pt`) as the
+   representative number — it did not reproduce.** Diagnosis chain: v4
+   (200 demos, `--hidden-dim 512 --depth 6`) first looked like a real win
+   over the small network (16.7% success vs 3.3-8.3%). Follow-up check
+   (comparing raw policy outputs across 8 resets with very different
+   targets) found v4's action was near-IDENTICAL regardless of target
+   position — it wasn't conditioning on the goal, just outputting a
+   generic "toward workspace" motion that happened to reduce distance on
+   average. Added `get_augmented_obs()` in `rlbench_eval.py`
+   (`--rel-obs`/`--no-rel-obs`, default on) to feed an explicit
+   `target_xyz - gripper_xyz` feature instead of making the network
+   subtract two absolute positions itself. One run looked worse (0%), so
+   this was properly ablated: **3 training seeds x 2 configs, N=60 eval
+   each**. Result: rel-obs trends better (2.78%±4.81% success, 28.0%±21.6%
+   dist-reduction) vs no-rel-obs (0.00%±0.00%, 21.6%±13.5%) but std >
+   mean — not statistically significant at this sample size. More
+   importantly: the "no-rel-obs, seed=0" arm of this ablation is the exact
+   same config as v4, re-run — it got 0%/21.8%, not 16.7%/76.6%. Root
+   cause: `task.get_demos(..., live_demos=True)` uses RLBench's own
+   internal RNG, not our `--seed` — demo composition is uncontrolled
+   noise across "identical" runs, and it dominates whatever signal comes
+   from architecture/feature choices at N=200 demos. **Honest conclusion:
+   ReachTarget BC success rate is realistically 0-8%, highly run-to-run
+   variable, dominated by uncontrolled demo-collection variance — not a
+   number to report as a point estimate.** Full chronology (v1 through the
+   3-seed ablation) and all raw JSONs: `docs/learning/03-rlbench-simulation.md`
+   §8, especially §8.1a. Pursued because the user asked to keep improving it; this level of rigor
+   (proper multi-seed ablation before trusting a single-run result) is a
+   good general lesson, not RLBench-specific.
+   **UPDATE (2026-08-23, §8.1b): root cause fixed.** `torch.manual_seed`
+   never touched RLBench's own placement RNG — `ReachTarget.init_episode`/
+   `SpawnBoundary` sample via the global `np.random`/`random` state, which
+   `rlbench_train_bc.py`/`rlbench_eval.py` never seeded. Added
+   `np.random.seed(seed); random.seed(seed)` to both scripts; verified
+   `--seed 0` now reproduces identical target placements bit-for-bit
+   across separate process runs. Re-ran the 3-seed × {rel-obs,
+   no-rel-obs} ablation with the fix (`experiments/rlbench_bc_ablation/
+   run_ablation_v2.sh`, eval seed = train seed + 100 so eval targets never
+   overlap training demos, and both configs at a given seed share the
+   same eval targets — a paired comparison). Result: task_success_pct was
+   **0% in all 6 runs** (a clean signal, not previously-documented noise)
+   — consistent with the low end of the 0-8% range. dist_reduction_pct
+   trend **reversed** vs the first ablation: no-rel-obs 13.51%±10.00%
+   beat rel-obs 5.69%±2.96% this time (won 2/3 paired seeds) — std still
+   exceeds the mean difference in both ablations, so neither run supports
+   a directional claim about the relative-observation feature; the
+   surviving conclusion is "not proven to help," not "proven to hurt."
+   The main win is methodological: `--seed` now actually controls run
+   reproducibility, so future ablations aren't fighting uncontrolled
+   demo-composition noise on top of real variance. See §8.1b for the full
+   table and both scripts' diffs.
+6. DONE — Safety classical-baseline comparison
+   (`src/evaluation/safety_baseline_comparison.py`): heuristic reward
+   clipping (common engineering baseline) vs `solve_lyapunov_sdp`
+   (unchanged), swept across closed-loop gain. Real run:
+   `safety_baseline_comparison.json`, 2/6 gains show the heuristic baseline
+   giving "false confidence" (≥90% episodes look safe for a truly unstable
+   system). Test: `tests/test_integration.py::test_safety_baseline_comparison`.
+   Wired into `docs/technical_report.md` §4.4.
+7. DONE — RL Alignment connected to real RLBench reward, not just the
+   CPU-proxy bandit task. `GRPOAligner.align()` (`src/training/rl_alignment.py`)
+   gained an optional `rollout_fn` parameter (backward-compatible — asserts
+   exactly one of `rollout_fn` or `(env_reward, state_dim)` is given).
+   `scripts/rlbench_rl_experiment.py` builds a `rollout_fn` that does
+   single-step interactions (fresh `task.reset()`, one action, one real
+   `task.step()` reward) against ReachTarget with `shaped_rewards=True`
+   (dense `-distance`, verified by reading `rlbench/tasks/reach_target.py`
+   — the sparse default reward would give near-zero gradient signal for an
+   untrained policy). Real run (2 seeds, 120 rollouts, group_size=4): all
+   three heads landed within noise of each other (~-0.53 reward) — no
+   differentiation claim, just evidence the pipeline connects to real
+   physics without diverging. Test:
+   `tests/test_training.py::TestPQC::test_grpo_rollout_fn_improves_reward`
+   (synthetic rollout_fn, RLBench-free, exercises the same align() code
+   path). Wired into `docs/technical_report.md` §4.5.
+8. DONE — Cross-domain generalizability note in `docs/technical_report.md`
+   §6.5: documents that `compress_model()`/`MPSLinear`/`TTNSLinear`,
+   `GRPOAligner`/PQC heads, and `solve_lyapunov_sdp` all run unmodified on
+   both a 7B VLM (LLaVA-1.5-7B) and robotics (RLBench). Deliberately did NOT cite the stale
+   untrained-policy `rlbench_results.json` success rate as if it were the
+   BC pipeline's result — see the honesty note inline in that section.
+9. DONE (Nov 2026) — LIBERO open-dataset benchmark, on-device robot app
+   (app/), bridge (src/bridge), firmware (firmware/), paper
+   (docs/paper/QI-VLA_paper.md) + Indonesian roadmap
+   (docs/paper/ringkasan-riset-dan-roadmap.md). Next (see roadmap there):
+   LIBERO with images + closed-loop LIBERO sim eval; physical SO-101/servo
+   arm test; serve SmolVLA/OpenVLA-OFT behind the bridge's /act; MPO
+   compression of SmolVLA in bf16.

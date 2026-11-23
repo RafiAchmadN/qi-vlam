@@ -1,0 +1,173 @@
+"""Robot drivers for the QI-VLA bridge.
+
+A driver turns joint-space commands in the app's canonical convention
+(radians, `src/robot/arm.py`; gripper normalized 0 closed .. 1 open) into
+whatever the hardware speaks, and reports measured joint positions back in
+the same convention.
+
+  MockDriver    software robot with first-order servo lag (no hardware)
+  SerialDriver  JSON-lines over USB serial to an Arduino/ESP32 servo arm
+                (firmware: firmware/arduino_serial_arm). Per-joint
+                calibration maps radians -> servo degrees.
+
+Adding a robot = subclass `Driver` and implement read/write/stop.
+"""
+
+from __future__ import annotations
+
+import json
+import threading
+import time
+from dataclasses import dataclass, field
+from typing import Dict, List, Optional
+
+import numpy as np
+
+from src.robot import arm
+
+
+class Driver:
+    name = "base"
+
+    def connect(self) -> None: ...
+    def read(self) -> List[float]: raise NotImplementedError
+    def write(self, q: List[float]) -> None: raise NotImplementedError
+    def stop(self) -> None:
+        """Hold the current measured pose."""
+        self.write(self.read())
+    def close(self) -> None: ...
+
+    def info(self) -> Dict:
+        return {"robot": self.name, "joints": arm.JOINT_NAMES,
+                "q_min": arm.Q_MIN.tolist(), "q_max": arm.Q_MAX.tolist()}
+
+
+class MockDriver(Driver):
+    """First-order lag servo model: q' = (q_cmd - q) / tau, slew-limited."""
+
+    name = "mock-arm"
+
+    def __init__(self, tau: float = 0.12, noise: float = 0.002, seed: int = 0) -> None:
+        self.tau, self.noise = tau, noise
+        self.q = arm.Q_HOME.copy()
+        self.cmd = arm.Q_HOME.copy()
+        self.t = time.monotonic()
+        self.rng = np.random.default_rng(seed)
+        self.lock = threading.Lock()
+
+    def _advance(self) -> None:
+        now = time.monotonic()
+        dt, self.t = min(now - self.t, 0.1), now
+        dq = (self.cmd - self.q) * min(dt / self.tau, 1.0)
+        dq = np.clip(dq, -arm.QD_MAX * dt * 1.2, arm.QD_MAX * dt * 1.2)
+        self.q = arm.clamp_q(self.q + dq)
+
+    def read(self) -> List[float]:
+        with self.lock:
+            self._advance()
+            return (self.q + self.rng.normal(0, self.noise, 6) * (self.noise > 0)).tolist()
+
+    def write(self, q: List[float]) -> None:
+        with self.lock:
+            self._advance()
+            self.cmd = arm.clamp_q(np.asarray(q, dtype=np.float64))
+
+    def stop(self) -> None:
+        with self.lock:
+            self._advance()
+            self.cmd = self.q.copy()
+
+
+@dataclass
+class JointCal:
+    """servo_deg = center_deg + sign * scale * degrees(q)   (gripper: lerp closed..open)."""
+    center_deg: float = 90.0
+    sign: float = 1.0
+    scale: float = 1.0
+
+
+@dataclass
+class SerialConfig:
+    port: str = "COM3"
+    baud: int = 115200
+    cal: List[JointCal] = field(default_factory=lambda: [JointCal() for _ in range(5)])
+    gripper_closed_deg: float = 30.0
+    gripper_open_deg: float = 90.0
+
+
+class SerialDriver(Driver):
+    """Protocol (one JSON object per line, both directions):
+         host -> device: {"cmd":"q","deg":[d0..d5]}   |  {"cmd":"stop"}
+         device -> host: {"deg":[d0..d5]}   (measured or last-commanded servo angles)
+    Hobby servos usually have no position feedback; the firmware then echoes
+    the last commanded angles, so the "measured" state is only as good as
+    the servo's tracking — say so when reporting results.
+    """
+
+    name = "serial-servo-arm"
+
+    def __init__(self, cfg: SerialConfig) -> None:
+        self.cfg = cfg
+        self.ser = None
+        self.last_q = arm.Q_HOME.tolist()
+        self.lock = threading.Lock()
+
+    def connect(self) -> None:
+        import serial  # pyserial
+        self.ser = serial.Serial(self.cfg.port, self.cfg.baud, timeout=0.05)
+        time.sleep(2.0)  # most Arduinos reset on open
+
+    def to_deg(self, q: List[float]) -> List[float]:
+        out = [c.center_deg + c.sign * c.scale * float(np.degrees(v)) for c, v in zip(self.cfg.cal, q[:5])]
+        g = self.cfg
+        out.append(g.gripper_closed_deg + (g.gripper_open_deg - g.gripper_closed_deg) * float(np.clip(q[5], 0, 1)))
+        return [float(np.clip(d, 0, 180)) for d in out]
+
+    def from_deg(self, deg: List[float]) -> List[float]:
+        q = [float(np.radians((d - c.center_deg) / (c.sign * c.scale))) for c, d in zip(self.cfg.cal, deg[:5])]
+        g = self.cfg
+        q.append(float(np.clip((deg[5] - g.gripper_closed_deg) / (g.gripper_open_deg - g.gripper_closed_deg), 0, 1)))
+        return q
+
+    def read(self) -> List[float]:
+        if self.ser is None:
+            return self.last_q
+        with self.lock:
+            line = None
+            while self.ser.in_waiting:
+                line = self.ser.readline()
+        if line:
+            try:
+                self.last_q = self.from_deg(json.loads(line)["deg"])
+            except (ValueError, KeyError):
+                pass
+        return self.last_q
+
+    def write(self, q: List[float]) -> None:
+        q = arm.clamp_q(np.asarray(q, dtype=np.float64)).tolist()
+        if self.ser is not None:
+            with self.lock:
+                self.ser.write((json.dumps({"cmd": "q", "deg": [round(d, 2) for d in self.to_deg(q)]}) + "\n").encode())
+
+    def stop(self) -> None:
+        if self.ser is not None:
+            with self.lock:
+                self.ser.write(b'{"cmd":"stop"}\n')
+
+    def close(self) -> None:
+        if self.ser is not None:
+            self.ser.close()
+
+
+def make_driver(kind: str, port: Optional[str] = None, cal_path: Optional[str] = None) -> Driver:
+    if kind == "mock":
+        return MockDriver()
+    if kind == "serial":
+        cfg = SerialConfig(port=port or "COM3")
+        if cal_path:
+            raw = json.loads(open(cal_path, encoding="utf-8").read())
+            cfg.cal = [JointCal(**c) for c in raw["joints"]]
+            cfg.gripper_closed_deg = raw.get("gripper_closed_deg", cfg.gripper_closed_deg)
+            cfg.gripper_open_deg = raw.get("gripper_open_deg", cfg.gripper_open_deg)
+        return SerialDriver(cfg)
+    raise ValueError(f"unknown driver {kind!r} (mock | serial)")

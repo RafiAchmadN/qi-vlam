@@ -1,0 +1,13 @@
+services:
+  inference:
+    build: .
+    ports: ["8000:8000"]
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits: {memory: 2g}
+  benchmark:
+    build: .
+    profiles: ["bench"]
+    command: python -m src.evaluation.benchmark --seeds 3 --out /out/results.json
+    volumes: ["./artifacts:/out"]

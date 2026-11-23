@@ -1,0 +1,23 @@
+venv/
+.venv/
+.claude/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.env
+*.egg-info/
+build/
+dist/
+.DS_Store
+data/
+*.ckpt
+*.pt
+*.pth
+wandb/
+node_modules/
+app/android/
+results/*.tmp
+.coverage
+# local-only drafts (not published)
+docs/paper/
+docs/learning/

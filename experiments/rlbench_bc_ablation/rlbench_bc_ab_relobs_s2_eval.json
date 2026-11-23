@@ -1,0 +1,694 @@
+{
+  "summary": {
+    "task": "ReachTarget",
+    "episodes": 60,
+    "bond_dimension": null,
+    "hidden_dim": 512,
+    "depth": 6,
+    "policy_path": "rlbench_bc_ab_relobs_s2.pt",
+    "task_success_pct": 0.0,
+    "safe_pct": 30.0,
+    "mean_terminal_tracking_error_norm": 0.06215395727194846,
+    "mean_dist_to_target_reduction_pct": 24.72415609712816,
+    "latency": {
+      "count": 60,
+      "mean_ms": 19.72875056861085,
+      "p50_ms": 19.79948959997273,
+      "p95_ms": 32.17133455000294,
+      "max_ms": 33.82453936671178,
+      "budget_ms": 100.0,
+      "violations": 0
+    },
+    "formal_sdp_certificate": {
+      "certified": true,
+      "spectral_radius": 0.811886727809906,
+      "min_eig_P": 0.0010028951801359653,
+      "max_eig_ATPA_minus_P": -0.0009837278630584478,
+      "r_squared": 0.05102355110151968,
+      "meaning": "SDP-feasible P proves local asymptotic stability of the SYSTEM-IDENTIFIED linear approximation of the tracking-error dynamics (fit on real RLBench trajectories above), not a proof about the true nonlinear CoppeliaSim physics. Validity is bounded by r_squared=0.051 on held-out transitions \u2014 treat as unreliable below ~0.5."
+    },
+    "note": "Empirical closed-loop tracking-error monitoring on a real nonlinear rigid-body simulator (CoppeliaSim via RLBench), plus (if --sysid) a formal SDP certificate for a linear model IDENTIFIED FROM the collected trajectories \u2014 see formal_sdp_certificate.meaning and r_squared before trusting it. This complements, not replaces, the exact-linearization SDP certificate in safety.json (that one linearizes a known closed-form toy system; this one fits an approximation to a black-box simulator). Policy is untrained unless loaded via --policy-path (see scripts/rlbench_train_bc.py). mean_dist_to_target_reduction_pct (only for tasks in REACH_COMPATIBLE_TASKS, rlbench_gui_demo.py) is a distance-to-target signal INDEPENDENT of task_success_pct (RLBench's binary proximity-sensor check, a tight threshold) and of mean_terminal_tracking_error_norm (a velocity-tracking safety signal, not task progress) \u2014 a policy can show large distance reduction while task_success_pct stays 0%, which means it learned real directional signal without precision enough to trigger success; read both numbers, not just one."
+  },
+  "episodes": [
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.3346450850785356,
+        "min_dist_to_target": 0.2803600084307904
+      },
+      "terminal_tracking_error_norm": 0.24476857483386993,
+      "lyapunov_safe_fraction": 0.7457627118644068,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.44198995330125296,
+        "min_dist_to_target": 0.2601337063322732
+      },
+      "terminal_tracking_error_norm": 0.013879150152206421,
+      "lyapunov_safe_fraction": 0.9491525423728814,
+      "safe": true,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.3776110721191426,
+        "min_dist_to_target": 0.29924950532236666
+      },
+      "terminal_tracking_error_norm": 0.015002011321485043,
+      "lyapunov_safe_fraction": 0.7457627118644068,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.5995874375101905,
+        "min_dist_to_target": 0.49194493102633496
+      },
+      "terminal_tracking_error_norm": 0.014081920497119427,
+      "lyapunov_safe_fraction": 0.864406779661017,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.6459760192462319,
+        "min_dist_to_target": 0.5647633548247675
+      },
+      "terminal_tracking_error_norm": 0.14863720536231995,
+      "lyapunov_safe_fraction": 0.6610169491525424,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.31672037465455105,
+        "min_dist_to_target": 0.2245667902549434
+      },
+      "terminal_tracking_error_norm": 0.02416396141052246,
+      "lyapunov_safe_fraction": 0.8983050847457628,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.4611593471593519,
+        "min_dist_to_target": 0.3330298654435099
+      },
+      "terminal_tracking_error_norm": 0.07122498005628586,
+      "lyapunov_safe_fraction": 0.7796610169491526,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.3418424479097174,
+        "min_dist_to_target": 0.25454424890584165
+      },
+      "terminal_tracking_error_norm": 0.014209810644388199,
+      "lyapunov_safe_fraction": 0.8813559322033898,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.5603881230458001,
+        "min_dist_to_target": 0.44173075388212335
+      },
+      "terminal_tracking_error_norm": 0.22276261448860168,
+      "lyapunov_safe_fraction": 0.8813559322033898,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.5413265254692755,
+        "min_dist_to_target": 0.26168803705238586
+      },
+      "terminal_tracking_error_norm": 0.01347650308161974,
+      "lyapunov_safe_fraction": 0.9830508474576272,
+      "safe": true,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.303631331598087,
+        "min_dist_to_target": 0.14391770765935205
+      },
+      "terminal_tracking_error_norm": 0.23412233591079712,
+      "lyapunov_safe_fraction": 0.711864406779661,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.3801860189512107,
+        "min_dist_to_target": 0.2936141576895774
+      },
+      "terminal_tracking_error_norm": 0.07961811870336533,
+      "lyapunov_safe_fraction": 0.6440677966101696,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.45020586570402865,
+        "min_dist_to_target": 0.34998929063546286
+      },
+      "terminal_tracking_error_norm": 0.019840111956000328,
+      "lyapunov_safe_fraction": 0.847457627118644,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.48771104803910437,
+        "min_dist_to_target": 0.32327803283957574
+      },
+      "terminal_tracking_error_norm": 0.014697650447487831,
+      "lyapunov_safe_fraction": 0.6779661016949152,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.6529813763343625,
+        "min_dist_to_target": 0.5389833325536367
+      },
+      "terminal_tracking_error_norm": 0.17089548707008362,
+      "lyapunov_safe_fraction": 0.847457627118644,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.44344172539820104,
+        "min_dist_to_target": 0.36279057364521494
+      },
+      "terminal_tracking_error_norm": 0.02130889892578125,
+      "lyapunov_safe_fraction": 0.8135593220338984,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.5956409027180831,
+        "min_dist_to_target": 0.4798160562500477
+      },
+      "terminal_tracking_error_norm": 0.01764339581131935,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.35883630603460104,
+        "min_dist_to_target": 0.30523311649202556
+      },
+      "terminal_tracking_error_norm": 0.021339859813451767,
+      "lyapunov_safe_fraction": 0.7966101694915254,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.756896958432353,
+        "min_dist_to_target": 0.588645529478768
+      },
+      "terminal_tracking_error_norm": 0.020671231672167778,
+      "lyapunov_safe_fraction": 0.8813559322033898,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.6977941364296998,
+        "min_dist_to_target": 0.54585762757525
+      },
+      "terminal_tracking_error_norm": 0.022987980395555496,
+      "lyapunov_safe_fraction": 0.728813559322034,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.4341211860177304,
+        "min_dist_to_target": 0.24189844917300551
+      },
+      "terminal_tracking_error_norm": 0.02172267623245716,
+      "lyapunov_safe_fraction": 0.9661016949152542,
+      "safe": true,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.6017897617350898,
+        "min_dist_to_target": 0.4932395228482315
+      },
+      "terminal_tracking_error_norm": 0.05654630437493324,
+      "lyapunov_safe_fraction": 0.8135593220338984,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.28202330578894097,
+        "min_dist_to_target": 0.17816196992795172
+      },
+      "terminal_tracking_error_norm": 0.20565366744995117,
+      "lyapunov_safe_fraction": 0.7627118644067796,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.4426636055284661,
+        "min_dist_to_target": 0.3742358292271005
+      },
+      "terminal_tracking_error_norm": 0.017089802771806717,
+      "lyapunov_safe_fraction": 0.6779661016949152,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.47548535082061655,
+        "min_dist_to_target": 0.3767925157037026
+      },
+      "terminal_tracking_error_norm": 0.016191303730010986,
+      "lyapunov_safe_fraction": 0.8305084745762712,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.7002778061173417,
+        "min_dist_to_target": 0.549180250269683
+      },
+      "terminal_tracking_error_norm": 0.027209317311644554,
+      "lyapunov_safe_fraction": 0.9322033898305084,
+      "safe": true,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.6266111584430425,
+        "min_dist_to_target": 0.5102601871284002
+      },
+      "terminal_tracking_error_norm": 0.017976196482777596,
+      "lyapunov_safe_fraction": 0.847457627118644,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.3614076743819723,
+        "min_dist_to_target": 0.23934875238049808
+      },
+      "terminal_tracking_error_norm": 0.02222217246890068,
+      "lyapunov_safe_fraction": 0.9322033898305084,
+      "safe": true,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.5947132102031113,
+        "min_dist_to_target": 0.4460514791316644
+      },
+      "terminal_tracking_error_norm": 0.01927769184112549,
+      "lyapunov_safe_fraction": 0.6779661016949152,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.6762580719905805,
+        "min_dist_to_target": 0.28446932350530457
+      },
+      "terminal_tracking_error_norm": 0.01746954210102558,
+      "lyapunov_safe_fraction": 0.9152542372881356,
+      "safe": true,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.6164868966858932,
+        "min_dist_to_target": 0.3889151226011012
+      },
+      "terminal_tracking_error_norm": 0.01681661605834961,
+      "lyapunov_safe_fraction": 0.9661016949152542,
+      "safe": true,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.7004602813452829,
+        "min_dist_to_target": 0.5695303574435008
+      },
+      "terminal_tracking_error_norm": 0.01517879031598568,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.5110333105217921,
+        "min_dist_to_target": 0.43487815575181865
+      },
+      "terminal_tracking_error_norm": 0.16788078844547272,
+      "lyapunov_safe_fraction": 0.6610169491525424,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.617868445274553,
+        "min_dist_to_target": 0.5107904975476869
+      },
+      "terminal_tracking_error_norm": 0.18397533893585205,
+      "lyapunov_safe_fraction": 0.8135593220338984,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.6532100562865797,
+        "min_dist_to_target": 0.5362483831933004
+      },
+      "terminal_tracking_error_norm": 0.017382603138685226,
+      "lyapunov_safe_fraction": 0.9830508474576272,
+      "safe": true,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.5352814625031104,
+        "min_dist_to_target": 0.4158179698708109
+      },
+      "terminal_tracking_error_norm": 0.049070049077272415,
+      "lyapunov_safe_fraction": 0.847457627118644,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.5101836957163743,
+        "min_dist_to_target": 0.38858560482296384
+      },
+      "terminal_tracking_error_norm": 0.015740854665637016,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.5841092075361631,
+        "min_dist_to_target": 0.4394855633120233
+      },
+      "terminal_tracking_error_norm": 0.019338291138410568,
+      "lyapunov_safe_fraction": 0.711864406779661,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.5686081157864803,
+        "min_dist_to_target": 0.43874481477181604
+      },
+      "terminal_tracking_error_norm": 0.02415366657078266,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.6549443647884382,
+        "min_dist_to_target": 0.5678955895488887
+      },
+      "terminal_tracking_error_norm": 0.06402995437383652,
+      "lyapunov_safe_fraction": 0.6949152542372881,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.6725157697762344,
+        "min_dist_to_target": 0.5377814256109883
+      },
+      "terminal_tracking_error_norm": 0.019439293071627617,
+      "lyapunov_safe_fraction": 0.6949152542372881,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.4793345844091599,
+        "min_dist_to_target": 0.333279820623858
+      },
+      "terminal_tracking_error_norm": 0.015846583992242813,
+      "lyapunov_safe_fraction": 0.9322033898305084,
+      "safe": true,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.4862871630193861,
+        "min_dist_to_target": 0.32327443457921434
+      },
+      "terminal_tracking_error_norm": 0.09772960096597672,
+      "lyapunov_safe_fraction": 0.6949152542372881,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.41046318836880513,
+        "min_dist_to_target": 0.3228661389276317
+      },
+      "terminal_tracking_error_norm": 0.053233738988637924,
+      "lyapunov_safe_fraction": 0.728813559322034,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.3092459861045852,
+        "min_dist_to_target": 0.21722441368300038
+      },
+      "terminal_tracking_error_norm": 0.017850667238235474,
+      "lyapunov_safe_fraction": 0.8135593220338984,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.6640528148177006,
+        "min_dist_to_target": 0.5683951020949823
+      },
+      "terminal_tracking_error_norm": 0.015607452020049095,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.6403830891839308,
+        "min_dist_to_target": 0.5478129623500932
+      },
+      "terminal_tracking_error_norm": 0.0825742557644844,
+      "lyapunov_safe_fraction": 0.6440677966101696,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.30231639272307337,
+        "min_dist_to_target": 0.20388916916684066
+      },
+      "terminal_tracking_error_norm": 0.013691473752260208,
+      "lyapunov_safe_fraction": 0.7796610169491526,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.6762451264360919,
+        "min_dist_to_target": 0.5380574771395296
+      },
+      "terminal_tracking_error_norm": 0.01933056116104126,
+      "lyapunov_safe_fraction": 0.8983050847457628,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.5423201145116948,
+        "min_dist_to_target": 0.44742126309928887
+      },
+      "terminal_tracking_error_norm": 0.17473432421684265,
+      "lyapunov_safe_fraction": 0.6610169491525424,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.6164125767605777,
+        "min_dist_to_target": 0.5163474685397267
+      },
+      "terminal_tracking_error_norm": 0.06829634308815002,
+      "lyapunov_safe_fraction": 0.711864406779661,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.6031438994181083,
+        "min_dist_to_target": 0.32695202781920146
+      },
+      "terminal_tracking_error_norm": 0.017450783401727676,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.743721246808673,
+        "min_dist_to_target": 0.4906455799860641
+      },
+      "terminal_tracking_error_norm": 0.017347369343042374,
+      "lyapunov_safe_fraction": 0.9322033898305084,
+      "safe": true,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.4522639729629983,
+        "min_dist_to_target": 0.3655161078985344
+      },
+      "terminal_tracking_error_norm": 0.08372236788272858,
+      "lyapunov_safe_fraction": 0.6440677966101696,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.5800139757279578,
+        "min_dist_to_target": 0.3814301083525744
+      },
+      "terminal_tracking_error_norm": 0.018552491441369057,
+      "lyapunov_safe_fraction": 0.8983050847457628,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.37335618941359533,
+        "min_dist_to_target": 0.2897584219447135
+      },
+      "terminal_tracking_error_norm": 0.19817249476909637,
+      "lyapunov_safe_fraction": 0.7627118644067796,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.39738982774542475,
+        "min_dist_to_target": 0.34186624002286986
+      },
+      "terminal_tracking_error_norm": 0.2955988943576813,
+      "lyapunov_safe_fraction": 0.7796610169491526,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.5569783101009772,
+        "min_dist_to_target": 0.4355462456029522
+      },
+      "terminal_tracking_error_norm": 0.020193012431263924,
+      "lyapunov_safe_fraction": 0.864406779661017,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.48759157872423214,
+        "min_dist_to_target": 0.32170935711490706
+      },
+      "terminal_tracking_error_norm": 0.0215672068297863,
+      "lyapunov_safe_fraction": 0.9322033898305084,
+      "safe": true,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.5296738599109231,
+        "min_dist_to_target": 0.4130929422848839
+      },
+      "terminal_tracking_error_norm": 0.07804109156131744,
+      "lyapunov_safe_fraction": 0.9152542372881356,
+      "safe": true,
+      "steps": 60
+    }
+  ]
+}

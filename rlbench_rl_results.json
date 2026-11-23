@@ -1,0 +1,68 @@
+{
+  "task": "ReachTarget",
+  "reward_type": "shaped (dense, -distance-to-target), real CoppeliaSim physics",
+  "interaction": "single-step per rollout (fresh reset each time), NOT full-episode credit assignment",
+  "group_size": 4,
+  "max_rollouts_per_run": 120,
+  "n_seeds": 2,
+  "results": {
+    "mlp": {
+      "rollouts_to_target": {
+        "mean": 120.0,
+        "std": 0.0,
+        "runs": [
+          120.0,
+          120.0
+        ]
+      },
+      "final_reward_ma10": {
+        "mean": -0.5336734279990196,
+        "std": 0.03033665460401682,
+        "runs": [
+          -0.555124682188034,
+          -0.5122221738100052
+        ]
+      },
+      "params": 840
+    },
+    "surrogate": {
+      "rollouts_to_target": {
+        "mean": 120.0,
+        "std": 0.0,
+        "runs": [
+          120.0,
+          120.0
+        ]
+      },
+      "final_reward_ma10": {
+        "mean": -0.547732974588871,
+        "std": 0.01670344301899193,
+        "runs": [
+          -0.5359218567609787,
+          -0.5595440924167633
+        ]
+      },
+      "params": 392
+    },
+    "pqc": {
+      "rollouts_to_target": {
+        "mean": 120.0,
+        "std": 0.0,
+        "runs": [
+          120.0,
+          120.0
+        ]
+      },
+      "final_reward_ma10": {
+        "mean": -0.5282455042004586,
+        "std": 0.012100598337171779,
+        "runs": [
+          -0.5368019193410873,
+          -0.5196890890598297
+        ]
+      },
+      "params": 408
+    }
+  },
+  "note": "RL alignment evidence on the RLBench benchmark — complements, not replaces, src/evaluation/rl_experiment.py's CPU-proxy bandit-task comparison (rl_results.json), which remains the primary 3-seed statistically rigorous comparison. This RLBench version trades seed count and full-episode structure for genuine physical-simulator reward feedback — read both together, not this one in isolation."
+}

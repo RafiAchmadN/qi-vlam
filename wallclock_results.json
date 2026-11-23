@@ -1,0 +1,61 @@
+{
+  "note": "Measured CPU wall-clock forward latency (mean over n_runs, warmup discarded), NOT analytic FLOPs. At small dim, Python/PyTorch dispatch overhead per contraction step can dominate, so a tensor-network layer can be wall-clock SLOWER than dense even though it has fewer FLOPs and fewer parameters \u2014 this is the gap this script measures, complementing the analytic '-79.7%' FLOPs figure in results.json.",
+  "ttns_wallclock_crossover_dim": 512,
+  "rows": [
+    {
+      "dim": 128,
+      "bond_dimension": 24,
+      "dense_ms": 0.029752680002275156,
+      "mps_ms": 0.9940939000080107,
+      "ttns_ms": 0.10317781499907142,
+      "mps_speedup_x": 0.029929446304856513,
+      "ttns_speedup_x": 0.2883631525104784,
+      "mps_param_ratio": 2.0476190476190474,
+      "ttns_param_ratio": 2.411214953271028
+    },
+    {
+      "dim": 256,
+      "bond_dimension": 24,
+      "dense_ms": 0.07076236001012148,
+      "mps_ms": 1.5823537800133636,
+      "ttns_ms": 0.07943663998958073,
+      "mps_speedup_x": 0.04471968336279632,
+      "ttns_speedup_x": 0.8908025316705616,
+      "mps_param_ratio": 2.4711538461538463,
+      "ttns_param_ratio": 5.014634146341463
+    },
+    {
+      "dim": 512,
+      "bond_dimension": 24,
+      "dense_ms": 0.19094180501269875,
+      "mps_ms": 2.579116665001493,
+      "ttns_ms": 0.11070688999097911,
+      "mps_speedup_x": 0.07403379909244556,
+      "ttns_speedup_x": 1.7247508716779736,
+      "mps_param_ratio": 6.493670886075949,
+      "ttns_param_ratio": 10.234413965087281
+    },
+    {
+      "dim": 1024,
+      "bond_dimension": 24,
+      "dense_ms": 0.46946976999606704,
+      "mps_ms": 2.457982390005782,
+      "ttns_ms": 0.09115823499087128,
+      "mps_speedup_x": 0.19099802012615832,
+      "ttns_speedup_x": 5.150053311618862,
+      "mps_param_ratio": 23.03370786516854,
+      "ttns_param_ratio": 20.68095838587642
+    },
+    {
+      "dim": 2048,
+      "bond_dimension": 24,
+      "dense_ms": 0.8480722900094406,
+      "mps_ms": 3.784463215015421,
+      "ttns_ms": 0.05352983500415576,
+      "mps_speedup_x": 0.2240931518754331,
+      "ttns_speedup_x": 15.842983449203627,
+      "mps_param_ratio": 81.96,
+      "ttns_param_ratio": 41.57767913760304
+    }
+  ]
+}

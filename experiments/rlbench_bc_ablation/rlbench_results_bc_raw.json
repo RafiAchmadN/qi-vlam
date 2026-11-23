@@ -1,0 +1,197 @@
+{
+  "summary": {
+    "task": "ReachTarget",
+    "episodes": 15,
+    "bond_dimension": null,
+    "policy_path": "rlbench_bc_policy.pt",
+    "task_success_pct": 6.666666666666667,
+    "safe_pct": 20.0,
+    "mean_terminal_tracking_error_norm": 0.08654146778086821,
+    "mean_dist_to_target_reduction_pct": 54.72747639063192,
+    "latency": {
+      "count": 15,
+      "mean_ms": 6.954111780225043,
+      "p50_ms": 5.719809949975267,
+      "p95_ms": 24.165749666705477,
+      "max_ms": 24.165749666705477,
+      "budget_ms": 100.0,
+      "violations": 0
+    },
+    "formal_sdp_certificate": {
+      "certified": true,
+      "spectral_radius": 0.9437843561172485,
+      "min_eig_P": 0.000999996904283762,
+      "max_eig_ATPA_minus_P": -0.0009875125251710415,
+      "r_squared": 0.83518499263866,
+      "meaning": "SDP-feasible P proves local asymptotic stability of the SYSTEM-IDENTIFIED linear approximation of the tracking-error dynamics (fit on real RLBench trajectories above), not a proof about the true nonlinear CoppeliaSim physics. Validity is bounded by r_squared=0.835 on held-out transitions \u2014 treat as unreliable below ~0.5."
+    },
+    "note": "Empirical closed-loop tracking-error monitoring on a real nonlinear rigid-body simulator (CoppeliaSim via RLBench), plus (if --sysid) a formal SDP certificate for a linear model IDENTIFIED FROM the collected trajectories \u2014 see formal_sdp_certificate.meaning and r_squared before trusting it. This complements, not replaces, the exact-linearization SDP certificate in safety.json (that one linearizes a known closed-form toy system; this one fits an approximation to a black-box simulator). Policy is untrained unless loaded via --policy-path (see scripts/rlbench_train_bc.py). mean_dist_to_target_reduction_pct (only for tasks in REACH_COMPATIBLE_TASKS, rlbench_gui_demo.py) is a distance-to-target signal INDEPENDENT of task_success_pct (RLBench's binary proximity-sensor check, a tight threshold) and of mean_terminal_tracking_error_norm (a velocity-tracking safety signal, not task progress) \u2014 a policy can show large distance reduction while task_success_pct stays 0%, which means it learned real directional signal without precision enough to trigger success; read both numbers, not just one."
+  },
+  "episodes": [
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.6338634500685755,
+        "min_dist_to_target": 0.20646656263564236
+      },
+      "terminal_tracking_error_norm": 0.17456726729869843,
+      "lyapunov_safe_fraction": 0.6779661016949152,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.7243324546707924,
+        "min_dist_to_target": 0.2534020893726659
+      },
+      "terminal_tracking_error_norm": 0.19892476499080658,
+      "lyapunov_safe_fraction": 0.9322033898305084,
+      "safe": true,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.5268732238056162,
+        "min_dist_to_target": 0.3832148834130112
+      },
+      "terminal_tracking_error_norm": 0.01966608129441738,
+      "lyapunov_safe_fraction": 0.6440677966101696,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.6188433703562911,
+        "min_dist_to_target": 0.09151882300005064
+      },
+      "terminal_tracking_error_norm": 0.02097855694591999,
+      "lyapunov_safe_fraction": 0.864406779661017,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.6082347099360031,
+        "min_dist_to_target": 0.37692691599142936
+      },
+      "terminal_tracking_error_norm": 0.03419661521911621,
+      "lyapunov_safe_fraction": 0.8813559322033898,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.570055034039492,
+        "min_dist_to_target": 0.3323295919512173
+      },
+      "terminal_tracking_error_norm": 0.18232223391532898,
+      "lyapunov_safe_fraction": 0.847457627118644,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.6777282037588437,
+        "min_dist_to_target": 0.4662563199862067
+      },
+      "terminal_tracking_error_norm": 0.191904678940773,
+      "lyapunov_safe_fraction": 0.8135593220338984,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": true,
+      "target_info": {
+        "init_dist_to_target": 0.2693503058818144,
+        "min_dist_to_target": 0.05200776254642016
+      },
+      "terminal_tracking_error_norm": 0.014697467908263206,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true,
+      "steps": 29
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.6324530241546865,
+        "min_dist_to_target": 0.15917714259179344
+      },
+      "terminal_tracking_error_norm": 0.027359934523701668,
+      "lyapunov_safe_fraction": 0.8135593220338984,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.5483893775740083,
+        "min_dist_to_target": 0.08679877447737071
+      },
+      "terminal_tracking_error_norm": 0.1722491979598999,
+      "lyapunov_safe_fraction": 0.8135593220338984,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.4690999557096777,
+        "min_dist_to_target": 0.2951818051304391
+      },
+      "terminal_tracking_error_norm": 0.02085968106985092,
+      "lyapunov_safe_fraction": 0.8135593220338984,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.5393152673595673,
+        "min_dist_to_target": 0.2523152867555545
+      },
+      "terminal_tracking_error_norm": 0.01892213150858879,
+      "lyapunov_safe_fraction": 0.864406779661017,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.6688744077409233,
+        "min_dist_to_target": 0.2351688328634043
+      },
+      "terminal_tracking_error_norm": 0.18623556196689606,
+      "lyapunov_safe_fraction": 0.728813559322034,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.5195537760987005,
+        "min_dist_to_target": 0.46598338380171567
+      },
+      "terminal_tracking_error_norm": 0.019577566534280777,
+      "lyapunov_safe_fraction": 0.6440677966101696,
+      "safe": false,
+      "steps": 60
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.6482738563914109,
+        "min_dist_to_target": 0.26169758696434225
+      },
+      "terminal_tracking_error_norm": 0.015660276636481285,
+      "lyapunov_safe_fraction": 0.9491525423728814,
+      "safe": true,
+      "steps": 60
+    }
+  ]
+}

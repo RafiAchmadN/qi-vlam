@@ -1,0 +1,103 @@
+{
+  "baseline_accuracy": 0.8373789694660685,
+  "healing_only_control_accuracy": 0.9066437036344441,
+  "note": "ttns == truncated-SVD low-rank baseline (LoRA-style); mps is the quantum-inspired structure under test. Comparing the two at equal compression isolates whether the MPS topology adds value beyond plain low-rank factorization.",
+  "pareto": [
+    {
+      "method": "mps",
+      "bond_dimension": 4,
+      "compression_ratio": 41.12,
+      "accuracy_no_heal": 0.0,
+      "accuracy_healed": 0.08733346007278175,
+      "accuracy_drop_pct": 89.57061697782218
+    },
+    {
+      "method": "ttns",
+      "bond_dimension": 4,
+      "compression_ratio": 28.358620689655172,
+      "accuracy_no_heal": 0.4134535505906227,
+      "accuracy_healed": 0.6663587983607635,
+      "accuracy_drop_pct": 20.423270387880798
+    },
+    {
+      "method": "mps",
+      "bond_dimension": 8,
+      "compression_ratio": 13.179487179487179,
+      "accuracy_no_heal": 0.0006369275682367448,
+      "accuracy_healed": 0.3986268814620212,
+      "accuracy_drop_pct": 52.3958809574362
+    },
+    {
+      "method": "ttns",
+      "bond_dimension": 8,
+      "compression_ratio": 14.898550724637682,
+      "accuracy_no_heal": 0.8017720386923677,
+      "accuracy_healed": 0.8754083542252651,
+      "accuracy_drop_pct": -4.5414783683240785
+    },
+    {
+      "method": "mps",
+      "bond_dimension": 16,
+      "compression_ratio": 3.6714285714285713,
+      "accuracy_no_heal": 0.0685180607045146,
+      "accuracy_healed": 0.7868577006519251,
+      "accuracy_drop_pct": 6.033262197444118
+    },
+    {
+      "method": "ttns",
+      "bond_dimension": 16,
+      "compression_ratio": 7.5588235294117645,
+      "accuracy_no_heal": 0.834453891786406,
+      "accuracy_healed": 0.9154861851547711,
+      "accuracy_drop_pct": -9.327582676038007
+    },
+    {
+      "method": "mps",
+      "bond_dimension": 24,
+      "compression_ratio": 2.4711538461538463,
+      "accuracy_no_heal": 0.21419774147650972,
+      "accuracy_healed": 0.8347433754323796,
+      "accuracy_drop_pct": 0.31474327989982387
+    },
+    {
+      "method": "ttns",
+      "bond_dimension": 24,
+      "compression_ratio": 5.014634146341463,
+      "accuracy_no_heal": 0.8438539423351816,
+      "accuracy_healed": 0.9220293774261294,
+      "accuracy_drop_pct": -10.108972286948639
+    },
+    {
+      "method": "mps",
+      "bond_dimension": 32,
+      "compression_ratio": 1.8623188405797102,
+      "accuracy_no_heal": 0.42052921490798134,
+      "accuracy_healed": 0.8629882901651956,
+      "accuracy_drop_pct": -3.0582713004431206
+    },
+    {
+      "method": "ttns",
+      "bond_dimension": 32,
+      "compression_ratio": 3.7246376811594204,
+      "accuracy_no_heal": 0.84221892790406,
+      "accuracy_healed": 0.9225115350866139,
+      "accuracy_drop_pct": -10.166551671918368
+    },
+    {
+      "method": "mps",
+      "bond_dimension": 48,
+      "compression_ratio": 1.2475728155339805,
+      "accuracy_no_heal": 0.7313821104888802,
+      "accuracy_healed": 0.8910548175392087,
+      "accuracy_drop_pct": -6.409982819053255
+    },
+    {
+      "method": "ttns",
+      "bond_dimension": 48,
+      "compression_ratio": 2.4245283018867925,
+      "accuracy_no_heal": 0.8481738921973596,
+      "accuracy_healed": 0.9272701535600757,
+      "accuracy_drop_pct": -10.73482704626841
+    }
+  ]
+}

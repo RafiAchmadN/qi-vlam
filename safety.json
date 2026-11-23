@@ -1,0 +1,516 @@
+{
+  "summary": {
+    "episodes": 100,
+    "safe_pct": 100.0,
+    "mean_terminal_norm": 0.031022473042830824,
+    "formal_sdp_certificate": {
+      "certified": true,
+      "spectral_radius": 0.925227701663971,
+      "min_eig_P": 0.002722250297665596,
+      "max_eig_ATPA_minus_P": -0.0009999999310821295,
+      "meaning": "SDP-feasible P proves local asymptotic stability of the linearized closed loop; episode stats above are empirical robustness evidence under perturbation."
+    }
+  },
+  "episodes": [
+    {
+      "terminal_norm": 0.04767739400267601,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.03269345685839653,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.04021606966853142,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.03506907820701599,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.027325497940182686,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.025417374446988106,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.030474577099084854,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.03310559317469597,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.020909082144498825,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.04967128485441208,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.030855610966682434,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.03298678994178772,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.02407269924879074,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.018063552677631378,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.07813385874032974,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.030624277889728546,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.015693774446845055,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.03203882649540901,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.015199167653918266,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.029109850525856018,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.033361516892910004,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.020726971328258514,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.035565998405218124,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.03131283447146416,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.015864495187997818,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.08044849336147308,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.02902268059551716,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.020069759339094162,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.04993819072842598,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.025825900956988335,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.02419741079211235,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.03448108956217766,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.019795313477516174,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.02619381994009018,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.04493076726794243,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.02826078049838543,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.031158654019236565,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.01974724978208542,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.01680726744234562,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.030740560963749886,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.03069036453962326,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.0240493007004261,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.07555603235960007,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.04207317903637886,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.026431137695908546,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.020413586869835854,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.022095436230301857,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.02858012355864048,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.02748813107609749,
+      "lyapunov_safe_fraction": 0.9830508474576272,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.02343445084989071,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.03017560765147209,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.0219144094735384,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.03635495528578758,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.02771834284067154,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.030175283551216125,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.027121182531118393,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.03940664231777191,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.031487613916397095,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.02640628069639206,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.043800238519907,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.0306515172123909,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.02408011257648468,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.02750144898891449,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.02732698805630207,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.022875409573316574,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.0353846400976181,
+      "lyapunov_safe_fraction": 0.9830508474576272,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.018538644537329674,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.025263100862503052,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.024294277653098106,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.02043953537940979,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.03604287654161453,
+      "lyapunov_safe_fraction": 0.9830508474576272,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.04345797002315521,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.024034058675169945,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.0328841432929039,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.01678137294948101,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.02225252240896225,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.028861934319138527,
+      "lyapunov_safe_fraction": 0.9830508474576272,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.03486185893416405,
+      "lyapunov_safe_fraction": 0.9830508474576272,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.036709558218717575,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.034997135400772095,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.037892237305641174,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.02322520688176155,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.019204717129468918,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.03926612064242363,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.022405443713068962,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.05090963467955589,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.037675872445106506,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.03130292519927025,
+      "lyapunov_safe_fraction": 0.9830508474576272,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.03045087680220604,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.024419093504548073,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.0394059456884861,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.033033307641744614,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.01665770262479782,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.06748504936695099,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.01493948046118021,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.01807204633951187,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.027638645842671394,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.04274233430624008,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.02359158545732498,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    },
+    {
+      "terminal_norm": 0.03153010085225105,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true
+    }
+  ]
+}

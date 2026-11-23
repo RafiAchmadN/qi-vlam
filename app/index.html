@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f141a" />
+  <title>QI-VLA Robot</title>
+  <link rel="stylesheet" href="./src/style.css" />
+</head>
+<body>
+  <header>
+    <div class="brand">QI-VLA <span>Robot</span></div>
+    <div class="mode" role="tablist" aria-label="Mode">
+      <button id="modeSim" class="on" role="tab">Simulasi</button>
+      <button id="modeLive" role="tab">Robot Nyata</button>
+    </div>
+    <span id="connPill" class="pill off">offline</span>
+  </header>
+
+  <main>
+    <section class="viewport">
+      <canvas id="view"></canvas>
+      <div class="hud">
+        <div class="cam"><canvas id="camView" width="160" height="128"></canvas><small>kamera atas · deteksi HSV</small></div>
+        <div class="stats">
+          <div><b id="hudSource">policy</b><small>pengendali</small></div>
+          <div><b id="hudV">0</b><small>Lyapunov V</small></div>
+          <div><b id="hudErr">0</b><small>error (mm)</small></div>
+          <div><b id="hudLat">0</b><small>inferensi (ms)</small></div>
+        </div>
+      </div>
+      <button id="estop" class="estop" aria-label="Emergency stop">STOP</button>
+    </section>
+
+    <nav class="tabs">
+      <button data-tab="cmd" class="on">Perintah</button>
+      <button data-tab="manual">Manual</button>
+      <button data-tab="conn">Koneksi</button>
+      <button data-tab="model">Model</button>
+      <button data-tab="log">Log</button>
+    </nav>
+
+    <section class="panel" id="tab-cmd">
+      <form id="cmdForm" class="row">
+        <input id="cmdText" autocomplete="off" placeholder="mis. ambil kubus merah taruh di pad kuning" />
+        <button type="submit" class="primary">Jalankan</button>
+      </form>
+      <div class="chips" id="chips"></div>
+      <div class="row">
+        <button id="btnReset">Acak scene</button>
+        <button id="btnHome">Home</button>
+        <label class="inline">Kecepatan <input id="speed" type="range" min="0.2" max="1" step="0.1" value="1" /></label>
+      </div>
+      <p id="planView" class="muted"></p>
+    </section>
+
+    <section class="panel hidden" id="tab-manual">
+      <div id="sliders"></div>
+      <p class="muted">Jog manual juga lewat safety shield (batas sendi, kecepatan, meja).</p>
+    </section>
+
+    <section class="panel hidden" id="tab-conn">
+      <label>Protokol
+        <select id="connType">
+          <option value="bridge">QI-VLA Bridge (Python / ESP32 Wi-Fi)</option>
+          <option value="ros">rosbridge (ROS 1 / ROS 2)</option>
+        </select>
+      </label>
+      <label>URL <input id="connUrl" value="ws://192.168.1.10:8765/ws" /></label>
+      <div id="rosOpts" class="hidden">
+        <label>Topik perintah <input id="rosCmd" value="/arm_controller/joint_trajectory" /></label>
+        <label>Topik state <input id="rosState" value="/joint_states" /></label>
+      </div>
+      <div class="row">
+        <button id="btnConnect" class="primary">Hubungkan</button>
+        <button id="btnDisconnect">Putuskan</button>
+        <label class="inline"><input type="checkbox" id="armed" /> Armed (kirim perintah)</label>
+      </div>
+      <p class="muted">Saat terhubung, pose perintah disinkronkan ke pose robot terukur dulu (tidak ada lompatan). Perintah baru dikirim setelah <b>Armed</b> dicentang. Bayangan biru = state terukur robot.</p>
+    </section>
+
+    <section class="panel hidden" id="tab-model">
+      <label>Policy
+        <select id="policySel">
+          <option value="ttns">TTNS terkompresi (tensor network)</option>
+          <option value="dense">Dense FP32 (baseline)</option>
+          <option value="ik">IK klasik saja (tanpa learning)</option>
+          <option value="remote">Server (HTTP /act)</option>
+        </select>
+      </label>
+      <label id="remoteRow" class="hidden">URL server <input id="remoteUrl" value="http://192.168.1.10:8765" /></label>
+      <label class="inline"><input type="checkbox" id="shieldOn" checked /> Safety shield + Lyapunov monitor</label>
+      <label class="inline"><input type="checkbox" id="perturb" /> Uji gangguan (noise pada aksi policy)</label>
+      <div id="modelInfo" class="muted"></div>
+    </section>
+
+    <section class="panel hidden" id="tab-log">
+      <pre id="log"></pre>
+    </section>
+  </main>
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>

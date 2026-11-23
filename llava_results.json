@@ -1,0 +1,46 @@
+{
+  "model": "llava-hf/llava-1.5-7b-hf",
+  "method": "ttns",
+  "bond_dimension": 768,
+  "layers_compressed": 1,
+  "sequential_compress_and_heal": true,
+  "perplexity_before": 20.586240768432617,
+  "perplexity_final": 20.984416961669922,
+  "perplexity_trajectory": [
+    {
+      "stage": "before",
+      "perplexity": 20.586240768432617
+    },
+    {
+      "stage": "after_layer0",
+      "perplexity": 20.984416961669922
+    }
+  ],
+  "heal_steps_per_layer": 0,
+  "heal_lr": 1e-05,
+  "heal_grad_clip": 1.0,
+  "heal_by_layer": {
+    "layer0": {
+      "losses": [],
+      "diverged_at_step": null
+    }
+  },
+  "compress_and_heal_wall_clock_s": 173.23423433303833,
+  "layer_stats": {
+    "layer0.gate_proj": {
+      "ratio": 3.6989247311827955,
+      "rel_err": 0.6326990127563477
+    },
+    "layer0.up_proj": {
+      "ratio": 3.6989247311827955,
+      "rel_err": 0.6530677676200867
+    },
+    "layer0.down_proj": {
+      "ratio": 3.6989247311827955,
+      "rel_err": 0.7231608629226685
+    }
+  },
+  "mean_ratio": 3.6989247311827955,
+  "note": "This particular accepted run used --heal-steps 0 (no healing), so it predates the sequential-heal restructure in behavior (schema fields renamed for consistency with later runs — same real numbers, not re-measured). heal_steps_per_layer=0 means heal_by_layer.layer0.losses is empty by construction, not a failure.",
+  "scope_note": "Accepted evidence point: 1 of ~32 LLaVA-1.5-7B decoder layers compressed (gate/up/down_proj only), TTNS method, bond_dimension=768, on Colab T4. Healing NOT validated for LLaVA at any bond dimension tried in this run (heal_steps_per_layer=0): at chi=96 (mps or ttns, 4 layers, OLD non-sequential script) the compressed model was already near-random before healing even started; at chi=768 with 4 layers compressed simultaneously (also the old script), per-layer relative error (~0.6-0.77) compounded across layers into a forward-pass NaN (fp16 overflow through the residual stream) BEFORE healing could run. The script was since restructured to compress-and-heal ONE layer at a time (GPTQ/AWQ-style sequential calibration) specifically to fix this — see scripts/compress_llava_colab.py docstring — but that fix has not yet been re-run for real on Colab as of this file. The 4-layer target was abandoned as disproportionate additional Colab time for optional evidence. This 1-layer point meets the common compression target: ratio 3.70x (>= 2x threshold) at a 1.9% perplexity increase (<= 5% threshold) on the built-in smoke-test text set (not a real held-out benchmark split)."
+}

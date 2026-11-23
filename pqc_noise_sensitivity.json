@@ -1,0 +1,49 @@
+{
+  "circuit_resources": {
+    "n_qubits": 4,
+    "entangling_layers": 2,
+    "gate_count_estimate": 32,
+    "simulator": "pennylane default.qubit (exact statevector)",
+    "shots": "analytic (infinite-shot limit)"
+  },
+  "train_rollouts": 2000,
+  "n_eval_states": 64,
+  "sweep": [
+    {
+      "noise_prob": 0.0,
+      "mean_reward": 0.6000206520439509,
+      "reward_retained_pct": 100.0
+    },
+    {
+      "noise_prob": 0.001,
+      "mean_reward": 0.6005075135139224,
+      "reward_retained_pct": 100.0811407854568
+    },
+    {
+      "noise_prob": 0.005,
+      "mean_reward": 0.6022979912575417,
+      "reward_retained_pct": 100.37954347168436
+    },
+    {
+      "noise_prob": 0.01,
+      "mean_reward": 0.6042184725354779,
+      "reward_retained_pct": 100.69961266786855
+    },
+    {
+      "noise_prob": 0.02,
+      "mean_reward": 0.6071960313460723,
+      "reward_retained_pct": 101.19585538892346
+    },
+    {
+      "noise_prob": 0.05,
+      "mean_reward": 0.6118164493322794,
+      "reward_retained_pct": 101.96589854834937
+    },
+    {
+      "noise_prob": 0.1,
+      "mean_reward": 0.613819294655351,
+      "reward_retained_pct": 102.29969461290965
+    }
+  ],
+  "note": "Depolarizing noise inserted after every gate (qml.insert(op=DepolarizingChannel, position='all')) on PennyLane's default.mixed density-matrix simulator, using the SAME weights trained noiselessly (default.qubit) elsewhere in this project — this measures robustness of an already-trained policy to hardware noise, not training under noise. noise_prob is a per-gate depolarizing probability, not a specific device's measured error rate; current superconducting NISQ hardware single-qubit gate error is roughly 0.05-0.5%, two-qubit (entangling) gate error roughly 0.5-2% depending on hardware generation — the swept range brackets this. reward_retained_pct = 100 * noisy_reward / noise_prob=0_reward on the SAME eval states; a value near 100% at realistic noise levels would suggest tolerance to near-term hardware noise, a sharp drop would suggest this ansatz needs error mitigation before real-hardware deployment. Simulation only — no physical quantum hardware used."
+}

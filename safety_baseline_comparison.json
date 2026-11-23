@@ -1,0 +1,54 @@
+{
+  "sweep": [
+    {
+      "gain": 0.5,
+      "spectral_radius": 0.5000002980232239,
+      "truly_stable": true,
+      "heuristic_clipping_safe_pct": 100.0,
+      "sdp_certified": true,
+      "false_confidence": false
+    },
+    {
+      "gain": 0.9,
+      "spectral_radius": 0.8999994993209839,
+      "truly_stable": true,
+      "heuristic_clipping_safe_pct": 100.0,
+      "sdp_certified": true,
+      "false_confidence": false
+    },
+    {
+      "gain": 1.0,
+      "spectral_radius": 1.0,
+      "truly_stable": false,
+      "heuristic_clipping_safe_pct": 100.0,
+      "sdp_certified": false,
+      "false_confidence": true
+    },
+    {
+      "gain": 1.02,
+      "spectral_radius": 1.0199990272521973,
+      "truly_stable": false,
+      "heuristic_clipping_safe_pct": 36.666666666666664,
+      "sdp_certified": false,
+      "false_confidence": false
+    },
+    {
+      "gain": 1.05,
+      "spectral_radius": 1.0500000715255737,
+      "truly_stable": false,
+      "heuristic_clipping_safe_pct": 93.33333333333333,
+      "sdp_certified": false,
+      "false_confidence": true
+    },
+    {
+      "gain": 1.2,
+      "spectral_radius": 1.199999451637268,
+      "truly_stable": false,
+      "heuristic_clipping_safe_pct": 13.333333333333334,
+      "sdp_certified": false,
+      "false_confidence": false
+    }
+  ],
+  "n_false_confidence_cases": 2,
+  "note": "Classical-baseline comparison for safety guarantees (heuristic reward clipping at path boundary) vs our verifiable SDP certificate (solve_lyapunov_sdp, unchanged). false_confidence=True marks gains where heuristic clipping reported >=90% of episodes 'safe' for a system that is mathematically unstable (spectral radius >= 1) — the SDP certificate never makes this mistake by construction (Schur stability is exactly rho(A)<1, the same fact the certificate solves for), and answers before running a single episode. This is NOT a claim that heuristic clipping always fails; near the stability boundary specifically, a short finite-horizon trial can look fine right up until it doesn't."
+}

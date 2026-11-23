@@ -1,0 +1,56 @@
+{
+  "n_episodes": 300,
+  "steps": 100,
+  "dt": 0.05,
+  "conditions": {
+    "dense|noise=0|shield=on": {
+      "reach_success_pct": 100,
+      "monitor_intervention_pct": 10,
+      "table_collision_pct": 0,
+      "steps_to_reach_median": 15
+    },
+    "dense|noise=0|shield=off": {
+      "reach_success_pct": 99.66666666666667,
+      "monitor_intervention_pct": 0,
+      "table_collision_pct": 0,
+      "steps_to_reach_median": 15
+    },
+    "dense|noise=1.5|shield=on": {
+      "reach_success_pct": 78.33333333333333,
+      "monitor_intervention_pct": 100,
+      "table_collision_pct": 0,
+      "steps_to_reach_median": 20
+    },
+    "dense|noise=1.5|shield=off": {
+      "reach_success_pct": 8,
+      "monitor_intervention_pct": 0,
+      "table_collision_pct": 14.333333333333334,
+      "steps_to_reach_median": 24
+    },
+    "ttns|noise=0|shield=on": {
+      "reach_success_pct": 100,
+      "monitor_intervention_pct": 21,
+      "table_collision_pct": 0,
+      "steps_to_reach_median": 15
+    },
+    "ttns|noise=0|shield=off": {
+      "reach_success_pct": 99.66666666666667,
+      "monitor_intervention_pct": 0,
+      "table_collision_pct": 0,
+      "steps_to_reach_median": 15
+    },
+    "ttns|noise=1.5|shield=on": {
+      "reach_success_pct": 78.33333333333333,
+      "monitor_intervention_pct": 100,
+      "table_collision_pct": 0,
+      "steps_to_reach_median": 20
+    },
+    "ttns|noise=1.5|shield=off": {
+      "reach_success_pct": 8.333333333333334,
+      "monitor_intervention_pct": 0,
+      "table_collision_pct": 14,
+      "steps_to_reach_median": 25
+    }
+  },
+  "note": "Same seeds across conditions (paired). noise = uniform action noise amplitude in rad/s added to the policy output."
+}

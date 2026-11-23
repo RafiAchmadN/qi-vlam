@@ -1,0 +1,65 @@
+{
+  "params_dense": 35076,
+  "params_ttns": 11012,
+  "param_ratio": 3.1852524518706864,
+  "compressed_layer_ratio": 3.6857142857142855,
+  "bond_dimension": 16,
+  "closed_loop": {
+    "dense": {
+      "reach_success_pct": 100.0,
+      "final_err_mm_median": 0.39974458747900377,
+      "final_err_mm_p95": 1.9087713031183853,
+      "steps_to_reach_median": 17.0,
+      "n_episodes": 200
+    },
+    "healing_ctrl": {
+      "reach_success_pct": 100.0,
+      "final_err_mm_median": 0.3912205383285387,
+      "final_err_mm_p95": 1.6277108656518264,
+      "steps_to_reach_median": 17.0,
+      "n_episodes": 200
+    },
+    "ttns_noheal": {
+      "reach_success_pct": 74.0,
+      "final_err_mm_median": 9.730136904092777,
+      "final_err_mm_p95": 16.19471300382072,
+      "steps_to_reach_median": 20.0,
+      "n_episodes": 200
+    },
+    "ttns": {
+      "reach_success_pct": 100.0,
+      "final_err_mm_median": 0.470026672104321,
+      "final_err_mm_p95": 2.9682625142645103,
+      "steps_to_reach_median": 17.0,
+      "n_episodes": 200
+    }
+  },
+  "lyapunov": {
+    "P": [
+      [
+        0.8420529961585999,
+        0.08061999827623367,
+        -0.042966000735759735
+      ],
+      [
+        0.08061999827623367,
+        0.9571999907493591,
+        -0.003490000031888485
+      ],
+      [
+        -0.042966000735759735,
+        -0.003490000031888485,
+        0.5965369939804077
+      ]
+    ],
+    "certified": true,
+    "r_squared_heldout": 0.9964686737103107,
+    "spectral_radius": 0.9215013384819031,
+    "scope": "Formal SDP certificate for the identified linear error model e_{t+1}=A e_t only; the app uses V=e^T P e as a runtime monitor with IK fallback, which is an empirical safeguard, not a proof about the nonlinear arm."
+  },
+  "dataset": {
+    "samples": 90000,
+    "episodes": 1500
+  },
+  "wall_s": 116.50234866142273
+}

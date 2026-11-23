@@ -1,0 +1,136 @@
+{
+  "summary": {
+    "task": "ReachTarget",
+    "episodes": 15,
+    "bond_dimension": null,
+    "policy_path": "rlbench_bc_policy.pt",
+    "task_success_pct": 0.0,
+    "safe_pct": 0.0,
+    "mean_terminal_tracking_error_norm": 1.0807611743609111,
+    "latency": {
+      "count": 15,
+      "mean_ms": 5.181055385333214,
+      "p50_ms": 5.2508091600126745,
+      "p95_ms": 5.795430479993229,
+      "max_ms": 5.795430479993229,
+      "budget_ms": 100.0,
+      "violations": 0
+    },
+    "formal_sdp_certificate": {
+      "certified": true,
+      "spectral_radius": 0.9920051693916321,
+      "min_eig_P": 0.0010022848146036267,
+      "max_eig_ATPA_minus_P": -0.0009979445021599531,
+      "r_squared": 0.9270972472967615,
+      "meaning": "SDP-feasible P proves local asymptotic stability of the SYSTEM-IDENTIFIED linear approximation of the tracking-error dynamics (fit on real RLBench trajectories above), not a proof about the true nonlinear CoppeliaSim physics. Validity is bounded by r_squared=0.927 on held-out transitions \u2014 treat as unreliable below ~0.5."
+    },
+    "note": "Empirical closed-loop tracking-error monitoring on a real nonlinear rigid-body simulator (CoppeliaSim via RLBench), plus (if --sysid) a formal SDP certificate for a linear model IDENTIFIED FROM the collected trajectories \u2014 see formal_sdp_certificate.meaning and r_squared before trusting it. This complements, not replaces, the exact-linearization SDP certificate in safety.json (that one linearizes a known closed-form toy system; this one fits an approximation to a black-box simulator). Policy is untrained unless loaded via --policy-path (see scripts/rlbench_train_bc.py)."
+  },
+  "episodes": [
+    {
+      "success": false,
+      "terminal_tracking_error_norm": 1.148166298866272,
+      "lyapunov_safe_fraction": 0.6241610738255033,
+      "safe": false,
+      "steps": 150
+    },
+    {
+      "success": false,
+      "terminal_tracking_error_norm": 1.2986164093017578,
+      "lyapunov_safe_fraction": 0.5436241610738255,
+      "safe": false,
+      "steps": 150
+    },
+    {
+      "success": false,
+      "terminal_tracking_error_norm": 1.183642029762268,
+      "lyapunov_safe_fraction": 0.7315436241610738,
+      "safe": false,
+      "steps": 150
+    },
+    {
+      "success": false,
+      "terminal_tracking_error_norm": 1.066532015800476,
+      "lyapunov_safe_fraction": 0.5167785234899329,
+      "safe": false,
+      "steps": 150
+    },
+    {
+      "success": false,
+      "terminal_tracking_error_norm": 0.9836371541023254,
+      "lyapunov_safe_fraction": 0.5838926174496644,
+      "safe": false,
+      "steps": 150
+    },
+    {
+      "success": false,
+      "terminal_tracking_error_norm": 1.1631425619125366,
+      "lyapunov_safe_fraction": 0.6375838926174497,
+      "safe": false,
+      "steps": 150
+    },
+    {
+      "success": false,
+      "terminal_tracking_error_norm": 0.9212751984596252,
+      "lyapunov_safe_fraction": 0.7785234899328859,
+      "safe": false,
+      "steps": 150
+    },
+    {
+      "success": false,
+      "terminal_tracking_error_norm": 1.1745920181274414,
+      "lyapunov_safe_fraction": 0.7449664429530201,
+      "safe": false,
+      "steps": 150
+    },
+    {
+      "success": false,
+      "terminal_tracking_error_norm": 0.9526845216751099,
+      "lyapunov_safe_fraction": 0.5436241610738255,
+      "safe": false,
+      "steps": 150
+    },
+    {
+      "success": false,
+      "terminal_tracking_error_norm": 1.0265332460403442,
+      "lyapunov_safe_fraction": 0.5973154362416108,
+      "safe": false,
+      "steps": 150
+    },
+    {
+      "success": false,
+      "terminal_tracking_error_norm": 0.9139172434806824,
+      "lyapunov_safe_fraction": 0.6040268456375839,
+      "safe": false,
+      "steps": 150
+    },
+    {
+      "success": false,
+      "terminal_tracking_error_norm": 1.1785964965820312,
+      "lyapunov_safe_fraction": 0.6375838926174497,
+      "safe": false,
+      "steps": 150
+    },
+    {
+      "success": false,
+      "terminal_tracking_error_norm": 1.167264699935913,
+      "lyapunov_safe_fraction": 0.5906040268456376,
+      "safe": false,
+      "steps": 150
+    },
+    {
+      "success": false,
+      "terminal_tracking_error_norm": 1.0483038425445557,
+      "lyapunov_safe_fraction": 0.5167785234899329,
+      "safe": false,
+      "steps": 150
+    },
+    {
+      "success": false,
+      "terminal_tracking_error_norm": 0.9845138788223267,
+      "lyapunov_safe_fraction": 0.5369127516778524,
+      "safe": false,
+      "steps": 150
+    }
+  ]
+}

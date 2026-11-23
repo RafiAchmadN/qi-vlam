@@ -1,0 +1,67 @@
+{
+  "summary": {
+    "task": "ReachTarget",
+    "episodes": 3,
+    "bond_dimension": null,
+    "hidden_dim": 256,
+    "depth": 4,
+    "policy_path": null,
+    "task_success_pct": 0.0,
+    "safe_pct": 100.0,
+    "mean_terminal_tracking_error_norm": 0.015369110430280367,
+    "mean_dist_to_target_reduction_pct": 5.626107411664927,
+    "latency": {
+      "count": 3,
+      "mean_ms": 23.703635316693788,
+      "p50_ms": 4.7528811748634325,
+      "p95_ms": 61.91627842508751,
+      "max_ms": 61.91627842508751,
+      "budget_ms": 100.0,
+      "violations": 0
+    },
+    "formal_sdp_certificate": {
+      "certified": true,
+      "spectral_radius": 0.9118987321853638,
+      "min_eig_P": 0.0010000001639127731,
+      "max_eig_ATPA_minus_P": -0.0009998013265430927,
+      "r_squared": -1.666078899068602,
+      "meaning": "SDP-feasible P proves local asymptotic stability of the SYSTEM-IDENTIFIED linear approximation of the tracking-error dynamics (fit on real RLBench trajectories above), not a proof about the true nonlinear CoppeliaSim physics. Validity is bounded by r_squared=-1.666 on held-out transitions \u2014 treat as unreliable below ~0.5."
+    },
+    "note": "Empirical closed-loop tracking-error monitoring on a real nonlinear rigid-body simulator (CoppeliaSim via RLBench), plus (if --sysid) a formal SDP certificate for a linear model IDENTIFIED FROM the collected trajectories \u2014 see formal_sdp_certificate.meaning and r_squared before trusting it. This complements, not replaces, the exact-linearization SDP certificate in safety.json (that one linearizes a known closed-form toy system; this one fits an approximation to a black-box simulator). Policy is untrained unless loaded via --policy-path (see scripts/rlbench_train_bc.py). mean_dist_to_target_reduction_pct (only for tasks in REACH_COMPATIBLE_TASKS, rlbench_gui_demo.py) is a distance-to-target signal INDEPENDENT of task_success_pct (RLBench's binary proximity-sensor check, a tight threshold) and of mean_terminal_tracking_error_norm (a velocity-tracking safety signal, not task progress) \u2014 a policy can show large distance reduction while task_success_pct stays 0%, which means it learned real directional signal without precision enough to trigger success; read both numbers, not just one."
+  },
+  "episodes": [
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.561162480535783,
+        "min_dist_to_target": 0.5307446439804185
+      },
+      "terminal_tracking_error_norm": 0.01642674021422863,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true,
+      "steps": 40
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.38399298066987914,
+        "min_dist_to_target": 0.36491415923765624
+      },
+      "terminal_tracking_error_norm": 0.015454490669071674,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true,
+      "steps": 40
+    },
+    {
+      "success": false,
+      "target_info": {
+        "init_dist_to_target": 0.45951075920435075,
+        "min_dist_to_target": 0.42997938685629655
+      },
+      "terminal_tracking_error_norm": 0.014226100407540798,
+      "lyapunov_safe_fraction": 1.0,
+      "safe": true,
+      "steps": 40
+    }
+  ]
+}
