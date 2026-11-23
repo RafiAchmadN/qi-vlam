@@ -53,7 +53,7 @@ jobs:
       - name: Unit tests (ROS-free core)
         run: |
           export QI_VLA_ROOT=$GITHUB_WORKSPACE
-          PYTHONPATH=ros2/qi_vla_ros:. python3 -m pytest -q ros2/qi_vla_ros/test/test_core.py
+          PYTHONPATH=ros2/qi_vla_ros:. python3 -m pytest -q -o addopts="" -p no:cacheprovider ros2/qi_vla_ros/test/test_core.py
       - name: Launch sim (MuJoCo) + rosbridge + policy, run end-to-end smoke test
         run: |
           source /opt/ros/humble/setup.bash
